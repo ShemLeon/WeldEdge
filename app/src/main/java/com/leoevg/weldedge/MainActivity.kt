@@ -96,7 +96,6 @@ fun generatePDF(context: Context) {
 
     // Define the page height
     val pageHeight = 1120
-
     // Define the page width
     val pageWidth = 792
 
@@ -109,7 +108,6 @@ fun generatePDF(context: Context) {
 
     // Get the canvas to draw on
     val canvas: Canvas = myPage.canvas
-
 
     val table1Data = listOf(listOf("First column", "First column data"))
     val table1Header = "Header1"
