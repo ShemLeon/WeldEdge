@@ -8,6 +8,7 @@ fun Canvas.drawSimpleTable(
     data: List<List<String>>,
     headerTitle: String? = null,
     footerTitle: String? = null,
+    columnWeights: List<Float>? = null,
     x: Float,
     y: Float,
     width: Float,
@@ -19,6 +20,7 @@ fun Canvas.drawSimpleTable(
         data = data,
         headerTitle = headerTitle,
         footerTitle = footerTitle,
+        columnWeights = columnWeights,
         config = config
     )
 

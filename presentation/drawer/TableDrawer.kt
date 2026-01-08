@@ -30,7 +30,6 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
         table.headerRow?.let { headerRow ->
             currentY = drawDataRow(
                 canvas,
-                table,
                 headerRow,
                 -1, // Special index for header row style
                 startX,
@@ -49,7 +48,6 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
 
             currentY = drawDataRow(
                 canvas,
-                table,
                 rowData,
                 rowIndex,
                 startX,
@@ -106,7 +104,6 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
 
     private fun drawDataRow(
         canvas: Canvas,
-        table: Table,
         rowData: List<String>,
         rowIndex: Int,
         startX: Float,
@@ -115,6 +112,14 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
         rowHeight: Float,
         isHeader: Boolean = false
     ): Float {
+        val textPaint = Paint().apply {
+            textSize = if (isHeader) config.headerTextSize else config.textSize
+            color = if (isHeader) config.headerTextColor else config.cellTextColor
+            isAntiAlias = true
+            isFakeBoldText = isHeader && config.headerBold
+            textAlign = Paint.Align.CENTER
+        }
+
         val backgroundPaint = Paint().apply {
             color = when {
                 isHeader -> config.headerBackgroundColor
@@ -133,25 +138,11 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
         var currentX = startX
         rowData.forEachIndexed { colIndex, text ->
             val colWidth = columnWidths[colIndex]
-            
-            val textAlign = table.columnAligns?.getOrNull(colIndex) ?: Paint.Align.CENTER
-            
-            val textPaint = Paint().apply {
-                textSize = if (isHeader) config.headerTextSize else config.textSize
-                color = if (isHeader) config.headerTextColor else config.cellTextColor
-                isAntiAlias = true
-                isFakeBoldText = isHeader && config.headerBold
-                this.textAlign = textAlign
-            }
 
             canvas.drawRect(currentX, startY, currentX + colWidth, startY + rowHeight, backgroundPaint)
             canvas.drawRect(currentX, startY, currentX + colWidth, startY + rowHeight, borderPaint)
 
-            val textX = when(textAlign) {
-                Paint.Align.LEFT -> currentX + config.cellPaddingHorizontal
-                Paint.Align.RIGHT -> currentX + colWidth - config.cellPaddingHorizontal
-                else -> currentX + (colWidth / 2)
-            }
+            val textX = currentX + (colWidth / 2)
             val textY = startY + (rowHeight / 2) + (textPaint.textSize / 3)
 
             drawCellText(canvas, text, textX, textY, colWidth, textPaint)
@@ -169,13 +160,10 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
         maxWidth: Float,
         paint: Paint
     ) {
-        val availableWidth = maxWidth - (2 * config.cellPaddingHorizontal)
-        
-        // Multi-line support or wrapping could be here, but let's stick to simple for now
+        val availableWidth = maxWidth - (2 * config.cellPadding)
         if (paint.measureText(text) <= availableWidth) {
             canvas.drawText(text, centerX, centerY, paint)
         } else {
-            // Very basic wrapping/truncating
             var truncated = text
             while (paint.measureText("$truncated...") > availableWidth && truncated.isNotEmpty()) {
                 truncated = truncated.dropLast(1)
@@ -185,6 +173,6 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
     }
 
     private fun calculateRowHeight(): Float {
-        return config.textSize + (2 * config.cellPaddingVertical)
+        return config.textSize + (2 * config.cellPadding) + 10f
     }
 }
