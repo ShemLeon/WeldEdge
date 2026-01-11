@@ -73,6 +73,24 @@ class WpsReportDrawer(private val context: Context) {
 
         // 3. FILLER METAL TABLE with complex header
         currentY = drawFillerMetalWithComplexHeader(canvas, drawer, tableConfig, margin, currentY, tableWidth)
+        
+        currentY += 20f
+
+        // 4. Cons / Insert, Flux, Sup Filler Table
+        val fillerWeights = listOf(1.2f, 1.5f, 2.0f, 0.7f, 0.7f, 2.0f, 1.2f, 1.2f)
+        val consTable = Table(
+            columns = 8,
+            rows = 3,
+            data = listOf(
+                listOf("Cons / Insert", "", "", "", "", "", "", ""),
+                listOf("Flux", "", "", "", "", "", "", ""),
+                listOf("Sup Filler", "", "", "", "", "", "", "")
+            ),
+            columnWeights = fillerWeights,
+            columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
+            config = tableConfig
+        )
+        drawer.drawTable(canvas, consTable, margin, currentY, tableWidth)
     }
 
     private fun drawFillerMetalWithComplexHeader(
@@ -108,11 +126,10 @@ class WpsReportDrawer(private val context: Context) {
         canvas.drawText("Filler Metal", currentX + colWidths[0] / 2, y + rowHeight / 2 + config.headerTextSize / 3, textPaint)
         currentX += colWidths[0]
 
-        // 2. Ячейки со 2-й по 6-ю: Пустые
-        for (i in 1..5) {
-            canvas.drawRect(currentX, y, currentX + colWidths[i], y + rowHeight, paint)
-            currentX += colWidths[i]
-        }
+        // 2. Объединенная пустая ячейка (со 2-й по 6-ю)
+        val middlePartWidth = colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5]
+        canvas.drawRect(currentX, y, currentX + middlePartWidth, y + rowHeight, paint)
+        currentX += middlePartWidth
 
         // 3. Последние две ячейки: Thickness Range (объединенные)
         val lastTwoWidth = colWidths[6] + colWidths[7]
@@ -122,11 +139,10 @@ class WpsReportDrawer(private val context: Context) {
         // Отрисовка остальной части таблицы через TableDrawer
         val fillerMetalTable = Table(
             columns = 8,
-            rows = 1, // БЫЛО 2, СТАЛО 1
+            rows = 1,
             headerRow = listOf("Process", "AWS Spec", "AWS Classification", "F-No", "A-No", "Trade Name", "As Weld", "With PWHT"),
             data = listOf(
                 listOf("GTAW", "ER316L", "A5.9", "6", "", "", "2-6", "")
-                // Удалили пустой listOf
             ),
             columnWeights = weights,
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
