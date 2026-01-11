@@ -90,7 +90,28 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
             config = tableConfig
         )
-        drawer.drawTable(canvas, consTable, margin, currentY, tableWidth)
+        currentY = drawer.drawTable(canvas, consTable, margin, currentY, tableWidth)
+
+        // 5. Joint Details Table
+        currentY += 30f
+        val jointDetailsTable = Table(
+            columns = 2,
+            rows = 6,
+            headerTitle = "Joint Details",
+            data = listOf(
+                listOf("Joint Type", "BW or FW"),
+                listOf("Groove Angle (Deg)", "60"),
+                listOf("Root Opening (mm)", "1.6"),
+                listOf("Root Face (mm)", "0.5"),
+                listOf("Back gouging", "NO"),
+                listOf("Method", "")
+            ),
+            columnWeights = listOf(1.5f, 1f),
+            columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
+            config = tableConfig
+        )
+        // Здесь меняем maxWidth с leftWidth на tableWidth * 0.3f
+        drawer.drawTable(canvas, jointDetailsTable, margin, currentY, tableWidth * 0.3f)
     }
 
     private fun drawFillerMetalWithComplexHeader(
