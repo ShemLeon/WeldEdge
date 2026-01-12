@@ -110,8 +110,24 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
             config = tableConfig
         )
-        // Здесь меняем maxWidth с leftWidth на tableWidth * 0.3f
-        drawer.drawTable(canvas, jointDetailsTable, margin, currentY, tableWidth * 0.3f)
+        currentY = drawer.drawTable(canvas, jointDetailsTable, margin, currentY, tableWidth * 0.4f)
+
+        // 6. Postweld Heat Treatment Table
+        currentY += 30f
+        val pwhtTable = Table(
+            columns = 2,
+            rows = 3,
+            headerTitle = "Postweld Heat Treatment",
+            data = listOf(
+                listOf("Temperature (C°)", ""),
+                listOf("Time at Temperature (Min)", ""),
+                listOf("Other", "")
+            ),
+            columnWeights = listOf(1.5f, 1f),
+            columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
+            config = tableConfig
+        )
+        drawer.drawTable(canvas, pwhtTable, margin, currentY, tableWidth * 0.4f)
     }
 
     private fun drawFillerMetalWithComplexHeader(
