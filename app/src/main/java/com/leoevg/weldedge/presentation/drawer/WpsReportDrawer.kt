@@ -93,7 +93,7 @@ class WpsReportDrawer(private val context: Context) {
         currentY = drawer.drawTable(canvas, consTable, margin, currentY, tableWidth)
 
         // 5. Joint Details Table
-        currentY += 30f
+        val startYForDetails = currentY + 30f
         val jointDetailsTable = Table(
             columns = 2,
             rows = 6,
@@ -110,10 +110,10 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
             config = tableConfig
         )
-        currentY = drawer.drawTable(canvas, jointDetailsTable, margin, currentY, tableWidth * 0.4f)
+        val yAfterJointDetails = drawer.drawTable(canvas, jointDetailsTable, margin, startYForDetails, tableWidth * 0.4f)
 
         // 6. Postweld Heat Treatment Table
-        currentY += 30f
+        val startYForPwht = yAfterJointDetails + 30f
         val pwhtTable = Table(
             columns = 2,
             rows = 3,
@@ -127,7 +127,59 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
             config = tableConfig
         )
-        drawer.drawTable(canvas, pwhtTable, margin, currentY, tableWidth * 0.4f)
+        drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.4f)
+        
+        // 7. Joint Details Sketch (Right Side)
+        drawJointDetailsSketch(canvas, margin + tableWidth * 0.45f, startYForDetails, tableWidth * 0.55f)
+    }
+
+    private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float) {
+        val rowHeight = 22f
+        val totalHeight = 200f // Примерная высота бокса со скетчем
+        
+        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 1f }
+        val textPaint = Paint().apply { color = Color.BLACK; textSize = 10f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+
+        // Draw Frame
+        canvas.drawRect(x, y, x + width, y + totalHeight, paint)
+        
+        // Draw Header
+        canvas.drawLine(x, y + rowHeight, x + width, y + rowHeight, paint)
+        canvas.drawText("Joint Details (Sketch)", x + width / 2, y + rowHeight / 2 + 3f, textPaint)
+        
+        // Draw Sketch Image
+        try {
+            val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap)
+            bitmap?.let {
+                val padding = 10f
+                val dest = RectF(
+                    x + padding, 
+                    y + rowHeight + padding, 
+                    x + width - padding, 
+                    y + totalHeight - padding
+                )
+                // Отрисовка с сохранением пропорций
+                val bitmapWidth = it.width.toFloat()
+                val bitmapHeight = it.height.toFloat()
+                val ratio = minOf(dest.width() / bitmapWidth, dest.height() / bitmapHeight)
+                
+                val finalWidth = bitmapWidth * ratio
+                val finalHeight = bitmapHeight * ratio
+                val offsetLeft = (dest.width() - finalWidth) / 2
+                val offsetTop = (dest.height() - finalHeight) / 2
+                
+                val renderRect = RectF(
+                    dest.left + offsetLeft,
+                    dest.top + offsetTop,
+                    dest.left + offsetLeft + finalWidth,
+                    dest.top + offsetTop + finalHeight
+                )
+                
+                canvas.drawBitmap(it, null, renderRect, null)
+            }
+        } catch (e: Exception) {
+            // Если картинки нет, можно вывести текст-заглушку
+        }
     }
 
     private fun drawFillerMetalWithComplexHeader(
