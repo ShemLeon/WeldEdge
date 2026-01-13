@@ -127,59 +127,125 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
             config = tableConfig
         )
-        drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.4f)
+        val yAfterPwht = drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.4f)
         
         // 7. Joint Details Sketch (Right Side)
         drawJointDetailsSketch(canvas, margin + tableWidth * 0.45f, startYForDetails, tableWidth * 0.55f)
+
+        val yAfterSketch = startYForDetails + 200f
+        currentY = maxOf(yAfterPwht, yAfterSketch) + 30f
+
+        // 8. Large Parameters Table (Weld Layers, Electrical, Technique)
+        drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth)
+    }
+
+    private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float) {
+        var currentY = y
+        val colWeights3 = listOf(5f, 1f, 4f)
+        val colAligns3 = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.LEFT)
+
+        // Part A: Weld Layers / Passes
+        val weldLayersTable = Table(
+            columns = 3,
+            rows = 17,
+            data = listOf(
+                listOf("Weld Layers / Passes", "", "1-5"),
+                listOf("Process", "", "GTAW"),
+                listOf("Type (Manual / Semiautomatic / Automatic)", "", "Manual"),
+                listOf("Preheat Temperature (C°), Range 56", "", "20"),
+                listOf("Interpass Temperature (C°), Range 56", "", "150"),
+                listOf("Filler Metal (AWS Spe)", "", "A5.18"),
+                listOf("AWS Classification", "", "ER316L"),
+                listOf("F No / A No", "", "6"),
+                listOf("Nominal composition", "", ""),
+                listOf("Manufacturer / Trade name", "", "ZIKA"),
+                listOf("Filler Metal Diameter (mm)", "", "1.6"),
+                listOf("Deposited Thickness (mm)", "", ""),
+                listOf("Mas Pass Thickness (mm)", "", ""),
+                listOf("Position", "", "F for BW / F, H for FW"),
+                listOf("Vertical Progression (Up / Dune)", "", "-"),
+                listOf("Shielding Gas compos", "", "Ar 99.999%"),
+                listOf("Flow Rate (L / Min), Range: 80 - 150%", "", "14-15")
+            ),
+            columnWeights = colWeights3,
+            columnAligns = colAligns3,
+            config = config
+        )
+        currentY = drawer.drawTable(canvas, weldLayersTable, x, currentY, width)
+
+        // Part B: Electrical Characteristics
+        val electricalTable = Table(
+            columns = 3,
+            rows = 9,
+            headerTitle = "Electrical Characteristics",
+            data = listOf(
+                listOf("Electrode Diameter (GTAW)", "", "Red 3.2"),
+                listOf("Electrode Specification (GTAW)", "", "WT20"),
+                listOf("Multiple or Single Electrode", "", "Single"),
+                listOf("Current Type & Polarity", "", "DC-"),
+                listOf("Amps (A): GTAW ±5%, GMAW / FCAW ±10%", "", "120"),
+                listOf("Volts (V): GTAW ±5%", "", "12-14"),
+                listOf("Cold or hote wire feed (GTAW)", "Cold", ""),
+                listOf("Travel Speed (mm/Min): GTAW ±5%, GMAW / FCAW ±10%", "", ""),
+                listOf("Maximum Heat Input (KJ/mm)", "", "1")
+            ),
+            columnWeights = colWeights3,
+            columnAligns = colAligns3,
+            config = config
+        )
+        currentY = drawer.drawTable(canvas, electricalTable, x, currentY, width)
+
+        // Part C: Technique
+        val techniqueTable = Table(
+            columns = 5,
+            rows = 10,
+            headerTitle = "Technique",
+            data = listOf(
+                listOf("Cap or Nozzle Size (mm)", "", "16", "", ""),
+                listOf("Wire Feed Speed", "", "-", "", ""),
+                listOf("Stringer or Weave", "", "Stringer", "", ""),
+                listOf("Multi or Single Pass (per side)", "", "Multi or Single", "", ""),
+                listOf("Oscillation (Mech/Auto)", "", "Auto", "", ""),
+                listOf("Transfer Length / Speed", "", "-", "", ""),
+                listOf("Dwell Time", "", "-", "", ""),
+                listOf("Peening", "", "No", "", ""),
+                listOf("Interpass Cleaning", "", "Yes", "", ""),
+                listOf("Other", "Cleaning oil and rusty", "", "", "")
+            ),
+            columnWeights = listOf(5f, 2.5f, 1.5f, 1f, 1f),
+            columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER),
+            config = config
+        )
+        drawer.drawTable(canvas, techniqueTable, x, currentY, width)
     }
 
     private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float) {
         val rowHeight = 22f
-        val totalHeight = 200f // Примерная высота бокса со скетчем
+        val totalHeight = 200f
         
         val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 1f }
         val textPaint = Paint().apply { color = Color.BLACK; textSize = 10f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
 
-        // Draw Frame
         canvas.drawRect(x, y, x + width, y + totalHeight, paint)
-        
-        // Draw Header
         canvas.drawLine(x, y + rowHeight, x + width, y + rowHeight, paint)
         canvas.drawText("Joint Details (Sketch)", x + width / 2, y + rowHeight / 2 + 3f, textPaint)
         
-        // Draw Sketch Image
         try {
             val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap)
             bitmap?.let {
                 val padding = 10f
-                val dest = RectF(
-                    x + padding, 
-                    y + rowHeight + padding, 
-                    x + width - padding, 
-                    y + totalHeight - padding
-                )
-                // Отрисовка с сохранением пропорций
+                val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
                 val bitmapWidth = it.width.toFloat()
                 val bitmapHeight = it.height.toFloat()
                 val ratio = minOf(dest.width() / bitmapWidth, dest.height() / bitmapHeight)
-                
                 val finalWidth = bitmapWidth * ratio
                 val finalHeight = bitmapHeight * ratio
                 val offsetLeft = (dest.width() - finalWidth) / 2
                 val offsetTop = (dest.height() - finalHeight) / 2
-                
-                val renderRect = RectF(
-                    dest.left + offsetLeft,
-                    dest.top + offsetTop,
-                    dest.left + offsetLeft + finalWidth,
-                    dest.top + offsetTop + finalHeight
-                )
-                
+                val renderRect = RectF(dest.left + offsetLeft, dest.top + offsetTop, dest.left + offsetLeft + finalWidth, dest.top + offsetTop + finalHeight)
                 canvas.drawBitmap(it, null, renderRect, null)
             }
-        } catch (e: Exception) {
-            // Если картинки нет, можно вывести текст-заглушку
-        }
+        } catch (e: Exception) {}
     }
 
     private fun drawFillerMetalWithComplexHeader(
@@ -195,49 +261,31 @@ class WpsReportDrawer(private val context: Context) {
         val totalWeight = weights.sum()
         val colWidths = weights.map { (it / totalWeight) * width }
 
-        val paint = Paint().apply { 
-            color = Color.BLACK
-            style = Paint.Style.STROKE
-            strokeWidth = config.borderWidth 
-        }
-        val textPaint = Paint().apply { 
-            color = Color.BLACK
-            textSize = config.headerTextSize
-            isFakeBoldText = true 
-            isAntiAlias = true
-            textAlign = Paint.Align.CENTER 
-        }
+        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = config.borderWidth }
+        val textPaint = Paint().apply { color = Color.BLACK; textSize = config.headerTextSize; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
 
         var currentX = x
-        
-        // 1. Первая ячейка: Filler Metal
         canvas.drawRect(currentX, y, currentX + colWidths[0], y + rowHeight, paint)
         canvas.drawText("Filler Metal", currentX + colWidths[0] / 2, y + rowHeight / 2 + config.headerTextSize / 3, textPaint)
         currentX += colWidths[0]
 
-        // 2. Объединенная пустая ячейка (со 2-й по 6-ю)
         val middlePartWidth = colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5]
         canvas.drawRect(currentX, y, currentX + middlePartWidth, y + rowHeight, paint)
         currentX += middlePartWidth
 
-        // 3. Последние две ячейки: Thickness Range (объединенные)
         val lastTwoWidth = colWidths[6] + colWidths[7]
         canvas.drawRect(currentX, y, currentX + lastTwoWidth, y + rowHeight, paint)
         canvas.drawText("Thickness Range", currentX + lastTwoWidth / 2, y + rowHeight / 2 + config.headerTextSize / 3, textPaint)
 
-        // Отрисовка остальной части таблицы через TableDrawer
         val fillerMetalTable = Table(
             columns = 8,
             rows = 1,
             headerRow = listOf("Process", "AWS Spec", "AWS Classification", "F-No", "A-No", "Trade Name", "As Weld", "With PWHT"),
-            data = listOf(
-                listOf("GTAW", "ER316L", "A5.9", "6", "", "", "2-6", "")
-            ),
+            data = listOf(listOf("GTAW", "ER316L", "A5.9", "6", "", "", "2-6", "")),
             columnWeights = weights,
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
             config = config
         )
-
         return drawer.drawTable(canvas, fillerMetalTable, x, y + rowHeight, width)
     }
 
@@ -246,7 +294,6 @@ class WpsReportDrawer(private val context: Context) {
         val logoWidth = 110f
         val dataWidth = width - logoWidth
         val colWidth = dataWidth / 4
-        
         val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 1f }
         val textPaint = Paint().apply { color = Color.BLACK; textSize = 10f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
         val boldPaint = Paint(textPaint).apply { isFakeBoldText = true; textSize = 11f }
