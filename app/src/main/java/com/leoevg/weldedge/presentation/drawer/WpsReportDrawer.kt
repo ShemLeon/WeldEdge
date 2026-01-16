@@ -17,21 +17,21 @@ class WpsReportDrawer(private val context: Context) {
         val tableWidth = pageWidth - 2 * margin
         var currentY = margin
 
-        // 1. Draw Custom Header
+        // 1. Draw Custom Header (Super Compact)
         currentY = drawReportHeader(canvas, margin, currentY, tableWidth)
-        currentY += 20f
+        currentY += 8f 
 
         val tableConfig = TableConfig(
             headerBackgroundColor = Color.WHITE,
-            textSize = 9f,
-            headerTextSize = 9f,
-            cellPaddingVertical = 10f,
-            headerBold = false
+            textSize = 8.5f, 
+            headerTextSize = 8.5f,
+            cellPaddingVertical = 3.5f, 
+            headerBold = true
         )
         val drawer = TableDrawer(tableConfig)
 
-        // 2. BASE METAL & THICKNESS (Side by Side)
-        val spacing = 15f
+        // 2. BASE METAL & THICKNESS
+        val spacing = 10f
         val leftWidth = tableWidth * 0.55f
         val rightWidth = tableWidth - leftWidth - spacing
 
@@ -48,14 +48,14 @@ class WpsReportDrawer(private val context: Context) {
             ),
             columnWeights = listOf(2.2f, 1.8f, 1.2f, 0.4f, 1.2f),
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER),
-            config = tableConfig
+            config = tableConfig.copy(headerBold = false)
         )
         val yAfterBaseMetal = drawer.drawTable(canvas, baseMetalTable, margin, currentY, leftWidth)
 
         val thickTable = Table(
             columns = 3,
             rows = 5,
-            headerRow = listOf("BASE METAL THICKNESS (mm)", "As Weld Thickness Range", "With PWHT Thickness Range"),
+            headerRow = listOf("BASE METAL THICKNESS (mm)", "As Weld Range", "With PWHT Range"),
             data = listOf(
                 listOf("CJP Groove Weld", "2-6", ""),
                 listOf("CJP Groove Weld w/CVN", "", ""),
@@ -65,16 +65,16 @@ class WpsReportDrawer(private val context: Context) {
             ),
             columnWeights = listOf(2.2f, 1f, 1f),
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.CENTER),
-            config = tableConfig
+            config = tableConfig.copy(headerBold = false)
         )
         val yAfterThickness = drawer.drawTable(canvas, thickTable, margin + leftWidth + spacing, currentY, rightWidth)
 
-        currentY = maxOf(yAfterBaseMetal, yAfterThickness) + 20f
+        currentY = maxOf(yAfterBaseMetal, yAfterThickness) + 8f
 
-        // 3. FILLER METAL TABLE with complex header
+        // 3. FILLER METAL TABLE
         currentY = drawFillerMetalWithComplexHeader(canvas, drawer, tableConfig, margin, currentY, tableWidth)
         
-        currentY += 20f
+        currentY += 8f
 
         // 4. Cons / Insert, Flux, Sup Filler Table
         val fillerWeights = listOf(1.2f, 1.5f, 2.0f, 0.7f, 0.7f, 2.0f, 1.2f, 1.2f)
@@ -93,7 +93,7 @@ class WpsReportDrawer(private val context: Context) {
         currentY = drawer.drawTable(canvas, consTable, margin, currentY, tableWidth)
 
         // 5. Joint Details Table
-        val startYForDetails = currentY + 30f
+        val startYForDetails = currentY + 8f
         val jointDetailsTable = Table(
             columns = 2,
             rows = 6,
@@ -110,10 +110,10 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
             config = tableConfig
         )
-        val yAfterJointDetails = drawer.drawTable(canvas, jointDetailsTable, margin, startYForDetails, tableWidth * 0.4f)
+        val yAfterJointDetails = drawer.drawTable(canvas, jointDetailsTable, margin, startYForDetails, tableWidth * 0.35f)
 
         // 6. Postweld Heat Treatment Table
-        val startYForPwht = yAfterJointDetails + 30f
+        val startYForPwht = yAfterJointDetails + 8f
         val pwhtTable = Table(
             columns = 2,
             rows = 3,
@@ -127,104 +127,110 @@ class WpsReportDrawer(private val context: Context) {
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
             config = tableConfig
         )
-        val yAfterPwht = drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.4f)
+        val yAfterPwht = drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.35f)
         
-        // 7. Joint Details Sketch (Right Side)
-        drawJointDetailsSketch(canvas, margin + tableWidth * 0.45f, startYForDetails, tableWidth * 0.55f)
+        // 7. Joint Details Sketch
+        drawJointDetailsSketch(canvas, margin + tableWidth * 0.4f, startYForDetails, tableWidth * 0.6f)
 
-        val yAfterSketch = startYForDetails + 200f
-        currentY = maxOf(yAfterPwht, yAfterSketch) + 30f
+        val yAfterSketch = startYForDetails + 150f 
+        currentY = maxOf(yAfterPwht, yAfterSketch) + 8f
 
-        // 8. Large Parameters Table (Weld Layers, Electrical, Technique)
-        drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth)
+        // 8. Large Parameters Table - Now returns the final Y position
+        val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth)
+
+        // 9. Footer Text (1 list from 1) - Positioned with a 20f gap from the table
+        val footerPaint = Paint().apply {
+            color = Color.GRAY
+            textSize = 9f
+            isAntiAlias = true
+            textAlign = Paint.Align.LEFT
+        }
+        canvas.drawText("1 list from 1", margin, finalY + 20f, footerPaint)
     }
 
-    private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float) {
-        var currentY = y
-        val colWeights3 = listOf(5f, 1f, 4f)
-        val colAligns3 = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.LEFT)
+    private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float): Float {
+        var curY = y
+        val colWeights2 = listOf(1.5f, 1f)
+        val colAligns2 = listOf(Paint.Align.LEFT, Paint.Align.CENTER)
 
-        // Part A: Weld Layers / Passes
         val weldLayersTable = Table(
-            columns = 3,
+            columns = 2,
             rows = 17,
             data = listOf(
-                listOf("Weld Layers / Passes", "", "1-5"),
-                listOf("Process", "", "GTAW"),
-                listOf("Type (Manual / Semiautomatic / Automatic)", "", "Manual"),
-                listOf("Preheat Temperature (C°), Range 56", "", "20"),
-                listOf("Interpass Temperature (C°), Range 56", "", "150"),
-                listOf("Filler Metal (AWS Spe)", "", "A5.18"),
-                listOf("AWS Classification", "", "ER316L"),
-                listOf("F No / A No", "", "6"),
-                listOf("Nominal composition", "", ""),
-                listOf("Manufacturer / Trade name", "", "ZIKA"),
-                listOf("Filler Metal Diameter (mm)", "", "1.6"),
-                listOf("Deposited Thickness (mm)", "", ""),
-                listOf("Mas Pass Thickness (mm)", "", ""),
-                listOf("Position", "", "F for BW / F, H for FW"),
-                listOf("Vertical Progression (Up / Dune)", "", "-"),
-                listOf("Shielding Gas compos", "", "Ar 99.999%"),
-                listOf("Flow Rate (L / Min), Range: 80 - 150%", "", "14-15")
+                listOf("Weld Layers / Passes", "1-5"),
+                listOf("Process", "GTAW"),
+                listOf("Type (Manual / Semiautomatic / Automatic)", "Manual"),
+                listOf("Preheat Temperature (C°), Range 56", "20"),
+                listOf("Interpass Temperature (C°), Range 56", "150"),
+                listOf("Filler Metal (AWS Spe)", "A5.18"),
+                listOf("AWS Classification", "ER316L"),
+                listOf("F No / A No", "6"),
+                listOf("Nominal composition", ""),
+                listOf("Manufacturer / Trade name", "ZIKA"),
+                listOf("Filler Metal Diameter (mm)", "1.6"),
+                listOf("Deposited Thickness (mm)", ""),
+                listOf("Mas Pass Thickness (mm)", ""),
+                listOf("Position", "F for BW / F, H for FW"),
+                listOf("Vertical Progression (Up / Dune)", "-"),
+                listOf("Shielding Gas compos", "Ar 99.999%"),
+                listOf("Flow Rate (L / Min), Range: 80 - 150%", "14-15")
             ),
-            columnWeights = colWeights3,
-            columnAligns = colAligns3,
+            columnWeights = colWeights2,
+            columnAligns = colAligns2,
             config = config
         )
-        currentY = drawer.drawTable(canvas, weldLayersTable, x, currentY, width)
+        curY = drawer.drawTable(canvas, weldLayersTable, x, curY, width)
 
-        // Part B: Electrical Characteristics
         val electricalTable = Table(
-            columns = 3,
+            columns = 2,
             rows = 9,
             headerTitle = "Electrical Characteristics",
             data = listOf(
-                listOf("Electrode Diameter (GTAW)", "", "Red 3.2"),
-                listOf("Electrode Specification (GTAW)", "", "WT20"),
-                listOf("Multiple or Single Electrode", "", "Single"),
-                listOf("Current Type & Polarity", "", "DC-"),
-                listOf("Amps (A): GTAW ±5%, GMAW / FCAW ±10%", "", "120"),
-                listOf("Volts (V): GTAW ±5%", "", "12-14"),
-                listOf("Cold or hote wire feed (GTAW)", "Cold", ""),
-                listOf("Travel Speed (mm/Min): GTAW ±5%, GMAW / FCAW ±10%", "", ""),
-                listOf("Maximum Heat Input (KJ/mm)", "", "1")
+                listOf("Electrode Diameter (GTAW)", "Red 3.2"),
+                listOf("Electrode Specification (GTAW)", "WT20"),
+                listOf("Multiple or Single Electrode", "Single"),
+                listOf("Current Type & Polarity", "DC-"),
+                listOf("Amps (A): GTAW ±5%, GMAW / FCAW ±10%", "120"),
+                listOf("Volts (V): GTAW ±5%", "12-14"),
+                listOf("Cold or hote wire feed (GTAW)", "Cold"),
+                listOf("Travel Speed (mm/Min): GTAW ±5%, GMAW / FCAW ±10%", ""),
+                listOf("Maximum Heat Input (KJ/mm)", "1")
             ),
-            columnWeights = colWeights3,
-            columnAligns = colAligns3,
-            config = config
+            columnWeights = colWeights2,
+            columnAligns = colAligns2,
+            config = config.copy(headerBold = true)
         )
-        currentY = drawer.drawTable(canvas, electricalTable, x, currentY, width)
+        curY = drawer.drawTable(canvas, electricalTable, x, curY, width)
 
-        // Part C: Technique
         val techniqueTable = Table(
-            columns = 5,
+            columns = 2,
             rows = 10,
             headerTitle = "Technique",
             data = listOf(
-                listOf("Cap or Nozzle Size (mm)", "", "16", "", ""),
-                listOf("Wire Feed Speed", "", "-", "", ""),
-                listOf("Stringer or Weave", "", "Stringer", "", ""),
-                listOf("Multi or Single Pass (per side)", "", "Multi or Single", "", ""),
-                listOf("Oscillation (Mech/Auto)", "", "Auto", "", ""),
-                listOf("Transfer Length / Speed", "", "-", "", ""),
-                listOf("Dwell Time", "", "-", "", ""),
-                listOf("Peening", "", "No", "", ""),
-                listOf("Interpass Cleaning", "", "Yes", "", ""),
-                listOf("Other", "Cleaning oil and rusty", "", "", "")
+                listOf("Cap or Nozzle Size (mm)", "16"),
+                listOf("Wire Feed Speed", "-"),
+                listOf("Stringer or Weave", "Stringer"),
+                listOf("Multi or Single Pass (per side)", "Multi or Single"),
+                listOf("Oscillation (Mech/Auto)", "Auto"),
+                listOf("Transfer Length / Speed", "-"),
+                listOf("Dwell Time", "-"),
+                listOf("Peening", "No"),
+                listOf("Interpass Cleaning", "Yes"),
+                listOf("Other", "Cleaning oil and rusty")
             ),
-            columnWeights = listOf(5f, 2.5f, 1.5f, 1f, 1f),
-            columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER),
-            config = config
+            columnWeights = colWeights2,
+            columnAligns = colAligns2,
+            config = config.copy(headerBold = true)
         )
-        drawer.drawTable(canvas, techniqueTable, x, currentY, width)
+        return drawer.drawTable(canvas, techniqueTable, x, curY, width)
     }
 
     private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float) {
-        val rowHeight = 22f
-        val totalHeight = 200f
+        val rowHeight = 16f
+        val totalHeight = 150f 
         
-        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 1f }
-        val textPaint = Paint().apply { color = Color.BLACK; textSize = 10f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 0.8f }
+        val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
 
         canvas.drawRect(x, y, x + width, y + totalHeight, paint)
         canvas.drawLine(x, y + rowHeight, x + width, y + rowHeight, paint)
@@ -233,7 +239,7 @@ class WpsReportDrawer(private val context: Context) {
         try {
             val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap)
             bitmap?.let {
-                val padding = 10f
+                val padding = 5f
                 val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
                 val bitmapWidth = it.width.toFloat()
                 val bitmapHeight = it.height.toFloat()
@@ -261,12 +267,12 @@ class WpsReportDrawer(private val context: Context) {
         val totalWeight = weights.sum()
         val colWidths = weights.map { (it / totalWeight) * width }
 
-        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = config.borderWidth }
-        val textPaint = Paint().apply { color = Color.BLACK; textSize = config.headerTextSize; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 0.8f }
+        val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
 
         var currentX = x
         canvas.drawRect(currentX, y, currentX + colWidths[0], y + rowHeight, paint)
-        canvas.drawText("Filler Metal", currentX + colWidths[0] / 2, y + rowHeight / 2 + config.headerTextSize / 3, textPaint)
+        canvas.drawText("Filler Metal", currentX + colWidths[0] / 2, y + rowHeight / 2 + 3f, textPaint)
         currentX += colWidths[0]
 
         val middlePartWidth = colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5]
@@ -275,7 +281,7 @@ class WpsReportDrawer(private val context: Context) {
 
         val lastTwoWidth = colWidths[6] + colWidths[7]
         canvas.drawRect(currentX, y, currentX + lastTwoWidth, y + rowHeight, paint)
-        canvas.drawText("Thickness Range", currentX + lastTwoWidth / 2, y + rowHeight / 2 + config.headerTextSize / 3, textPaint)
+        canvas.drawText("Thickness Range", currentX + lastTwoWidth / 2, y + rowHeight / 2 + 3f, textPaint)
 
         val fillerMetalTable = Table(
             columns = 8,
@@ -284,19 +290,19 @@ class WpsReportDrawer(private val context: Context) {
             data = listOf(listOf("GTAW", "ER316L", "A5.9", "6", "", "", "2-6", "")),
             columnWeights = weights,
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
-            config = config
+            config = config.copy(headerBold = false)
         )
         return drawer.drawTable(canvas, fillerMetalTable, x, y + rowHeight, width)
     }
 
     private fun drawReportHeader(canvas: Canvas, x: Float, y: Float, width: Float): Float {
-        val rowHeight = 22f
+        val rowHeight = 16f 
         val logoWidth = 110f
         val dataWidth = width - logoWidth
         val colWidth = dataWidth / 4
-        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 1f }
-        val textPaint = Paint().apply { color = Color.BLACK; textSize = 10f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
-        val boldPaint = Paint(textPaint).apply { isFakeBoldText = true; textSize = 11f }
+        val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 0.8f }
+        val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+        val boldPaint = Paint(textPaint).apply { isFakeBoldText = true; textSize = 9f }
         val italicPaint = Paint(textPaint).apply { textSkewX = -0.2f }
 
         canvas.drawRect(x, y, x + width, y + rowHeight * 3, paint)
@@ -305,26 +311,26 @@ class WpsReportDrawer(private val context: Context) {
         try {
             val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.logo_san)
             bitmap?.let {
-                val dest = RectF(x + 10f, y + 5f, x + logoWidth - 10f, y + rowHeight * 3 - 5f)
+                val dest = RectF(x + 10f, y + 2f, x + logoWidth - 10f, y + rowHeight * 3 - 2f)
                 canvas.drawBitmap(it, null, dest, null)
             }
         } catch (e: Exception) {}
 
         canvas.drawLine(x + logoWidth, y + rowHeight, x + width, y + rowHeight, paint)
-        canvas.drawText("Welding Procedure Specification WPS 3092 (013)", x + logoWidth + dataWidth / 2, y + rowHeight - 7f, boldPaint)
+        canvas.drawText("Welding Procedure Specification WPS 3092 (013)", x + logoWidth + dataWidth / 2, y + rowHeight - 4f, boldPaint)
 
         canvas.drawLine(x + logoWidth, y + rowHeight * 2, x + width, y + rowHeight * 2, paint)
         val values = listOf("SAN", "3092", "04", "26/6/22")
         for (i in 0..3) {
             val cellX = x + logoWidth + i * colWidth
             if (i > 0) canvas.drawLine(cellX, y + rowHeight, cellX, y + rowHeight * 3, paint)
-            canvas.drawText(values[i], cellX + colWidth / 2, y + rowHeight * 2 - 7f, italicPaint)
+            canvas.drawText(values[i], cellX + colWidth / 2, y + rowHeight * 2 - 4f, italicPaint)
         }
 
         val labels = listOf("Company Name", "PQR No", "Rev. No", "Date")
         for (i in 0..3) {
             val cellX = x + logoWidth + i * colWidth
-            canvas.drawText(labels[i], cellX + colWidth / 2, y + rowHeight * 3 - 7f, textPaint)
+            canvas.drawText(labels[i], cellX + colWidth / 2, y + rowHeight * 3 - 4f, textPaint)
         }
         return y + rowHeight * 3
     }
