@@ -26,6 +26,7 @@ class MainScreenViewModel @Inject constructor(
             is MainScreenEvent.ResponsibilityChanged -> onResponsibilityChanged(event.value)
             is MainScreenEvent.EngineerNameChanged -> onEngineerNameChanged(event.value)
             is MainScreenEvent.StandardChanged -> onStandardChanged(event.value)
+            is MainScreenEvent.LanguageChanged -> onLanguageChanged(event.language)
             MainScreenEvent.ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
             MainScreenEvent.SubmitClicked -> onSubmitClicked()
             MainScreenEvent.BackClicked -> onBackClicked()
@@ -60,6 +61,10 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onStandardChanged(value: String) {
         _state.update { it.copy(params = it.params.copy(standard = value)) }
+    }
+
+    private fun onLanguageChanged(language: String) {
+        _state.update { it.copy(language = language) }
     }
 
     private fun onToggleJointTypeExpanded() {

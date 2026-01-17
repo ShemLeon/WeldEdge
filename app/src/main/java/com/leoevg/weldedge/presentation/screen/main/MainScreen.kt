@@ -71,7 +71,10 @@ fun MainScreenContent(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Header()
+            Header(
+                language = state.language,
+                onLanguageChange = { onEvent(MainScreenEvent.LanguageChanged(it)) }
+            )
 
             if (!state.showPreview) {
                 WeldingForm(
