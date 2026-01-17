@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,21 +32,30 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.WeldingParams
+import com.leoevg.weldedge.presentation.screen.main.components.Header
 
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel = viewModel()) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
 
-    MainScreenContent(
-        state = state,
-        onEvent = viewModel::onEvent
-    )
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color.Transparent // Чтобы градиент из Box был виден
+    ) { paddingValues ->
+        MainScreenContent(
+            state = state,
+            onEvent = { event -> viewModel.onEvent(event, context) },
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
 fun MainScreenContent(
     state: MainScreenState,
-    onEvent: (MainScreenEvent) -> Unit
+    onEvent: (MainScreenEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier
@@ -55,6 +65,7 @@ fun MainScreenContent(
                     colors = listOf(Color(0xFFF8FAFC), Color(0xFFF1F5F9))
                 )
             )
+            .then(modifier)
     ) {
         Column(
             modifier = Modifier
@@ -80,43 +91,6 @@ fun MainScreenContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun Header() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(bottom = 8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Description,
-                contentDescription = null,
-                tint = Color(0xFF2563EB),
-                modifier = Modifier.size(40.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "Помощник сварщика",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF0F172A)
-            )
-        }
-        Text(
-            text = "Генератор технической документации для сварочных работ",
-            fontSize = 14.sp,
-            color = Color(0xFF475569),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
     }
 }
 
