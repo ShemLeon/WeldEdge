@@ -1,24 +1,21 @@
 package com.leoevg.weldedge.presentation.drawer
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.Table
 import com.leoevg.weldedge.domain.TableConfig
+import com.leoevg.weldedge.domain.WeldingParams
 
 class WpsReportDrawer(private val context: Context) {
 
-    fun drawReport(canvas: Canvas, pageWidth: Int, pageHeight: Int) {
+    fun drawReport(canvas: Canvas, pageWidth: Int, pageHeight: Int, params: WeldingParams) {
         val margin = 40f
         val tableWidth = pageWidth - 2 * margin
         var currentY = margin
 
         // 1. Draw Custom Header (Super Compact)
-        currentY = drawReportHeader(canvas, margin, currentY, tableWidth)
+        currentY = drawReportHeader(canvas, margin, currentY, tableWidth, params)
         currentY += 8f 
 
         val tableConfig = TableConfig(
@@ -40,10 +37,10 @@ class WpsReportDrawer(private val context: Context) {
             rows = 5,
             headerRow = listOf("Base Metal", "Specification", "Type or Grade", "M", "AWS Group No."),
             data = listOf(
-                listOf("Base Material", "SS316L", "", "", ""),
-                listOf("Welded To", "SS316L", "", "", ""),
+                listOf("Base Material", params.metalType, "", "", ""),
+                listOf("Welded To", params.metalType, "", "", ""),
                 listOf("Backing Material", "", "", "", ""),
-                listOf("Other", "", "", "", ""),
+                listOf("Other", "Standard: ${params.standard}", "", "", ""),
                 listOf("", "", "", "", "")
             ),
             columnWeights = listOf(2.2f, 1.8f, 1.2f, 0.4f, 1.2f),
@@ -57,10 +54,10 @@ class WpsReportDrawer(private val context: Context) {
             rows = 5,
             headerRow = listOf("BASE METAL THICKNESS (mm)", "As Weld Range", "With PWHT Range"),
             data = listOf(
-                listOf("CJP Groove Weld", "2-6", ""),
+                listOf("CJP Groove Weld", params.thickness, ""),
                 listOf("CJP Groove Weld w/CVN", "", ""),
-                listOf("PJP Groove Weld", "2-6", ""),
-                listOf("Fillet Weld", "2-6", ""),
+                listOf("PJP Groove Weld", params.thickness, ""),
+                listOf("Fillet Weld", params.thickness, ""),
                 listOf("Pipe / Tube Diameter Range", "", "")
             ),
             columnWeights = listOf(2.2f, 1f, 1f),
@@ -99,12 +96,12 @@ class WpsReportDrawer(private val context: Context) {
             rows = 6,
             headerTitle = "Joint Details",
             data = listOf(
-                listOf("Joint Type", "BW or FW"),
+                listOf("Joint Type", params.jointType.replaceFirstChar { it.uppercase() }),
                 listOf("Groove Angle (Deg)", "60"),
                 listOf("Root Opening (mm)", "1.6"),
                 listOf("Root Face (mm)", "0.5"),
                 listOf("Back gouging", "NO"),
-                listOf("Method", "")
+                listOf("Responsibility", params.responsibility)
             ),
             columnWeights = listOf(1.5f, 1f),
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
@@ -130,22 +127,23 @@ class WpsReportDrawer(private val context: Context) {
         val yAfterPwht = drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.35f)
         
         // 7. Joint Details Sketch
-        drawJointDetailsSketch(canvas, margin + tableWidth * 0.4f, startYForDetails, tableWidth * 0.6f)
+        drawJointDetailsSketch(canvas, margin + tableWidth * 0.4f, startYForDetails, tableWidth * 0.6f, params)
 
         val yAfterSketch = startYForDetails + 150f 
         currentY = maxOf(yAfterPwht, yAfterSketch) + 8f
 
-        // 8. Large Parameters Table - Now returns the final Y position
+        // 8. Large Parameters Table
         val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth)
 
-        // 9. Footer Text (1 list from 1) - Positioned with a 20f gap from the table
+        // 9. Footer Text
         val footerPaint = Paint().apply {
             color = Color.GRAY
             textSize = 9f
             isAntiAlias = true
             textAlign = Paint.Align.LEFT
         }
-        canvas.drawText("1 list from 1", margin, finalY + 20f, footerPaint)
+        val engineerText = if (params.engineerName.isNotEmpty()) "Engineer: ${params.engineerName} | " else ""
+        canvas.drawText("${engineerText}1 list from 1", margin, finalY + 20f, footerPaint)
     }
 
     private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float): Float {
@@ -160,8 +158,8 @@ class WpsReportDrawer(private val context: Context) {
                 listOf("Weld Layers / Passes", "1-5"),
                 listOf("Process", "GTAW"),
                 listOf("Type (Manual / Semiautomatic / Automatic)", "Manual"),
-                listOf("Preheat Temperature (C°), Range 56", "20"),
-                listOf("Interpass Temperature (C°), Range 56", "150"),
+                listOf("Preheat Temperature (C°)", "20"),
+                listOf("Interpass Temperature (C°)", "150"),
                 listOf("Filler Metal (AWS Spe)", "A5.18"),
                 listOf("AWS Classification", "ER316L"),
                 listOf("F No / A No", "6"),
@@ -173,7 +171,7 @@ class WpsReportDrawer(private val context: Context) {
                 listOf("Position", "F for BW / F, H for FW"),
                 listOf("Vertical Progression (Up / Dune)", "-"),
                 listOf("Shielding Gas compos", "Ar 99.999%"),
-                listOf("Flow Rate (L / Min), Range: 80 - 150%", "14-15")
+                listOf("Flow Rate (L / Min)", "14-15")
             ),
             columnWeights = colWeights2,
             columnAligns = colAligns2,
@@ -190,10 +188,10 @@ class WpsReportDrawer(private val context: Context) {
                 listOf("Electrode Specification (GTAW)", "WT20"),
                 listOf("Multiple or Single Electrode", "Single"),
                 listOf("Current Type & Polarity", "DC-"),
-                listOf("Amps (A): GTAW ±5%, GMAW / FCAW ±10%", "120"),
-                listOf("Volts (V): GTAW ±5%", "12-14"),
+                listOf("Amps (A)", "120"),
+                listOf("Volts (V)", "12-14"),
                 listOf("Cold or hote wire feed (GTAW)", "Cold"),
-                listOf("Travel Speed (mm/Min): GTAW ±5%, GMAW / FCAW ±10%", ""),
+                listOf("Travel Speed (mm/Min)", ""),
                 listOf("Maximum Heat Input (KJ/mm)", "1")
             ),
             columnWeights = colWeights2,
@@ -216,7 +214,7 @@ class WpsReportDrawer(private val context: Context) {
                 listOf("Dwell Time", "-"),
                 listOf("Peening", "No"),
                 listOf("Interpass Cleaning", "Yes"),
-                listOf("Other", "Cleaning oil and rusty")
+                listOf("Other", "")
             ),
             columnWeights = colWeights2,
             columnAligns = colAligns2,
@@ -225,7 +223,7 @@ class WpsReportDrawer(private val context: Context) {
         return drawer.drawTable(canvas, techniqueTable, x, curY, width)
     }
 
-    private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float) {
+    private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float, params: WeldingParams) {
         val rowHeight = 16f
         val totalHeight = 150f 
         
@@ -237,9 +235,16 @@ class WpsReportDrawer(private val context: Context) {
         canvas.drawText("Joint Details (Sketch)", x + width / 2, y + rowHeight / 2 + 3f, textPaint)
         
         try {
-            val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap)
+            val resId = when (params.jointType) {
+                "стык" -> R.drawable.joint_butt
+                "тавр" -> R.drawable.joint_t
+                "угловой" -> R.drawable.joint_corner
+                "нахлест" -> R.drawable.joint_lap
+                else -> R.drawable.joint_butt
+            }
+            val bitmap = BitmapFactory.decodeResource(context.resources, resId)
             bitmap?.let {
-                val padding = 5f
+                val padding = 15f
                 val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
                 val bitmapWidth = it.width.toFloat()
                 val bitmapHeight = it.height.toFloat()
@@ -295,7 +300,7 @@ class WpsReportDrawer(private val context: Context) {
         return drawer.drawTable(canvas, fillerMetalTable, x, y + rowHeight, width)
     }
 
-    private fun drawReportHeader(canvas: Canvas, x: Float, y: Float, width: Float): Float {
+    private fun drawReportHeader(canvas: Canvas, x: Float, y: Float, width: Float, params: WeldingParams): Float {
         val rowHeight = 16f 
         val logoWidth = 110f
         val dataWidth = width - logoWidth
@@ -317,10 +322,11 @@ class WpsReportDrawer(private val context: Context) {
         } catch (e: Exception) {}
 
         canvas.drawLine(x + logoWidth, y + rowHeight, x + width, y + rowHeight, paint)
-        canvas.drawText("Welding Procedure Specification WPS 3092 (013)", x + logoWidth + dataWidth / 2, y + rowHeight - 4f, boldPaint)
+        canvas.drawText("Welding Procedure Specification (WPS)", x + logoWidth + dataWidth / 2, y + rowHeight - 4f, boldPaint)
 
         canvas.drawLine(x + logoWidth, y + rowHeight * 2, x + width, y + rowHeight * 2, paint)
-        val values = listOf("SAN", "3092", "04", "26/6/22")
+        val date = java.text.SimpleDateFormat("dd/MM/yy", java.util.Locale.getDefault()).format(java.util.Date())
+        val values = listOf("WeldEdge", "PQR-001", "00", date)
         for (i in 0..3) {
             val cellX = x + logoWidth + i * colWidth
             if (i > 0) canvas.drawLine(cellX, y + rowHeight, cellX, y + rowHeight * 3, paint)

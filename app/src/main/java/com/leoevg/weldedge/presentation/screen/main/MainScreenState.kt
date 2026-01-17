@@ -1,4 +1,10 @@
 package com.leoevg.weldedge.presentation.screen.main
 
-class MainScreenState {
-}
+import com.leoevg.weldedge.domain.WeldingParams
+
+data class MainScreenState(
+    val params: WeldingParams = WeldingParams(),
+    val showPreview: Boolean = false,
+    val isJointTypeExpanded: Boolean = true,
+    val thicknessError: String? = null
+)
