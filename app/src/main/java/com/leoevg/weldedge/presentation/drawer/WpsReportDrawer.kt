@@ -3,9 +3,9 @@ package com.leoevg.weldedge.presentation.drawer
 import android.content.Context
 import android.graphics.*
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.Table
-import com.leoevg.weldedge.domain.TableConfig
-import com.leoevg.weldedge.domain.WeldingParams
+import com.leoevg.weldedge.domain.model.Table
+import com.leoevg.weldedge.domain.model.TableConfig
+import com.leoevg.weldedge.domain.model.WeldingParams
 
 class WpsReportDrawer(private val context: Context) {
 

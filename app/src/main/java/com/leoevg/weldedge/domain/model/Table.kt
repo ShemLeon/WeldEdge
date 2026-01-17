@@ -1,4 +1,4 @@
-package com.leoevg.weldedge.domain
+package com.leoevg.weldedge.domain.model
 
 import android.graphics.Paint
 

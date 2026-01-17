@@ -1,7 +1,5 @@
 package com.leoevg.weldedge.presentation.screen.main
 
-import com.leoevg.weldedge.domain.WeldingParams
-
 sealed class MainScreenEvent {
     data class MetalTypeChanged(val value: String) : MainScreenEvent()
     data class ThicknessChanged(val value: String) : MainScreenEvent()

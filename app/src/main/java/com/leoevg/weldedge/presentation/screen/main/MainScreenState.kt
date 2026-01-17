@@ -1,6 +1,6 @@
 package com.leoevg.weldedge.presentation.screen.main
 
-import com.leoevg.weldedge.domain.WeldingParams
+import com.leoevg.weldedge.domain.model.WeldingParams
 
 data class MainScreenState(
     val params: WeldingParams = WeldingParams(),

@@ -1,60 +1,88 @@
 package com.leoevg.weldedge.presentation.screen.main
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.leoevg.weldedge.generateProfessionalWpsReport
+import androidx.lifecycle.viewModelScope
+import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainScreenViewModel : ViewModel() {
+@HiltViewModel
+class MainScreenViewModel @Inject constructor(
+    private val generateReportUseCase: GenerateReportUseCase
+) : ViewModel() {
     private val _state = MutableStateFlow(MainScreenState())
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
 
-    fun onEvent(event: MainScreenEvent, context: Context? = null) {
+    fun onEvent(event: MainScreenEvent) {
         when (event) {
-            is MainScreenEvent.MetalTypeChanged -> {
-                _state.update { it.copy(params = it.params.copy(metalType = event.value)) }
-            }
-            is MainScreenEvent.ThicknessChanged -> {
-                _state.update { 
-                    it.copy(
-                        params = it.params.copy(thickness = event.value),
-                        thicknessError = null
-                    ) 
-                }
-            }
-            is MainScreenEvent.JointTypeChanged -> {
-                _state.update { it.copy(params = it.params.copy(jointType = event.value)) }
-            }
-            is MainScreenEvent.ResponsibilityChanged -> {
-                _state.update { it.copy(params = it.params.copy(responsibility = event.value)) }
-            }
-            is MainScreenEvent.EngineerNameChanged -> {
-                _state.update { it.copy(params = it.params.copy(engineerName = event.value)) }
-            }
-            is MainScreenEvent.StandardChanged -> {
-                _state.update { it.copy(params = it.params.copy(standard = event.value)) }
-            }
-            MainScreenEvent.ToggleJointTypeExpanded -> {
-                _state.update { it.copy(isJointTypeExpanded = !it.isJointTypeExpanded) }
-            }
-            MainScreenEvent.SubmitClicked -> {
-                val thickness = _state.value.params.thickness.toDoubleOrNull()
-                if (thickness == null || thickness <= 0) {
-                    _state.update { it.copy(thicknessError = "Укажите корректную толщину металла") }
-                } else {
-                    _state.update { it.copy(showPreview = true) }
-                }
-            }
-            MainScreenEvent.BackClicked -> {
-                _state.update { it.copy(showPreview = false) }
-            }
-            MainScreenEvent.GeneratePdfClicked -> {
-                context?.let {
-                    generateProfessionalWpsReport(it, _state.value.params)
-                }
+            is MainScreenEvent.MetalTypeChanged -> onMetalTypeChanged(event.value)
+            is MainScreenEvent.ThicknessChanged -> onThicknessChanged(event.value)
+            is MainScreenEvent.JointTypeChanged -> onJointTypeChanged(event.value)
+            is MainScreenEvent.ResponsibilityChanged -> onResponsibilityChanged(event.value)
+            is MainScreenEvent.EngineerNameChanged -> onEngineerNameChanged(event.value)
+            is MainScreenEvent.StandardChanged -> onStandardChanged(event.value)
+            MainScreenEvent.ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
+            MainScreenEvent.SubmitClicked -> onSubmitClicked()
+            MainScreenEvent.BackClicked -> onBackClicked()
+            MainScreenEvent.GeneratePdfClicked -> onGeneratePdfClicked()
+        }
+    }
+
+    private fun onMetalTypeChanged(value: String) {
+        _state.update { it.copy(params = it.params.copy(metalType = value)) }
+    }
+
+    private fun onThicknessChanged(value: String) {
+        _state.update {
+            it.copy(
+                params = it.params.copy(thickness = value),
+                thicknessError = null
+            )
+        }
+    }
+
+    private fun onJointTypeChanged(value: String) {
+        _state.update { it.copy(params = it.params.copy(jointType = value)) }
+    }
+
+    private fun onResponsibilityChanged(value: String) {
+        _state.update { it.copy(params = it.params.copy(responsibility = value)) }
+    }
+
+    private fun onEngineerNameChanged(value: String) {
+        _state.update { it.copy(params = it.params.copy(engineerName = value)) }
+    }
+
+    private fun onStandardChanged(value: String) {
+        _state.update { it.copy(params = it.params.copy(standard = value)) }
+    }
+
+    private fun onToggleJointTypeExpanded() {
+        _state.update { it.copy(isJointTypeExpanded = !it.isJointTypeExpanded) }
+    }
+
+    private fun onSubmitClicked() {
+        val thickness = _state.value.params.thickness.toDoubleOrNull()
+        if (thickness == null || thickness <= 0) {
+            _state.update { it.copy(thicknessError = "Укажите корректную толщину металла") }
+        } else {
+            _state.update { it.copy(showPreview = true) }
+        }
+    }
+
+    private fun onBackClicked() {
+        _state.update { it.copy(showPreview = false) }
+    }
+
+    private fun onGeneratePdfClicked() {
+        viewModelScope.launch {
+            generateReportUseCase(_state.value.params).onFailure {
+                // Here you could handle errors via state, e.g., show a snackbar event
             }
         }
     }

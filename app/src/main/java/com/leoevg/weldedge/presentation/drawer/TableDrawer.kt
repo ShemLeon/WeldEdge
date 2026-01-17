@@ -1,8 +1,8 @@
 package com.leoevg.weldedge.presentation.drawer
 
 import android.graphics.*
-import com.leoevg.weldedge.domain.Table
-import com.leoevg.weldedge.domain.TableConfig
+import com.leoevg.weldedge.domain.model.Table
+import com.leoevg.weldedge.domain.model.TableConfig
 
 class TableDrawer(private val config: TableConfig = TableConfig()) {
 

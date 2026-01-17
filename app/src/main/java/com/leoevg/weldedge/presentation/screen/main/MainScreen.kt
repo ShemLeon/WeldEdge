@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
@@ -22,22 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.WeldingParams
+import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.presentation.screen.main.components.Header
 
 @Composable
-fun MainScreen(viewModel: MainScreenViewModel = viewModel()) {
+fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -45,7 +42,7 @@ fun MainScreen(viewModel: MainScreenViewModel = viewModel()) {
     ) { paddingValues ->
         MainScreenContent(
             state = state,
-            onEvent = { event -> viewModel.onEvent(event, context) },
+            onEvent = { event -> viewModel.onEvent(event) },
             modifier = Modifier.padding(paddingValues)
         )
     }

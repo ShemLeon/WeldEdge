@@ -1,8 +1,8 @@
 package com.leoevg.weldedge.presentation.drawer
 
 import android.graphics.Canvas
-import com.leoevg.weldedge.domain.Table
-import com.leoevg.weldedge.domain.TableConfig
+import com.leoevg.weldedge.domain.model.Table
+import com.leoevg.weldedge.domain.model.TableConfig
 
 fun Canvas.drawSimpleTable(
     data: List<List<String>>,
