@@ -7,4 +7,5 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo_san</item>
         <item name="postSplashScreenTheme">@style/Theme.WeldEdge</item>
     </style>
+
 </resources>
