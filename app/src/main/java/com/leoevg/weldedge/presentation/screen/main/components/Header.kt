@@ -112,41 +112,6 @@ fun Header(
             }
         }
 
-        // App Logo and Title
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(bottom = 8.dp)
-        ) {
-            Surface(
-                shape = CircleShape,
-                color = Color.White,
-                shadowElevation = 4.dp,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo_san),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clip(CircleShape)
-                )
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "SAN Welding",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF0F172A)
-            )
-        }
-        Text(
-            text = "Генератор технической документации для сварочных работ",
-            fontSize = 14.sp,
-            color = Color(0xFF475569),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
     }
 }
 
