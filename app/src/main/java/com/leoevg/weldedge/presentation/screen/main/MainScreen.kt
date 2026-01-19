@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.presentation.screen.main.components.Header
+import com.leoevg.weldedge.presentation.screen.main.components.MetalAlloy
 
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
@@ -121,22 +122,10 @@ fun WeldingForm(
             )
 
             // Metal Type
-            FormField(label = "Вид металла", required = true) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    val types = listOf("нержавейка", "черное железо", "алюминий")
-                    types.forEach { type ->
-                        SelectableButton(
-                            text = type.replaceFirstChar { it.uppercase() },
-                            isSelected = params.metalType == type,
-                            onClick = { onEvent(MainScreenEvent.MetalTypeChanged(type)) },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
+            MetalAlloy(
+                selectedType = params.metalType,
+                onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
+            )
 
             // Thickness
             FormField(label = "Толщина наиболее тонкого свариваемого металла (мм)", required = true) {
@@ -431,7 +420,7 @@ fun DocumentPreview(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                
+
                 // Simplified preview info
                 PreviewRow("Вид металла", params.metalType)
                 PreviewRow("Толщина", "${params.thickness} мм")
@@ -443,9 +432,9 @@ fun DocumentPreview(
                 PreviewRow("Стандарт", params.standard)
             }
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -475,7 +464,7 @@ fun MainScreenPreview() {
     MainScreenContent(
         state = MainScreenState(
             params = WeldingParams(
-                metalType = "нержавейка",
+                metalType = "Fe",
                 thickness = "3.0",
                 jointType = "стык"
             )

@@ -2,6 +2,8 @@ package com.leoevg.weldedge.presentation.screen.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.leoevg.weldedge.data.local.PreferencesManager
+import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +15,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val generateReportUseCase: GenerateReportUseCase
+    private val generateReportUseCase: GenerateReportUseCase,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
-    private val _state = MutableStateFlow(MainScreenState())
+    private val _state = MutableStateFlow(
+        MainScreenState(
+            params = WeldingParams(
+                metalType = preferencesManager.getMetalType() ?: "Fe",
+                jointType = preferencesManager.getJointType() ?: "стык",
+                responsibility = preferencesManager.getResponsibility() ?: "нагруженный",
+                standard = preferencesManager.getStandard() ?: "ГОСТ",
+                engineerName = preferencesManager.getEngineerName()
+            ),
+            language = preferencesManager.getLanguage()
+        )
+    )
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
 
     fun onEvent(event: MainScreenEvent) {
@@ -35,6 +49,7 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun onMetalTypeChanged(value: String) {
+        preferencesManager.saveMetalType(value)
         _state.update { it.copy(params = it.params.copy(metalType = value)) }
     }
 
@@ -48,22 +63,27 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun onJointTypeChanged(value: String) {
+        preferencesManager.saveJointType(value)
         _state.update { it.copy(params = it.params.copy(jointType = value)) }
     }
 
     private fun onResponsibilityChanged(value: String) {
+        preferencesManager.saveResponsibility(value)
         _state.update { it.copy(params = it.params.copy(responsibility = value)) }
     }
 
     private fun onEngineerNameChanged(value: String) {
+        preferencesManager.saveEngineerName(value)
         _state.update { it.copy(params = it.params.copy(engineerName = value)) }
     }
 
     private fun onStandardChanged(value: String) {
+        preferencesManager.saveStandard(value)
         _state.update { it.copy(params = it.params.copy(standard = value)) }
     }
 
     private fun onLanguageChanged(language: String) {
+        preferencesManager.saveLanguage(language)
         _state.update { it.copy(language = language) }
     }
 
