@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.presentation.screen.main.FormField
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
-@OptIn(ExperimentalMaterial3Api::class)@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun Thickness(
     selectedType: String,
     onTypeSelected: (String) -> Unit
@@ -35,11 +36,12 @@ fun Thickness(
         "15", "18", "20", "25", "30", "40"
     )
 
-    // Состояние фокуса
     var isFocused by remember { mutableStateOf(false) }
 
-    // Значение считается "кастомным", если его нет в списке
-    val isCustom = selectedType.isNotEmpty() && !types.contains(selectedType)
+    // Флаг того, что значение было выбрано именно через кнопку
+    // Мы используем remember(selectedType), чтобы понимать: если пришло новое значение,
+    // и оно из списка, а мы НЕ в фокусе — значит нажата кнопка.
+    var lastClickedButton by remember { mutableStateOf("") }
 
     FormField(label = "Толщина наиболее тонкого свариваемого металла (мм)", required = true) {
         LazyRow(
@@ -52,35 +54,38 @@ fun Thickness(
                 SelectableButton(
                     text = type,
                     isSelected = selectedType == type,
-                    onClick = { onTypeSelected(type) }
+                    onClick = {
+                        lastClickedButton = type
+                        onTypeSelected(type)
+                    }
                 )
             }
 
             item {
                 OutlinedTextField(
-                    // ПОБЕДА ЗДЕСЬ: Если мы в поле (фокус), показываем всё, что вводим.
-                    // Если фокус ушел, показываем только если значения нет в кнопках.
-                    value = if (isFocused || isCustom) selectedType else "",
+                    // Если поле в фокусе - показываем всё.
+                    // Если не в фокусе, показываем текст только если он НЕ совпадает с последней нажатой кнопкой.
+                    value = if (isFocused || selectedType != lastClickedButton) selectedType else "",
                     onValueChange = { newValue ->
                         val filtered = newValue.replace(',', '.')
-                        // Разрешаем ввод цифр, точки и пустой строки
                         if (filtered.isEmpty() || filtered.toDoubleOrNull() != null || filtered == "." || filtered.endsWith(".")) {
+                            lastClickedButton = "" // Как только начали печатать, это уже не "кнопка"
                             onTypeSelected(filtered)
                         }
                     },
                     modifier = Modifier
                         .width(150.dp)
-                        .onFocusChanged { isFocused = it.isFocused }, // Следим за фокусом
+                        .onFocusChanged { isFocused = it.isFocused },
                     placeholder = { Text("Своя...", fontSize = 14.sp) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     shape = RoundedCornerShape(8.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF2563EB),
-                        // Если ввели своё число и ушли из поля — оставляем синюю рамку
-                        unfocusedBorderColor = if (isCustom) Color(0xFF2563EB) else Color(0xFFE2E8F0),
+                        // Рамка синяя, если в поле есть текст и это не кнопка
+                        unfocusedBorderColor = if (selectedType.isNotEmpty() && selectedType != lastClickedButton) Color(0xFF2563EB) else Color(0xFFE2E8F0),
                         focusedContainerColor = Color.White,
-                        unfocusedContainerColor = if (isCustom) Color(0xFFEFF6FF) else Color.White,
+                        unfocusedContainerColor = if (selectedType.isNotEmpty() && selectedType != lastClickedButton) Color(0xFFEFF6FF) else Color.White,
                         focusedPlaceholderColor = Color(0xFF94A3B8),
                         unfocusedPlaceholderColor = Color(0xFF94A3B8)
                     ),
