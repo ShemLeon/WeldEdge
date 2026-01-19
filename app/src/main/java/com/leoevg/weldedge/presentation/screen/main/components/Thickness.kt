@@ -7,17 +7,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,11 +37,8 @@ fun Thickness(
         "15", "18", "20", "25", "30", "40"
     )
 
+    val focusManager = LocalFocusManager.current
     var isFocused by remember { mutableStateOf(false) }
-
-    // Флаг того, что значение было выбрано именно через кнопку
-    // Мы используем remember(selectedType), чтобы понимать: если пришло новое значение,
-    // и оно из списка, а мы НЕ в фокусе — значит нажата кнопка.
     var lastClickedButton by remember { mutableStateOf("") }
 
     FormField(label = "Толщина наиболее тонкого свариваемого металла (мм)", required = true) {
@@ -55,6 +53,7 @@ fun Thickness(
                     text = type,
                     isSelected = selectedType == type,
                     onClick = {
+                        focusManager.clearFocus() // Убираем курсор из поля при клике на кнопку
                         lastClickedButton = type
                         onTypeSelected(type)
                     }
@@ -63,13 +62,11 @@ fun Thickness(
 
             item {
                 OutlinedTextField(
-                    // Если поле в фокусе - показываем всё.
-                    // Если не в фокусе, показываем текст только если он НЕ совпадает с последней нажатой кнопкой.
                     value = if (isFocused || selectedType != lastClickedButton) selectedType else "",
                     onValueChange = { newValue ->
                         val filtered = newValue.replace(',', '.')
                         if (filtered.isEmpty() || filtered.toDoubleOrNull() != null || filtered == "." || filtered.endsWith(".")) {
-                            lastClickedButton = "" // Как только начали печатать, это уже не "кнопка"
+                            lastClickedButton = ""
                             onTypeSelected(filtered)
                         }
                     },
@@ -78,11 +75,19 @@ fun Thickness(
                         .onFocusChanged { isFocused = it.isFocused },
                     placeholder = { Text("Своя...", fontSize = 14.sp) },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Done // Кнопка "Галочка/Готово" на клавиатуре
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus() // Прячем клавиатуру и УБИРАЕМ КУРСОР
+                        }
+                    ),
                     shape = RoundedCornerShape(8.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF2563EB),
-                        // Рамка синяя, если в поле есть текст и это не кнопка
+                        cursorColor = Color(0xFF2563EB), // Цвет палочки
                         unfocusedBorderColor = if (selectedType.isNotEmpty() && selectedType != lastClickedButton) Color(0xFF2563EB) else Color(0xFFE2E8F0),
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = if (selectedType.isNotEmpty() && selectedType != lastClickedButton) Color(0xFFEFF6FF) else Color.White,
