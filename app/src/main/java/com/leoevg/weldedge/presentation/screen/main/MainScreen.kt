@@ -33,6 +33,7 @@ import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.presentation.screen.main.components.Header
 import com.leoevg.weldedge.presentation.screen.main.components.MetalAlloy
+import com.leoevg.weldedge.presentation.screen.main.components.Thickness
 
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
@@ -114,40 +115,23 @@ fun WeldingForm(
             modifier = Modifier.padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(
-                text = "Параметры сварочного соединения",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF0F172A)
-            )
-
             // Metal Type
             MetalAlloy(
                 selectedType = params.metalType,
                 onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
             )
-
             // Thickness
-            FormField(label = "Толщина наиболее тонкого свариваемого металла (мм)", required = true) {
-                OutlinedTextField(
-                    value = params.thickness,
-                    onValueChange = { onEvent(MainScreenEvent.ThicknessChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Например: 3.0") },
-                    isError = thicknessError != null,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF2563EB),
-                        unfocusedBorderColor = Color(0xFFE2E8F0)
-                    )
+            Column {
+                Thickness(
+                    selectedType = params.thickness,
+                    onTypeSelected = { onEvent(MainScreenEvent.ThicknessChanged(it)) }
                 )
                 if (thicknessError != null) {
                     Text(
                         text = thicknessError,
                         color = Color.Red,
                         fontSize = 12.sp,
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 4.dp, start = 4.dp)
                     )
                 }
             }
