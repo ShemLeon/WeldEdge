@@ -121,8 +121,7 @@ fun WeldingForm(
                 onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
             )
             // Thickness
-            Column {
-                Thickness(
+            Thickness(
                     selectedType = params.thickness,
                     onTypeSelected = { onEvent(MainScreenEvent.ThicknessChanged(it)) }
                 )
@@ -134,7 +133,6 @@ fun WeldingForm(
                         modifier = Modifier.padding(top = 4.dp, start = 4.dp)
                     )
                 }
-            }
 
             // Joint Type
             Column {
