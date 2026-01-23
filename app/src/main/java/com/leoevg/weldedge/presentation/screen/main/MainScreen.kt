@@ -89,26 +89,6 @@ fun MainScreenContent(
 }
 
 
-
-@Composable
-fun FormField(label: String, required: Boolean = false, content: @Composable () -> Unit) {
-    Column {
-        FormFieldLabel(label, required)
-        Spacer(modifier = Modifier.height(8.dp))
-        content()
-    }
-}
-
-@Composable
-fun FormFieldLabel(label: String, required: Boolean) {
-    Row {
-        Text(text = label, fontSize = 14.sp, color = Color(0xFF334155))
-        if (required) {
-            Text(text = " *", color = Color.Red, fontSize = 14.sp)
-        }
-    }
-}
-
 @Composable
 fun SelectableButton(
     text: String,
