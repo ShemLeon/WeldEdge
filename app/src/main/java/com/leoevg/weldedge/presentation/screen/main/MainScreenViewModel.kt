@@ -42,6 +42,7 @@ class MainScreenViewModel @Inject constructor(
             is MainScreenEvent.StandardChanged -> onStandardChanged(event.value)
             is MainScreenEvent.LanguageChanged -> onLanguageChanged(event.language)
             MainScreenEvent.ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
+            MainScreenEvent.ToggleResponsibilityExpanded -> onToggleResponsibilityExpanded()
             MainScreenEvent.SubmitClicked -> onSubmitClicked()
             MainScreenEvent.BackClicked -> onBackClicked()
             MainScreenEvent.GeneratePdfClicked -> onGeneratePdfClicked()
@@ -89,6 +90,10 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onToggleJointTypeExpanded() {
         _state.update { it.copy(isJointTypeExpanded = !it.isJointTypeExpanded) }
+    }
+
+    private fun onToggleResponsibilityExpanded() {
+        _state.update { it.copy(isResponsibilityExpanded = !it.isResponsibilityExpanded) }
     }
 
     private fun onSubmitClicked() {

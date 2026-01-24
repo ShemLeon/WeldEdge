@@ -11,5 +11,6 @@ sealed class MainScreenEvent {
     object SubmitClicked : MainScreenEvent()
     object BackClicked : MainScreenEvent()
     object ToggleJointTypeExpanded : MainScreenEvent()
+    object ToggleResponsibilityExpanded : MainScreenEvent()
     object GeneratePdfClicked : MainScreenEvent()
 }

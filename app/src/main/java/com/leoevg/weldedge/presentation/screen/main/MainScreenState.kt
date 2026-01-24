@@ -6,6 +6,7 @@ data class MainScreenState(
     val params: WeldingParams = WeldingParams(),
     val showPreview: Boolean = false,
     val isJointTypeExpanded: Boolean = true,
+    val isResponsibilityExpanded: Boolean = true,
     val thicknessError: String? = null,
     val language: String = "RU"
 )
