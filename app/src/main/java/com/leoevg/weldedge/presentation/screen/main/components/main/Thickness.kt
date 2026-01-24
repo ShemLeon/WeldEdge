@@ -1,4 +1,4 @@
-package com.leoevg.weldedge.presentation.screen.main.components
+package com.leoevg.weldedge.presentation.screen.main.components.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.leoevg.weldedge.presentation.screen.main.components.FormField
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 @OptIn(ExperimentalMaterial3Api::class)

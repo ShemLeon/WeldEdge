@@ -1,4 +1,4 @@
-package com.leoevg.weldedge.presentation.screen.main.components
+package com.leoevg.weldedge.presentation.screen.main.components.prev
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.domain.model.WeldingParams
-import com.leoevg.weldedge.presentation.screen.main.PreviewRow
 
 @Composable
 fun DocumentPreviewScreen(

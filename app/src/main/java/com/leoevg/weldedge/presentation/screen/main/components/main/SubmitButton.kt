@@ -1,4 +1,4 @@
-package com.leoevg.weldedge.presentation.screen.main.components
+package com.leoevg.weldedge.presentation.screen.main.components.main
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

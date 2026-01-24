@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.leoevg.weldedge.domain.model.WeldingParams
-import com.leoevg.weldedge.presentation.screen.main.components.DocumentPreviewScreen
-import com.leoevg.weldedge.presentation.screen.main.components.Header
-import com.leoevg.weldedge.presentation.screen.main.components.WeldingForm
+import com.leoevg.weldedge.presentation.screen.main.components.prev.DocumentPreviewScreen
+import com.leoevg.weldedge.presentation.screen.main.components.main.Header
+import com.leoevg.weldedge.presentation.screen.main.components.main.WeldingForm
 
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
@@ -121,10 +121,6 @@ fun SelectableButton(
     }
 }
 
-
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
@@ -138,17 +134,4 @@ fun MainScreenPreview() {
         ),
         onEvent = {}
     )
-}
-
-@Composable
-fun PreviewRow(label: String, value: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text = label, color = Color.Gray, fontSize = 14.sp)
-        Text(text = value, fontWeight = FontWeight.Medium, fontSize = 14.sp)
-    }
 }

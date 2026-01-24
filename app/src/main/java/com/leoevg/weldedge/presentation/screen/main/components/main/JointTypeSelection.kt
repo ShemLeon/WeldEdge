@@ -1,4 +1,4 @@
-package com.leoevg.weldedge.presentation.screen.main.components
+package com.leoevg.weldedge.presentation.screen.main.components.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.R
@@ -112,7 +113,7 @@ fun JointTypeCard(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (isSelected) Color(0xFF1E40AF) else Color(0xFF475569),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
             }
         }
