@@ -47,6 +47,8 @@ fun WeldingForm(
                 selectedType = params.metalType,
                 onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
             )
+
+            DashedDivider()
             
             // Thickness
             Column {
@@ -64,6 +66,8 @@ fun WeldingForm(
                 }
             }
 
+            DashedDivider()
+
             // Joint Type
             JointTypeSelection(
                 selectedType = params.jointType,
@@ -72,6 +76,8 @@ fun WeldingForm(
                 onTypeSelected = { onEvent(MainScreenEvent.JointTypeChanged(it)) }
             )
 
+            DashedDivider()
+
             // Responsibility
             Responsibility(
                 selectedResponsibility = params.responsibility,
@@ -79,6 +85,8 @@ fun WeldingForm(
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleResponsibilityExpanded) },
                 onResponsibilitySelected = { onEvent(MainScreenEvent.ResponsibilityChanged(it)) }
             )
+
+            DashedDivider()
 
             // Standard
             FormField(label = "Стандарт (опционально)") {
