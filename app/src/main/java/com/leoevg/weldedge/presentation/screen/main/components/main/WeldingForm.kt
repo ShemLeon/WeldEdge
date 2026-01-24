@@ -89,22 +89,10 @@ fun WeldingForm(
             DashedDivider()
 
             // Standard
-            FormField(label = "Стандарт (опционально)") {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    val standards = listOf("ГОСТ", "AWS", "IAI")
-                    standards.forEach { std ->
-                        SelectableButton(
-                            text = std,
-                            isSelected = params.standard == std,
-                            onClick = { onEvent(MainScreenEvent.StandardChanged(std)) },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
+            StandardSelection(
+                selectedStandard = params.standard,
+                onStandardSelected = { onEvent(MainScreenEvent.StandardChanged(it)) }
+            )
 
             Button(
                 onClick = { onEvent(MainScreenEvent.SubmitClicked) },
