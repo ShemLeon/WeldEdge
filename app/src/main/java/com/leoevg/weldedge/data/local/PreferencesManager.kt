@@ -57,6 +57,22 @@ class PreferencesManager @Inject constructor(context: Context) {
         return prefs.getString(KEY_ENGINEER_NAME, "") ?: ""
     }
 
+    fun saveJointTypeExpanded(isExpanded: Boolean) {
+        prefs.edit().putBoolean(KEY_JOINT_TYPE_EXPANDED, isExpanded).apply()
+    }
+
+    fun isJointTypeExpanded(): Boolean {
+        return prefs.getBoolean(KEY_JOINT_TYPE_EXPANDED, true)
+    }
+
+    fun saveResponsibilityExpanded(isExpanded: Boolean) {
+        prefs.edit().putBoolean(KEY_RESPONSIBILITY_EXPANDED, isExpanded).apply()
+    }
+
+    fun isResponsibilityExpanded(): Boolean {
+        return prefs.getBoolean(KEY_RESPONSIBILITY_EXPANDED, true)
+    }
+
     companion object {
         private const val KEY_METAL_TYPE = "metal_type"
         private const val KEY_LANGUAGE = "language"
@@ -64,5 +80,7 @@ class PreferencesManager @Inject constructor(context: Context) {
         private const val KEY_RESPONSIBILITY = "responsibility"
         private const val KEY_STANDARD = "standard"
         private const val KEY_ENGINEER_NAME = "engineer_name"
+        private const val KEY_JOINT_TYPE_EXPANDED = "joint_type_expanded"
+        private const val KEY_RESPONSIBILITY_EXPANDED = "responsibility_expanded"
     }
 }

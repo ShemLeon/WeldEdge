@@ -27,6 +27,8 @@ class MainScreenViewModel @Inject constructor(
                 standard = preferencesManager.getStandard() ?: "ГОСТ",
                 engineerName = preferencesManager.getEngineerName()
             ),
+            isJointTypeExpanded = preferencesManager.isJointTypeExpanded(),
+            isResponsibilityExpanded = preferencesManager.isResponsibilityExpanded(),
             language = preferencesManager.getLanguage()
         )
     )
@@ -89,11 +91,15 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun onToggleJointTypeExpanded() {
-        _state.update { it.copy(isJointTypeExpanded = !it.isJointTypeExpanded) }
+        val newState = !_state.value.isJointTypeExpanded
+        preferencesManager.saveJointTypeExpanded(newState)
+        _state.update { it.copy(isJointTypeExpanded = newState) }
     }
 
     private fun onToggleResponsibilityExpanded() {
-        _state.update { it.copy(isResponsibilityExpanded = !it.isResponsibilityExpanded) }
+        val newState = !_state.value.isResponsibilityExpanded
+        preferencesManager.saveResponsibilityExpanded(newState)
+        _state.update { it.copy(isResponsibilityExpanded = newState) }
     }
 
     private fun onSubmitClicked() {
