@@ -69,10 +69,7 @@ fun MainScreenContent(
 
             if (!state.showPreview) {
                 WeldingForm(
-                    params = state.params,
-                    isJointTypeExpanded = state.isJointTypeExpanded,
-                    isResponsibilityExpanded = state.isResponsibilityExpanded,
-                    thicknessError = state.thicknessError,
+                    state = state,
                     onEvent = onEvent
                 )
             } else {

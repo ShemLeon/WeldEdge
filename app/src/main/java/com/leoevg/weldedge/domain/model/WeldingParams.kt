@@ -5,6 +5,7 @@ data class WeldingParams(
     val thickness: String = "",
     val jointType: String = "стык",
     val responsibility: String = "нагруженный",
+    val edgePreparation: String = "",
     val engineerName: String = "",
     val standard: String = "ГОСТ"
 )

@@ -2,7 +2,6 @@ package com.leoevg.weldedge.presentation.screen.main.components.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,17 +20,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
-import com.leoevg.weldedge.presentation.screen.main.SelectableButton
+import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeldingForm(
-    params: WeldingParams,
-    isJointTypeExpanded: Boolean,
-    isResponsibilityExpanded: Boolean,
-    thicknessError: String?,
+    state: MainScreenState,
     onEvent: (MainScreenEvent) -> Unit
 ) {
+    val params = state.params
+    
     Card(
         modifier = Modifier.fillMaxWidth(1f),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -49,29 +47,20 @@ fun WeldingForm(
             )
 
             DashedDivider()
-            
+
             // Thickness
-            Column {
-                Thickness(
-                    selectedType = params.thickness,
-                    onTypeSelected = { onEvent(MainScreenEvent.ThicknessChanged(it)) }
-                )
-                if (thicknessError != null) {
-                    Text(
-                        text = thicknessError,
-                        color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(top = 4.dp, start = 4.dp)
-                    )
-                }
-            }
+            Thickness(
+                selectedType = params.thickness,
+                error = state.thicknessError,
+                onTypeSelected = { onEvent(MainScreenEvent.ThicknessChanged(it)) }
+            )
 
             DashedDivider()
 
             // Joint Type
             JointTypeSelection(
                 selectedType = params.jointType,
-                isExpanded = isJointTypeExpanded,
+                isExpanded = state.isJointTypeExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleJointTypeExpanded) },
                 onTypeSelected = { onEvent(MainScreenEvent.JointTypeChanged(it)) }
             )
@@ -81,9 +70,19 @@ fun WeldingForm(
             // Responsibility
             Responsibility(
                 selectedResponsibility = params.responsibility,
-                isExpanded = isResponsibilityExpanded,
+                isExpanded = state.isResponsibilityExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleResponsibilityExpanded) },
                 onResponsibilitySelected = { onEvent(MainScreenEvent.ResponsibilityChanged(it)) }
+            )
+
+            DashedDivider()
+
+            // Edge Preparation
+            EdgePreparationSelection(
+                selectedType = params.edgePreparation,
+                isExpanded = state.isEdgePreparationExpanded,
+                onToggleExpand = { onEvent(MainScreenEvent.ToggleEdgePreparationExpanded) },
+                onTypeSelected = { onEvent(MainScreenEvent.EdgePreparationChanged(it)) }
             )
 
             DashedDivider()
