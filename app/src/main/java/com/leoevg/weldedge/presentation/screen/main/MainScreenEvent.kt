@@ -6,6 +6,7 @@ sealed class MainScreenEvent {
     data class JointTypeChanged(val value: String) : MainScreenEvent()
     data class ResponsibilityChanged(val value: String) : MainScreenEvent()
     data class EdgePreparationChanged(val value: String) : MainScreenEvent()
+    data class WeldingTypeChanged(val value: String) : MainScreenEvent()
     data class EngineerNameChanged(val value: String) : MainScreenEvent()
     data class StandardChanged(val value: String) : MainScreenEvent()
     data class LanguageChanged(val language: String) : MainScreenEvent()
@@ -14,5 +15,6 @@ sealed class MainScreenEvent {
     object ToggleJointTypeExpanded : MainScreenEvent()
     object ToggleResponsibilityExpanded : MainScreenEvent()
     object ToggleEdgePreparationExpanded : MainScreenEvent()
+    object ToggleWeldingTypeExpanded : MainScreenEvent()
     object GeneratePdfClicked : MainScreenEvent()
 }

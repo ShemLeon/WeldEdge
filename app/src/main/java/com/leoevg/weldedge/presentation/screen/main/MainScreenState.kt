@@ -8,6 +8,7 @@ data class MainScreenState(
     val isJointTypeExpanded: Boolean = true,
     val isResponsibilityExpanded: Boolean = true,
     val isEdgePreparationExpanded: Boolean = true,
+    val isWeldingTypeExpanded: Boolean = true,
     val thicknessError: String? = null,
     val language: String = "RU"
 )

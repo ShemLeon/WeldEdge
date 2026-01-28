@@ -72,10 +72,22 @@ fun WeldingForm(
 
             // Edge Preparation
             EdgePreparationSelection(
+                jointType = params.jointType,
+                responsibility = params.responsibility,
                 selectedType = params.edgePreparation,
                 isExpanded = state.isEdgePreparationExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleEdgePreparationExpanded) },
                 onTypeSelected = { onEvent(MainScreenEvent.EdgePreparationChanged(it)) }
+            )
+
+            DashedDivider()
+
+            // Welding Type
+            WeldingTypeSelection(
+                selectedType = params.weldingType,
+                isExpanded = state.isWeldingTypeExpanded,
+                onToggleExpand = { onEvent(MainScreenEvent.ToggleWeldingTypeExpanded) },
+                onTypeSelected = { onEvent(MainScreenEvent.WeldingTypeChanged(it)) }
             )
 
             DashedDivider()

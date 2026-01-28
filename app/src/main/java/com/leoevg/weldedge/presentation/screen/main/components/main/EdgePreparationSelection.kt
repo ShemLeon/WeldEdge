@@ -1,53 +1,57 @@
 package com.leoevg.weldedge.presentation.screen.main.components.main
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.leoevg.weldedge.R
+import coil.compose.AsyncImage
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
-
-data class EdgePreparationItem(
-    val id: String,
-    val label: String,
-    val iconRes: Int
-)
 
 @Composable
 fun EdgePreparationSelection(
+    jointType: String,
+    responsibility: String,
     selectedType: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
-    val items = listOf(
-        EdgePreparationItem(
-            "single_v", 
-            "Single-V", 
-            R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap
-        ),
-        // Здесь можно добавить другие ассеты, если они есть
-        EdgePreparationItem(
-            "single_v_2", 
-            "Single-V (v2)", 
-            R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap
-        ),
-        EdgePreparationItem(
-            "single_v_3", 
-            "Single-V (v3)", 
-            R.drawable.razdelka_single_v_butt_weld_with_root_face_and_root_gap
-        )
-    )
+    val context = LocalContext.current
+    val items = remember(jointType, responsibility) {
+        val folder = when (jointType) {
+            "стык" -> "groove"
+            "тавр" -> "t"
+            "нахлест" -> "lap"
+            "угловое" -> "corner"
+            else -> "groove"
+        }
+        val subFolder = if (responsibility == "нагруженный") "stress" else "simple"
+        val fullPath = "edge_preparation/$folder/$subFolder"
+        
+        try {
+            context.assets.list(fullPath)?.map { fileName ->
+                EdgePreparationItem(
+                    id = fileName,
+                    label = fileName.removeSuffix(".svg").replace("_", " "),
+                    assetPath = "file:///android_asset/$fullPath/$fileName"
+                )
+            } ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
     val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) "Не выбрано" else selectedType
 
@@ -62,17 +66,41 @@ fun EdgePreparationSelection(
         Spacer(modifier = Modifier.height(12.dp))
 
         if (isExpanded) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp)
-            ) {
-                items(items) { item ->
-                    EdgePreparationCard(
-                        item = item,
-                        isSelected = selectedType == item.id,
-                        onClick = { onTypeSelected(item.id) }
-                    )
+            if (items.isEmpty()) {
+                Text(
+                    text = "Нет доступных вариантов",
+                    modifier = Modifier.padding(16.dp),
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            } else {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    items(items) { item ->
+                        Box(
+                            modifier = Modifier
+                                .size(width = 120.dp, height = 90.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(if (selectedType == item.id) Color(0xFFEFF6FF) else Color.Transparent)
+                                .then(
+                                    if (selectedType == item.id) Modifier.border(2.dp, Color(0xFF3B82F6), RoundedCornerShape(8.dp))
+                                    else Modifier
+                                )
+                                .clickable { onTypeSelected(item.id) }
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AsyncImage(
+                                model = item.assetPath,
+                                contentDescription = item.label,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
                 }
             }
         } else {
@@ -82,53 +110,6 @@ fun EdgePreparationSelection(
                 onClick = onToggleExpand,
                 modifier = Modifier.fillMaxWidth()
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EdgePreparationCard(
-    item: EdgePreparationItem,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    OutlinedCard(
-        onClick = onClick,
-        modifier = Modifier.size(width = 160.dp, height = 140.dp),
-        border = CardDefaults.outlinedCardBorder(isSelected).copy(
-            width = if (isSelected) 2.dp else 1.dp
-        ),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = if (isSelected) Color(0xFFEFF6FF) else Color.White
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Image(
-                painter = painterResource(id = item.iconRes),
-                contentDescription = item.label,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp)
-            )
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = if (isSelected) Color(0xFFDBEAFE) else Color(0xFFF8FAFC)
-            ) {
-                Text(
-                    text = item.label,
-                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = if (isSelected) Color(0xFF1E40AF) else Color(0xFF475569),
-                    textAlign = TextAlign.Center,
-                    maxLines = 2
-                )
-            }
         }
     }
 }

@@ -25,11 +25,13 @@ class MainScreenViewModel @Inject constructor(
                 jointType = preferencesManager.getJointType() ?: "стык",
                 responsibility = preferencesManager.getResponsibility() ?: "нагруженный",
                 standard = preferencesManager.getStandard() ?: "ГОСТ",
-                engineerName = preferencesManager.getEngineerName()
+                engineerName = preferencesManager.getEngineerName(),
+                weldingType = preferencesManager.getWeldingType() ?: ""
             ),
             isJointTypeExpanded = preferencesManager.isJointTypeExpanded(),
             isResponsibilityExpanded = preferencesManager.isResponsibilityExpanded(),
-            isEdgePreparationExpanded = true, // Default to expanded or load from prefs if added later
+            isEdgePreparationExpanded = true,
+            isWeldingTypeExpanded = preferencesManager.isWeldingTypeExpanded(),
             language = preferencesManager.getLanguage()
         )
     )
@@ -42,12 +44,14 @@ class MainScreenViewModel @Inject constructor(
             is MainScreenEvent.JointTypeChanged -> onJointTypeChanged(event.value)
             is MainScreenEvent.ResponsibilityChanged -> onResponsibilityChanged(event.value)
             is MainScreenEvent.EdgePreparationChanged -> onEdgePreparationChanged(event.value)
+            is MainScreenEvent.WeldingTypeChanged -> onWeldingTypeChanged(event.value)
             is MainScreenEvent.EngineerNameChanged -> onEngineerNameChanged(event.value)
             is MainScreenEvent.StandardChanged -> onStandardChanged(event.value)
             is MainScreenEvent.LanguageChanged -> onLanguageChanged(event.language)
             MainScreenEvent.ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
             MainScreenEvent.ToggleResponsibilityExpanded -> onToggleResponsibilityExpanded()
             MainScreenEvent.ToggleEdgePreparationExpanded -> onToggleEdgePreparationExpanded()
+            MainScreenEvent.ToggleWeldingTypeExpanded -> onToggleWeldingTypeExpanded()
             MainScreenEvent.SubmitClicked -> onSubmitClicked()
             MainScreenEvent.BackClicked -> onBackClicked()
             MainScreenEvent.GeneratePdfClicked -> onGeneratePdfClicked()
@@ -82,6 +86,11 @@ class MainScreenViewModel @Inject constructor(
         _state.update { it.copy(params = it.params.copy(edgePreparation = value)) }
     }
 
+    private fun onWeldingTypeChanged(value: String) {
+        preferencesManager.saveWeldingType(value)
+        _state.update { it.copy(params = it.params.copy(weldingType = value)) }
+    }
+
     private fun onEngineerNameChanged(value: String) {
         preferencesManager.saveEngineerName(value)
         _state.update { it.copy(params = it.params.copy(engineerName = value)) }
@@ -111,6 +120,12 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onToggleEdgePreparationExpanded() {
         _state.update { it.copy(isEdgePreparationExpanded = !it.isEdgePreparationExpanded) }
+    }
+
+    private fun onToggleWeldingTypeExpanded() {
+        val newState = !_state.value.isWeldingTypeExpanded
+        preferencesManager.saveWeldingTypeExpanded(newState)
+        _state.update { it.copy(isWeldingTypeExpanded = newState) }
     }
 
     private fun onSubmitClicked() {

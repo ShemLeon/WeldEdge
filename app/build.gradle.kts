@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
     implementation(libs.androidx.hilt.navigation.compose.v120)
 

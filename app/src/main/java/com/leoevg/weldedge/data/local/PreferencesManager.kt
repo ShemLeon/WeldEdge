@@ -73,6 +73,22 @@ class PreferencesManager @Inject constructor(context: Context) {
         return prefs.getBoolean(KEY_RESPONSIBILITY_EXPANDED, true)
     }
 
+    fun saveWeldingType(type: String) {
+        prefs.edit().putString(KEY_WELDING_TYPE, type).apply()
+    }
+
+    fun getWeldingType(): String? {
+        return prefs.getString(KEY_WELDING_TYPE, null)
+    }
+
+    fun saveWeldingTypeExpanded(isExpanded: Boolean) {
+        prefs.edit().putBoolean(KEY_WELDING_TYPE_EXPANDED, isExpanded).apply()
+    }
+
+    fun isWeldingTypeExpanded(): Boolean {
+        return prefs.getBoolean(KEY_WELDING_TYPE_EXPANDED, true)
+    }
+
     companion object {
         private const val KEY_METAL_TYPE = "metal_type"
         private const val KEY_LANGUAGE = "language"
@@ -82,5 +98,7 @@ class PreferencesManager @Inject constructor(context: Context) {
         private const val KEY_ENGINEER_NAME = "engineer_name"
         private const val KEY_JOINT_TYPE_EXPANDED = "joint_type_expanded"
         private const val KEY_RESPONSIBILITY_EXPANDED = "responsibility_expanded"
+        private const val KEY_WELDING_TYPE = "welding_type"
+        private const val KEY_WELDING_TYPE_EXPANDED = "welding_type_expanded"
     }
 }
