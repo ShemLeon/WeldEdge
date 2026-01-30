@@ -18,12 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
+import com.leoevg.weldedge.domain.model.EdgePreparationItem
 
-data class EdgePreparationItem(
-    val id: String,
-    val label: String,
-    val assetPath: String
-)
 @Composable
 fun EdgePreparationSelection(
     jointType: String,
