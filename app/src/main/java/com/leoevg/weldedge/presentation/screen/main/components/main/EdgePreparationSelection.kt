@@ -30,7 +30,7 @@ fun EdgePreparationSelection(
     onTypeSelected: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val items = remember(jointType, responsibility) {
+    val items = remember<List<EdgePreparationItem>>(jointType, responsibility) {
         val folder = when (jointType) {
             "стык" -> "groove"
             "тавр" -> "t"
@@ -42,7 +42,7 @@ fun EdgePreparationSelection(
         val fullPath = "edge_preparation/$folder/$subFolder"
         
         try {
-            context.assets.list(fullPath)?.map { fileName ->
+            context.assets.list(fullPath)?.map<String, EdgePreparationItem> { fileName ->
                 EdgePreparationItem(
                     id = fileName,
                     label = fileName.removeSuffix(".svg").replace("_", " "),
