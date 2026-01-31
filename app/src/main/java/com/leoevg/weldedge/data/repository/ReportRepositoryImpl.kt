@@ -44,7 +44,10 @@ class ReportRepositoryImpl @Inject constructor(
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
-            context.startActivity(intent)
+
+            withContext(Dispatchers.Main) {
+                context.startActivity(intent)
+            }
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose.v120)
 
     implementation(libs.kotlinx.datetime)
+    implementation("com.caverock:androidsvg-aar:1.4")
 //    implementation(platform(libs.firebase.bom))
 //    implementation(libs.firebase.analytics)
 //    implementation(libs.firebase.auth)

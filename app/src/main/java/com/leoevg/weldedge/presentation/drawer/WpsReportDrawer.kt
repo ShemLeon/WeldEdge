@@ -6,6 +6,8 @@ import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.Table
 import com.leoevg.weldedge.domain.model.TableConfig
 import com.leoevg.weldedge.domain.model.WeldingParams
+import com.caverock.androidsvg.SVG
+import java.io.InputStream
 
 class WpsReportDrawer(private val context: Context) {
 
@@ -225,38 +227,56 @@ class WpsReportDrawer(private val context: Context) {
 
     private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float, params: WeldingParams) {
         val rowHeight = 16f
-        val totalHeight = 150f 
-        
+        val totalHeight = 150f
+
         val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 0.8f }
         val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
 
         canvas.drawRect(x, y, x + width, y + totalHeight, paint)
         canvas.drawLine(x, y + rowHeight, x + width, y + rowHeight, paint)
         canvas.drawText("Joint Details (Sketch)", x + width / 2, y + rowHeight / 2 + 3f, textPaint)
-        
+
         try {
-            val resId = when (params.jointType) {
-                "стык" -> R.drawable.joint_butt
-                "тавр" -> R.drawable.joint_t
-                "угловой" -> R.drawable.joint_corner
-                "нахлест" -> R.drawable.joint_lap
-                else -> R.drawable.joint_butt
+            if (params.edgePreparation.isNotEmpty()) {
+                val folder = when (params.jointType) {
+                    "стык" -> "groove"
+                    "тавр" -> "t"
+                    "нахлест" -> "lap"
+                    "угловое" -> "corner"
+                    else -> "groove"
+                }
+                val subFolder = if (params.responsibility == "нагруженный") "stress" else "simple"
+                val fullPath = "edge_preparation/$folder/$subFolder/${params.edgePreparation}"
+
+                val inputStream = context.assets.open(fullPath)
+                val svg = SVG.getFromInputStream(inputStream)
+                inputStream.close()
+
+                svg?.let {
+                    val padding = 15f
+                    val destWidth = width - 2 * padding
+                    val destHeight = totalHeight - rowHeight - 2 * padding
+
+                    // Устанавливаем размеры SVG
+                    it.setDocumentWidth("100%")
+                    it.setDocumentHeight("100%")
+
+                    // Создаем Bitmap для рендеринга
+                    val bitmap = Bitmap.createBitmap(destWidth.toInt(), destHeight.toInt(), Bitmap.Config.ARGB_8888)
+                    val svgCanvas = Canvas(bitmap)
+                    svgCanvas.drawColor(Color.WHITE)
+
+                    // Рендерим SVG на Canvas
+                    it.renderToCanvas(svgCanvas)
+
+                    // Рисуем Bitmap на основном Canvas
+                    val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
+                    canvas.drawBitmap(bitmap, null, dest, null)
+                }
             }
-            val bitmap = BitmapFactory.decodeResource(context.resources, resId)
-            bitmap?.let {
-                val padding = 15f
-                val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
-                val bitmapWidth = it.width.toFloat()
-                val bitmapHeight = it.height.toFloat()
-                val ratio = minOf(dest.width() / bitmapWidth, dest.height() / bitmapHeight)
-                val finalWidth = bitmapWidth * ratio
-                val finalHeight = bitmapHeight * ratio
-                val offsetLeft = (dest.width() - finalWidth) / 2
-                val offsetTop = (dest.height() - finalHeight) / 2
-                val renderRect = RectF(dest.left + offsetLeft, dest.top + offsetTop, dest.left + offsetLeft + finalWidth, dest.top + offsetTop + finalHeight)
-                canvas.drawBitmap(it, null, renderRect, null)
-            }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun drawFillerMetalWithComplexHeader(
