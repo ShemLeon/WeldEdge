@@ -10,5 +10,8 @@ data class MainScreenState(
     val isEdgePreparationExpanded: Boolean = true,
     val isWeldingTypeExpanded: Boolean = true,
     val thicknessError: String? = null,
-    val language: String = "RU"
+    val language: String = "RU",
+    val selectedMetalCategory: String = "Fe",
+    val metalAlloyHistory: List<String> = emptyList(),
+    val showAlloyDialog: Boolean = false
 )

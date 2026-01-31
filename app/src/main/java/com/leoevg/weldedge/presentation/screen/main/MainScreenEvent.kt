@@ -2,6 +2,10 @@ package com.leoevg.weldedge.presentation.screen.main
 
 sealed class MainScreenEvent {
     data class MetalTypeChanged(val value: String) : MainScreenEvent()
+    data class MetalCategoryChanged(val category: String) : MainScreenEvent()
+    data class MetalAlloyConfirmed(val alloy: String) : MainScreenEvent()
+    object DismissAlloyDialog : MainScreenEvent()
+
     data class ThicknessChanged(val value: String) : MainScreenEvent()
     data class JointTypeChanged(val value: String) : MainScreenEvent()
     data class ResponsibilityChanged(val value: String) : MainScreenEvent()

@@ -17,6 +17,30 @@ class PreferencesManager @Inject constructor(context: Context) {
         return prefs.getString(KEY_METAL_TYPE, null)
     }
 
+    fun saveMetalCategory(category: String) {
+        prefs.edit().putString(KEY_METAL_CATEGORY, category).apply()
+    }
+
+    fun getMetalCategory(): String {
+        return prefs.getString(KEY_METAL_CATEGORY, "Fe") ?: "Fe"
+    }
+
+    fun saveMetalAlloyHistory(category: String, alloyName: String) {
+        if (alloyName.isBlank() || category.isBlank()) return
+        val key = "$KEY_METAL_ALLOY_HISTORY_PREFIX$category"
+        val currentHistory = getMetalAlloyHistory(category).toMutableList()
+        currentHistory.remove(alloyName)
+        currentHistory.add(0, alloyName)
+        val limitedHistory = currentHistory.take(5)
+        prefs.edit().putString(key, limitedHistory.joinToString(",")).apply()
+    }
+
+    fun getMetalAlloyHistory(category: String): List<String> {
+        val key = "$KEY_METAL_ALLOY_HISTORY_PREFIX$category"
+        val historyString = prefs.getString(key, null) ?: return emptyList()
+        return historyString.split(",").filter { it.isNotBlank() }
+    }
+
     fun saveLanguage(language: String) {
         prefs.edit().putString(KEY_LANGUAGE, language).apply()
     }
@@ -91,6 +115,7 @@ class PreferencesManager @Inject constructor(context: Context) {
 
     companion object {
         private const val KEY_METAL_TYPE = "metal_type"
+        private const val KEY_METAL_CATEGORY = "metal_category"
         private const val KEY_LANGUAGE = "language"
         private const val KEY_JOINT_TYPE = "joint_type"
         private const val KEY_RESPONSIBILITY = "responsibility"
@@ -100,5 +125,6 @@ class PreferencesManager @Inject constructor(context: Context) {
         private const val KEY_RESPONSIBILITY_EXPANDED = "responsibility_expanded"
         private const val KEY_WELDING_TYPE = "welding_type"
         private const val KEY_WELDING_TYPE_EXPANDED = "welding_type_expanded"
+        private const val KEY_METAL_ALLOY_HISTORY_PREFIX = "metal_alloy_history_"
     }
 }

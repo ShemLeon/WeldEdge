@@ -32,7 +32,9 @@ class MainScreenViewModel @Inject constructor(
             isResponsibilityExpanded = preferencesManager.isResponsibilityExpanded(),
             isEdgePreparationExpanded = true,
             isWeldingTypeExpanded = preferencesManager.isWeldingTypeExpanded(),
-            language = preferencesManager.getLanguage()
+            language = preferencesManager.getLanguage(),
+            selectedMetalCategory = "Fe",
+            metalAlloyHistory = preferencesManager.getMetalAlloyHistory("Fe")
         )
     )
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
@@ -40,6 +42,9 @@ class MainScreenViewModel @Inject constructor(
     fun onEvent(event: MainScreenEvent) {
         when (event) {
             is MainScreenEvent.MetalTypeChanged -> onMetalTypeChanged(event.value)
+            is MainScreenEvent.MetalCategoryChanged -> onMetalCategoryChanged(event.category)
+            is MainScreenEvent.MetalAlloyConfirmed -> onMetalAlloyConfirmed(event.alloy)
+            MainScreenEvent.DismissAlloyDialog -> onDismissAlloyDialog()
             is MainScreenEvent.ThicknessChanged -> onThicknessChanged(event.value)
             is MainScreenEvent.JointTypeChanged -> onJointTypeChanged(event.value)
             is MainScreenEvent.ResponsibilityChanged -> onResponsibilityChanged(event.value)
@@ -61,6 +66,29 @@ class MainScreenViewModel @Inject constructor(
     private fun onMetalTypeChanged(value: String) {
         preferencesManager.saveMetalType(value)
         _state.update { it.copy(params = it.params.copy(metalType = value)) }
+    }
+
+    private fun onMetalCategoryChanged(category: String) {
+        val history = preferencesManager.getMetalAlloyHistory(category)
+        _state.update { 
+            it.copy(
+                selectedMetalCategory = category,
+                metalAlloyHistory = history
+            ) 
+        }
+    }
+
+    private fun onMetalAlloyConfirmed(alloy: String) {
+        if (alloy.isNotBlank()) {
+            preferencesManager.saveMetalAlloyHistory(_state.value.selectedMetalCategory, alloy)
+            onMetalTypeChanged(alloy)
+            val history = preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
+            _state.update { it.copy(metalAlloyHistory = history) }
+        }
+    }
+
+    private fun onDismissAlloyDialog() {
+        _state.update { it.copy(showAlloyDialog = false) }
     }
 
     private fun onThicknessChanged(value: String) {

@@ -9,19 +9,28 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.leoevg.weldedge.data.local.PreferencesManager
+import com.leoevg.weldedge.di.AppModule
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
+import com.leoevg.weldedge.presentation.screen.main.MainScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeldingForm(
     state: MainScreenState,
-    onEvent: (MainScreenEvent) -> Unit
+    onEvent: (MainScreenEvent) -> Unit,
+    viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val params = state.params
+    val context = LocalContext.current
+    val preferencesManager = remember { AppModule.providePreferencesManager(context) }
     
     Card(
         modifier = Modifier.fillMaxWidth(1f),
@@ -36,7 +45,8 @@ fun WeldingForm(
             // Metal Type
             MetalAlloy(
                 selectedType = params.metalType,
-                onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
+                onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) },
+                preferencesManager = preferencesManager
             )
 
             DashedDivider()
