@@ -60,7 +60,7 @@ fun Header(
                 shadowElevation = 2.dp,
             ) {
                 Text(
-                    text = getFormattedDate(language),
+                    text = "Генератор документации",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     fontSize = 14.sp,
                     color = Color(0xFF2563EB),
@@ -105,16 +105,4 @@ fun Header(
         }
 
     }
-}
-
-@Composable
-private fun getFormattedDate(language: String): String {
-    val calendar = Calendar.getInstance()
-    val locale = when (language) {
-        "RU" -> Locale("ru", "RU")
-        "EN" -> Locale("en", "US")
-        else -> Locale.getDefault()
-    }
-    val dateFormat = SimpleDateFormat("EEEE, d MMMM", locale)
-    return dateFormat.format(calendar.time).replaceFirstChar { it.uppercase() }
 }
