@@ -22,10 +22,27 @@ import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.presentation.screen.main.components.prev.DocumentPreviewScreen
 import com.leoevg.weldedge.presentation.screen.main.components.main.Header
 import com.leoevg.weldedge.presentation.screen.main.components.main.WeldingForm
+import android.content.res.Configuration
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import java.util.Locale
+import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+    val localizedContext = remember(state.language) {
+        val locale = when (state.language) {
+            "RU" -> Locale("ru", "RU")
+            "EN" -> Locale("en", "US")
+            else -> Locale.getDefault()
+        }
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)
+        context.createConfigurationContext(config)
+    }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -34,7 +51,8 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
         MainScreenContent(
             state = state,
             onEvent = { event -> viewModel.onEvent(event) },
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            localizedContext = localizedContext
         )
     }
 }
@@ -43,8 +61,13 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
 fun MainScreenContent(
     state: MainScreenState,
     onEvent: (MainScreenEvent) -> Unit,
+    localizedContext: android.content.Context,
     modifier: Modifier = Modifier
 ) {
+    CompositionLocalProvider(
+        LocalConfiguration provides Configuration(localizedContext.resources.configuration),
+        LocalContext provides localizedContext
+    ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +104,7 @@ fun MainScreenContent(
             }
         }
     }
-}
+}}
 
 
 @Composable
@@ -121,6 +144,12 @@ fun SelectableButton(
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
+    val context = LocalContext.current
+    val previewContext = remember {
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(Locale("ru", "RU"))
+        context.createConfigurationContext(config)
+    }
     MainScreenContent(
         state = MainScreenState(
             params = WeldingParams(
@@ -129,6 +158,7 @@ fun MainScreenPreview() {
                 jointType = "стык"
             )
         ),
-        onEvent = {}
+        onEvent = {},
+        localizedContext = previewContext
     )
 }

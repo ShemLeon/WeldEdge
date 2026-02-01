@@ -14,9 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.leoevg.weldedge.R
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
 
@@ -54,11 +56,11 @@ fun EdgePreparationSelection(
         }
     }
 
-    val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) "Не выбрано" else selectedType
+    val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) stringResource(R.string.not_selected) else selectedType
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
-            label = "Подготовка кромок",
+            label = stringResource(R.string.edge_preparation_label),
             isRequired = false,
             isExpanded = isExpanded,
             onToggleExpand = onToggleExpand
@@ -69,7 +71,7 @@ fun EdgePreparationSelection(
         if (isExpanded) {
             if (items.isEmpty()) {
                 Text(
-                    text = "Нет доступных вариантов",
+                    text = stringResource(R.string.edge_preparation_none),
                     modifier = Modifier.padding(16.dp),
                     color = Color.Gray,
                     fontSize = 14.sp
@@ -106,7 +108,7 @@ fun EdgePreparationSelection(
             }
         } else {
             SelectableButton(
-                text = "Выбрано: $selectedLabel",
+                text = stringResource(R.string.selected_format, selectedLabel),
                 isSelected = selectedType.isNotEmpty(),
                 onClick = onToggleExpand,
                 modifier = Modifier.fillMaxWidth()

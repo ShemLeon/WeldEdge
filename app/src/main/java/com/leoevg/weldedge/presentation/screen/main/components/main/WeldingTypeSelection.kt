@@ -14,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.leoevg.weldedge.R
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 data class WeldingTypeItem(
@@ -47,11 +49,11 @@ fun WeldingTypeSelection(
         }
     }
 
-    val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) "Не выбрано" else selectedType
+    val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) stringResource(R.string.not_selected) else selectedType
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
-            label = "Тип сварки",
+            label = stringResource(R.string.welding_type_label),
             isRequired = true,
             isExpanded = isExpanded,
             onToggleExpand = onToggleExpand
@@ -76,7 +78,7 @@ fun WeldingTypeSelection(
             }
         } else {
             SelectableButton(
-                text = "Выбрано: $selectedLabel",
+                text = stringResource(R.string.selected_format, selectedLabel),
                 isSelected = selectedType.isNotEmpty(),
                 onClick = onToggleExpand,
                 modifier = Modifier.fillMaxWidth()

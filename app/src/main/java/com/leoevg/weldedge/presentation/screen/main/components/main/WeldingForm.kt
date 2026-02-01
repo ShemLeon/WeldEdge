@@ -14,19 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.leoevg.weldedge.di.AppModule
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
-import com.leoevg.weldedge.presentation.screen.main.MainScreenViewModel
 import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.MetalAlloy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeldingForm(
     state: MainScreenState,
-    onEvent: (MainScreenEvent) -> Unit,
-    viewModel: MainScreenViewModel = hiltViewModel()
+    onEvent: (MainScreenEvent) -> Unit
 ) {
     val params = state.params
     val context = LocalContext.current

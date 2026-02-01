@@ -24,13 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.domain.model.WeldingParams
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
-
+import com.leoevg.weldedge.R
 
 @Composable
 fun DocumentPreviewScreen(
@@ -49,53 +46,49 @@ fun DocumentPreviewScreen(
             shape = RoundedCornerShape(12.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Превью документа",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
+                Text(
+                    text = stringResource(R.string.preview_title),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
-                    // Edge preparation image
-                    val imagePath = getEdgePreparationImagePath(
-                        jointType = params.jointType,
-                        responsibility = params.responsibility,
-                        edgePreparation = params.edgePreparation
-                    )
+                // Edge preparation image
+                val imagePath = getEdgePreparationImagePath(
+                    jointType = params.jointType,
+                    responsibility = params.responsibility,
+                    edgePreparation = params.edgePreparation
+                )
 
-                    if (imagePath != null) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Box(
+                if (imagePath != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFFF8FAFC)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AsyncImage(
+                            model = imagePath,
+                            contentDescription = stringResource(R.string.preview_edge_image_description),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(Color(0xFFF8FAFC)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            AsyncImage(
-                                model = imagePath,
-                                contentDescription = "Разделка кромок",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        )
                     }
-
-                    // Simplified preview info
-
-                // Simplified preview info
-                PreviewRow("Вид металла", params.metalType)
-                PreviewRow("Толщина", "${params.thickness} мм")
-                PreviewRow("Тип соединения", params.jointType)
-                PreviewRow("Ответственность", params.responsibility)
-                if (params.engineerName.isNotEmpty()) {
-                    PreviewRow("Инженер", params.engineerName)
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                PreviewRow("Стандарт", params.standard)
+
+                PreviewRow(stringResource(R.string.preview_metal_type), params.metalType)
+                PreviewRow(stringResource(R.string.preview_thickness), "${params.thickness} ${stringResource(R.string.unit_mm)}")
+                PreviewRow(stringResource(R.string.preview_joint_type), params.jointType)
+                PreviewRow(stringResource(R.string.preview_responsibility), params.responsibility)
+                if (params.engineerName.isNotEmpty()) {
+                    PreviewRow(stringResource(R.string.preview_engineer), params.engineerName)
+                }
+                PreviewRow(stringResource(R.string.preview_standard), params.standard)
             }
         }
 
@@ -110,7 +103,7 @@ fun DocumentPreviewScreen(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Назад")
+                Text(stringResource(R.string.preview_back))
             }
             Button(
                 onClick = onGeneratePdf,
@@ -118,8 +111,8 @@ fun DocumentPreviewScreen(
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
             ) {
-                Text("Скачать PDF")
+                Text(stringResource(R.string.preview_download_pdf))
             }
         }
     }
-}}
+}

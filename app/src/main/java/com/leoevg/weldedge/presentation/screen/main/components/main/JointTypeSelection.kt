@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,17 +26,17 @@ fun JointTypeSelection(
     onTypeSelected: (String) -> Unit
 ) {
     val jointTypes = listOf(
-        JointTypeItem("стык", "Стыковой", R.drawable.joint_butt),
-        JointTypeItem("тавр", "Тавровый", R.drawable.joint_t),
-        JointTypeItem("угловое", "Угловой", R.drawable.joint_corner),
-        JointTypeItem("нахлест", "Нахлесточный", R.drawable.joint_lap)
+        JointTypeItem("стык", stringResource(R.string.joint_butt), R.drawable.joint_butt),
+        JointTypeItem("тавр", stringResource(R.string.joint_t), R.drawable.joint_t),
+        JointTypeItem("угловое", stringResource(R.string.joint_corner), R.drawable.joint_corner),
+        JointTypeItem("нахлест", stringResource(R.string.joint_lap), R.drawable.joint_lap)
     )
 
     val selectedLabel = jointTypes.find { it.id == selectedType }?.label ?: selectedType.replaceFirstChar { it.uppercase() }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
-            label = "Тип соединения",
+            label = stringResource(R.string.joint_type_label),
             isRequired = true,
             isExpanded = isExpanded,
             onToggleExpand = onToggleExpand
@@ -59,7 +60,7 @@ fun JointTypeSelection(
             }
         } else {
             SelectableButton(
-                text = "Выбрано: $selectedLabel",
+                text = stringResource(R.string.selected_format, selectedLabel),
                 isSelected = true,
                 onClick = onToggleExpand,
                 modifier = Modifier.fillMaxWidth()

@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.leoevg.weldedge.R
 import com.leoevg.weldedge.data.local.PreferencesManager
 
 @Composable
@@ -45,8 +47,8 @@ fun AlloyInputField(
         modifier = modifier
             .fillMaxWidth()
             .onFocusChanged { isFocused = it.isFocused },
-        label = { Text("Или введите название", fontSize = 12.sp) },
-        placeholder = { Text("Например: AISI 316L", fontSize = 14.sp) },
+        label = { Text(stringResource(R.string.alloy_input_label), fontSize = 12.sp) },
+        placeholder = { Text(stringResource(R.string.alloy_input_placeholder), fontSize = 14.sp) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done

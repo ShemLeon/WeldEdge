@@ -13,10 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.leoevg.weldedge.R
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +39,7 @@ fun Thickness(
     var lastClickedButton by remember { mutableStateOf("") }
 
     Column {
-        FormField(label = "Толщина наиболее тонкого свариваемого металла (мм)", required = true) {
+        FormField(label = stringResource(R.string.thickness_label), required = true) {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -69,7 +71,7 @@ fun Thickness(
                         modifier = Modifier
                             .width(150.dp)
                             .onFocusChanged { isFocused = it.isFocused },
-                        placeholder = { Text("Своя...", fontSize = 14.sp) },
+                        placeholder = { Text(stringResource(R.string.thickness_placeholder), fontSize = 14.sp) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,

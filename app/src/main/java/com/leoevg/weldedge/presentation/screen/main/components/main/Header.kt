@@ -27,17 +27,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.leoevg.weldedge.R
 
 @Composable
 fun Header(
     language: String,
     onLanguageChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var isLanguageMenuExpanded by remember { mutableStateOf(false) }
 
     Column(
@@ -53,14 +54,14 @@ fun Header(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Date
+            // Title
             Surface(
                 shape = RoundedCornerShape(50),
                 color = Color.White,
                 shadowElevation = 2.dp,
             ) {
                 Text(
-                    text = "Генератор документации",
+                    text = stringResource(R.string.header_title),
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     fontSize = 14.sp,
                     color = Color(0xFF2563EB),
@@ -78,7 +79,7 @@ fun Header(
                     IconButton(onClick = { isLanguageMenuExpanded = true }) {
                         Icon(
                             imageVector = Icons.Default.Language,
-                            contentDescription = "Language",
+                            contentDescription = stringResource(R.string.header_language_description),
                             tint = Color(0xFF475569)
                         )
                     }

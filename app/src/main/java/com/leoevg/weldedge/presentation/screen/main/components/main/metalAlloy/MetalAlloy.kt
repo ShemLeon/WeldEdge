@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.leoevg.weldedge.R
 import com.leoevg.weldedge.data.local.PreferencesManager
 import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 
@@ -36,7 +38,7 @@ fun MetalAlloy(
         selectedCategory?.let { preferencesManager.getMetalAlloyHistory(it) } ?: emptyList()
     }
 
-    FormField(label = "Сплав", required = true) {
+    FormField(label = stringResource(R.string.alloy_label), required = true) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
