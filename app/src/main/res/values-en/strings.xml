@@ -17,7 +17,7 @@
     <string name="responsibility_stress">With groove</string>
     <string name="responsibility_simple">Without groove</string>
     <string name="submit_button">Create Document</string>
-    <string name="alloy_input_label">Or enter name</string>
+    <string name="alloy_input_label">Enter name</string>
     <string name="alloy_input_placeholder">Example: AISI 316L</string>
     <string name="edge_preparation_label">Edge Preparation</string>
     <string name="edge_preparation_none">No options available</string>

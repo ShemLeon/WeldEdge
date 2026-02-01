@@ -16,7 +16,7 @@
     <string name="responsibility_stress">С разделкой</string>
     <string name="responsibility_simple">Без разделки</string>
     <string name="submit_button">Создать документ</string>
-    <string name="alloy_input_label">Или введите название</string>
+    <string name="alloy_input_label">Введите марку</string>
     <string name="alloy_input_placeholder">Например: AISI 316L</string>
     <string name="edge_preparation_label">Подготовка кромок</string>
     <string name="edge_preparation_none">Нет доступных вариантов</string>
