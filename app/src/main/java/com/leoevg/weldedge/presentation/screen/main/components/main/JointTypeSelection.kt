@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.JointType
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 @Composable
@@ -23,16 +24,15 @@ fun JointTypeSelection(
     selectedType: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    onTypeSelected: (String) -> Unit
+    onTypeSelected: (String) -> Unit,
+    language: String = "RU"
 ) {
-    val jointTypes = listOf(
-        JointTypeItem("стык", stringResource(R.string.joint_butt), R.drawable.joint_butt),
-        JointTypeItem("тавр", stringResource(R.string.joint_t), R.drawable.joint_t),
-        JointTypeItem("угловое", stringResource(R.string.joint_corner), R.drawable.joint_corner),
-        JointTypeItem("нахлест", stringResource(R.string.joint_lap), R.drawable.joint_lap)
-    )
+    val jointTypes = JointType.entries.map { jointType ->
+        JointTypeItem(jointType.id, jointType.getLocalizedName(language), jointType.iconRes)
+    }
 
-    val selectedLabel = jointTypes.find { it.id == selectedType }?.label ?: selectedType.replaceFirstChar { it.uppercase() }
+    val selectedJointType = JointType.fromId(selectedType)
+    val selectedLabel = selectedJointType?.getLocalizedName(language) ?: selectedType
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(

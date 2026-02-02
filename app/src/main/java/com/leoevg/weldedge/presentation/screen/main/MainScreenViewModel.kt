@@ -22,8 +22,8 @@ class MainScreenViewModel @Inject constructor(
         MainScreenState(
             params = WeldingParams(
                 metalType = preferencesManager.getMetalType() ?: "нержавейка",
-                jointType = preferencesManager.getJointType() ?: "стык",
-                responsibility = preferencesManager.getResponsibility() ?: "нагруженный",
+                jointType = preferencesManager.getJointType() ?: "butt",
+                responsibility = preferencesManager.getResponsibility() ?: "stress",
                 standard = preferencesManager.getStandard() ?: "ГОСТ",
                 engineerName = preferencesManager.getEngineerName(),
                 weldingType = preferencesManager.getWeldingType() ?: ""

@@ -11,13 +11,13 @@ fun getEdgePreparationImagePath(
     if (edgePreparation.isEmpty()) return null
 
     val folder = when (jointType) {
-        "стык" -> "groove"
-        "тавр" -> "t"
-        "нахлест" -> "lap"
-        "угловое" -> "corner"
+        "butt" -> "groove"
+        "t_joint" -> "t"
+        "lap" -> "lap"
+        "corner" -> "corner"
         else -> "groove"
     }
-    val subFolder = if (responsibility == "нагруженный") "stress" else "simple"
+    val subFolder = if (responsibility == "stress") "stress" else "simple"
     val fullPath = "edge_preparation/$folder/$subFolder"
 
     return "file:///android_asset/$fullPath/$edgePreparation"

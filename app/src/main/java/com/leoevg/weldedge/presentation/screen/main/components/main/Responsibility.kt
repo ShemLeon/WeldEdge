@@ -7,20 +7,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.Responsibility as ResponsibilityEnum
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
+import androidx.annotation.StringRes
+
 
 @Composable
 fun Responsibility(
     selectedResponsibility: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    onResponsibilitySelected: (String) -> Unit
+    onResponsibilitySelected: (String) -> Unit,
+    language: String = "RU"
 ) {
-    val options = listOf(
-        "нагруженный" to stringResource(R.string.responsibility_stress),
-        "ненагруженный" to stringResource(R.string.responsibility_simple)
-    )
-    val selectedLabel = options.find { it.first == selectedResponsibility }?.second ?: ""
+    val options = ResponsibilityEnum.entries.map { it.id to it.getLocalizedName(language) }
+    val selectedLabel = ResponsibilityEnum.fromId(selectedResponsibility)?.getLocalizedName(language) ?: selectedResponsibility
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(

@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.leoevg.weldedge.domain.model.JointType
+import com.leoevg.weldedge.domain.model.Responsibility
 import com.leoevg.weldedge.domain.model.WeldingParams
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -32,9 +34,13 @@ import com.leoevg.weldedge.R
 @Composable
 fun DocumentPreviewScreen(
     params: WeldingParams,
+    language: String = "RU",
     onBack: () -> Unit,
     onGeneratePdf: () -> Unit
 ) {
+    val jointTypeLocalized = JointType.fromId(params.jointType)?.getLocalizedName(language) ?: params.jointType
+    val responsibilityLocalized = Responsibility.fromId(params.responsibility)?.getLocalizedName(language) ?: params.responsibility
+    
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -83,8 +89,8 @@ fun DocumentPreviewScreen(
 
                 PreviewRow(stringResource(R.string.preview_metal_type), params.metalType)
                 PreviewRow(stringResource(R.string.preview_thickness), "${params.thickness} ${stringResource(R.string.unit_mm)}")
-                PreviewRow(stringResource(R.string.preview_joint_type), params.jointType)
-                PreviewRow(stringResource(R.string.preview_responsibility), params.responsibility)
+                PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
+                PreviewRow(stringResource(R.string.preview_responsibility), responsibilityLocalized)
                 if (params.engineerName.isNotEmpty()) {
                     PreviewRow(stringResource(R.string.preview_engineer), params.engineerName)
                 }

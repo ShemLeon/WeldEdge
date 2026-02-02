@@ -98,6 +98,7 @@ fun MainScreenContent(
             } else {
                 DocumentPreviewScreen(
                     params = state.params,
+                    language = state.language,
                     onBack = { onEvent(MainScreenEvent.BackClicked) },
                     onGeneratePdf = { onEvent(MainScreenEvent.GeneratePdfClicked) }
                 )
