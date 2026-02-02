@@ -50,9 +50,16 @@ fun EdgePreparationSelection(
                     label = fileName.removeSuffix(".svg").replace("_", " "),
                     assetPath = "file:///android_asset/$fullPath/$fileName"
                 )
-            } ?: emptyList()
+            }?.sortedBy { it.id } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    // Автоматически выбираем первый элемент, если ничего не выбрано
+    LaunchedEffect(items) {
+        if (selectedType.isEmpty() && items.isNotEmpty()) {
+            onTypeSelected(items.first().id)
         }
     }
 

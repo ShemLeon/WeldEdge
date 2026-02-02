@@ -3,6 +3,8 @@ package com.leoevg.weldedge.presentation.drawer
 import android.content.Context
 import android.graphics.*
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.JointType
+import com.leoevg.weldedge.domain.model.Responsibility
 import com.leoevg.weldedge.domain.model.Table
 import com.leoevg.weldedge.domain.model.TableConfig
 import com.leoevg.weldedge.domain.model.WeldingParams
@@ -39,10 +41,10 @@ class WpsReportDrawer(private val context: Context) {
             rows = 5,
             headerRow = listOf("Base Metal", "Specification", "Type or Grade", "M", "AWS Group No."),
             data = listOf(
-                listOf("Base Material", params.metalType, "", "", ""),
-                listOf("Welded To", params.metalType, "", "", ""),
+                listOf("Base Material", getEnglishMetalType(params.metalType), "", "", ""),
+                listOf("Welded To", getEnglishMetalType(params.metalType), "", "", ""),
                 listOf("Backing Material", "", "", "", ""),
-                listOf("Other", "Standard: ${params.standard}", "", "", ""),
+                listOf("Other", "Standard: ${getEnglishStandard(params.standard)}", "", "", ""),
                 listOf("", "", "", "", "")
             ),
             columnWeights = listOf(2.2f, 1.8f, 1.2f, 0.4f, 1.2f),
@@ -98,12 +100,12 @@ class WpsReportDrawer(private val context: Context) {
             rows = 6,
             headerTitle = "Joint Details",
             data = listOf(
-                listOf("Joint Type", params.jointType.replaceFirstChar { it.uppercase() }),
+                listOf("Joint Type", getEnglishJointType(params.jointType)),
                 listOf("Groove Angle (Deg)", "60"),
                 listOf("Root Opening (mm)", "1.6"),
                 listOf("Root Face (mm)", "0.5"),
                 listOf("Back gouging", "NO"),
-                listOf("Responsibility", params.responsibility)
+                listOf("Responsibility", getEnglishResponsibility(params.responsibility))
             ),
             columnWeights = listOf(1.5f, 1f),
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
@@ -359,5 +361,39 @@ val subFolder = if (params.responsibility == "stress") "stress" else "simple"
             canvas.drawText(labels[i], cellX + colWidth / 2, y + rowHeight * 3 - 4f, textPaint)
         }
         return y + rowHeight * 3
+    }
+
+    private fun getEnglishJointType(jointType: String): String {
+        return when (jointType) {
+            "butt" -> "Butt"
+            "t_joint" -> "T-joint"
+            "corner" -> "Corner"
+            "lap" -> "Lap"
+            else -> jointType.replaceFirstChar { it.uppercase() }
+        }
+    }
+
+    private fun getEnglishResponsibility(responsibility: String): String {
+        return when (responsibility) {
+            "stress" -> "With groove"
+            "simple" -> "Without groove"
+            else -> responsibility
+        }
+    }
+
+    private fun getEnglishMetalType(metalType: String): String {
+        return when (metalType) {
+            "нержавейка" -> "Stainless Steel"
+            "углеродистая сталь" -> "Carbon Steel"
+            "алюминий" -> "Aluminum"
+            else -> metalType // Уже на английском (например, AISI316L)
+        }
+    }
+
+    private fun getEnglishStandard(standard: String): String {
+        return when (standard) {
+            "ГОСТ" -> "GOST"
+            else -> standard
+        }
     }
 }

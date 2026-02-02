@@ -1,19 +1,14 @@
 package com.leoevg.weldedge.domain.model
 
+import androidx.annotation.StringRes
+import com.leoevg.weldedge.R
+
 enum class Responsibility(
     val id: String,
-    val nameRu: String,
-    val nameEn: String
+    @StringRes val nameRes: Int
 ) {
-    STRESS("stress", "С разделкой", "With groove"),
-    SIMPLE("simple", "Без разделки", "Without groove");
-
-    fun getLocalizedName(language: String): String {
-        return when (language.uppercase()) {
-            "EN" -> nameEn
-            else -> nameRu
-        }
-    }
+    STRESS("stress", R.string.responsibility_stress),
+    SIMPLE("simple", R.string.responsibility_simple);
 
     companion object {
         fun fromId(id: String): Responsibility? = entries.find { it.id == id }

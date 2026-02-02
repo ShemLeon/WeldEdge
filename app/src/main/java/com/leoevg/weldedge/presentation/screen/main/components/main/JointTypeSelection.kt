@@ -24,15 +24,14 @@ fun JointTypeSelection(
     selectedType: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    onTypeSelected: (String) -> Unit,
-    language: String = "RU"
+    onTypeSelected: (String) -> Unit
 ) {
     val jointTypes = JointType.entries.map { jointType ->
-        JointTypeItem(jointType.id, jointType.getLocalizedName(language), jointType.iconRes)
+        JointTypeItem(jointType.id, stringResource(jointType.nameRes), jointType.iconRes)
     }
 
     val selectedJointType = JointType.fromId(selectedType)
-    val selectedLabel = selectedJointType?.getLocalizedName(language) ?: selectedType
+    val selectedLabel = selectedJointType?.let { stringResource(it.nameRes) } ?: selectedType
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(

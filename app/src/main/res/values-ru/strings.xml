@@ -27,6 +27,7 @@
     <string name="preview_thickness">Толщина</string>
     <string name="preview_joint_type">Тип соединения</string>
     <string name="preview_responsibility">Ответственность</string>
+    <string name="preview_welding_type">Тип сварки</string>
     <string name="preview_engineer">Инженер</string>
     <string name="preview_standard">Стандарт</string>
     <string name="preview_back">Назад</string>

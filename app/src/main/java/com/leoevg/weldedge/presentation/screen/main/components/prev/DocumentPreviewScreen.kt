@@ -38,8 +38,12 @@ fun DocumentPreviewScreen(
     onBack: () -> Unit,
     onGeneratePdf: () -> Unit
 ) {
-    val jointTypeLocalized = JointType.fromId(params.jointType)?.getLocalizedName(language) ?: params.jointType
-    val responsibilityLocalized = Responsibility.fromId(params.responsibility)?.getLocalizedName(language) ?: params.responsibility
+    val jointTypeLocalized = JointType.fromId(params.jointType)?.let {
+        stringResource(it.nameRes)
+    } ?: params.jointType
+    val responsibilityLocalized = Responsibility.fromId(params.responsibility)?.let {
+        stringResource(it.nameRes)
+    } ?: params.responsibility
     
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -91,6 +95,10 @@ fun DocumentPreviewScreen(
                 PreviewRow(stringResource(R.string.preview_thickness), "${params.thickness} ${stringResource(R.string.unit_mm)}")
                 PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
                 PreviewRow(stringResource(R.string.preview_responsibility), responsibilityLocalized)
+                if (params.weldingType.isNotEmpty()) {
+                    val weldingTypeLabel = params.weldingType.removeSuffix(".svg").replace("_", " ")
+                    PreviewRow(stringResource(R.string.preview_welding_type), weldingTypeLabel)
+                }
                 if (params.engineerName.isNotEmpty()) {
                     PreviewRow(stringResource(R.string.preview_engineer), params.engineerName)
                 }

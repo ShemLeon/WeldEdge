@@ -18,15 +18,34 @@ class MainScreenViewModel @Inject constructor(
     private val generateReportUseCase: GenerateReportUseCase,
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
-    private val _state = MutableStateFlow(
-        MainScreenState(
+    private val _state = MutableStateFlow(createInitialState())
+
+    private fun createInitialState(): MainScreenState {
+        val metalType = preferencesManager.getMetalType() ?: "AISI316L".also {
+            preferencesManager.saveMetalType(it)
+        }
+        val jointType = preferencesManager.getJointType() ?: "butt".also {
+            preferencesManager.saveJointType(it)
+        }
+        val responsibility = preferencesManager.getResponsibility() ?: "stress".also {
+            preferencesManager.saveResponsibility(it)
+        }
+        val standard = preferencesManager.getStandard() ?: "AWS".also {
+            preferencesManager.saveStandard(it)
+        }
+        val weldingType = preferencesManager.getWeldingType() ?: "TIG.svg".also {
+            preferencesManager.saveWeldingType(it)
+        }
+        
+        return MainScreenState(
             params = WeldingParams(
-                metalType = preferencesManager.getMetalType() ?: "нержавейка",
-                jointType = preferencesManager.getJointType() ?: "butt",
-                responsibility = preferencesManager.getResponsibility() ?: "stress",
-                standard = preferencesManager.getStandard() ?: "ГОСТ",
+                metalType = metalType,
+                thickness = "2",
+                jointType = jointType,
+                responsibility = responsibility,
+                standard = standard,
                 engineerName = preferencesManager.getEngineerName(),
-                weldingType = preferencesManager.getWeldingType() ?: ""
+                weldingType = weldingType
             ),
             isJointTypeExpanded = preferencesManager.isJointTypeExpanded(),
             isResponsibilityExpanded = preferencesManager.isResponsibilityExpanded(),
@@ -36,7 +55,7 @@ class MainScreenViewModel @Inject constructor(
             selectedMetalCategory = "Fe",
             metalAlloyHistory = preferencesManager.getMetalAlloyHistory("Fe")
         )
-    )
+    }
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
 
     fun onEvent(event: MainScreenEvent) {
@@ -102,12 +121,26 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onJointTypeChanged(value: String) {
         preferencesManager.saveJointType(value)
-        _state.update { it.copy(params = it.params.copy(jointType = value)) }
+        _state.update { 
+            it.copy(
+                params = it.params.copy(
+                    jointType = value,
+                    edgePreparation = "" // Сброс подготовки кромок при смене типа соединения
+                )
+            )
+        }
     }
 
     private fun onResponsibilityChanged(value: String) {
         preferencesManager.saveResponsibility(value)
-        _state.update { it.copy(params = it.params.copy(responsibility = value)) }
+        _state.update { 
+            it.copy(
+                params = it.params.copy(
+                    responsibility = value,
+                    edgePreparation = "" // Сброс подготовки кромок при смене ответственности
+                )
+            )
+        }
     }
 
     private fun onEdgePreparationChanged(value: String) {

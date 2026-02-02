@@ -9,19 +9,20 @@ import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.Responsibility as ResponsibilityEnum
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
-import androidx.annotation.StringRes
-
 
 @Composable
 fun Responsibility(
     selectedResponsibility: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    onResponsibilitySelected: (String) -> Unit,
-    language: String = "RU"
+    onResponsibilitySelected: (String) -> Unit
 ) {
-    val options = ResponsibilityEnum.entries.map { it.id to it.getLocalizedName(language) }
-    val selectedLabel = ResponsibilityEnum.fromId(selectedResponsibility)?.getLocalizedName(language) ?: selectedResponsibility
+    val options = ResponsibilityEnum.entries.map { 
+        it.id to stringResource(it.nameRes) 
+    }
+    val selectedLabel = ResponsibilityEnum.fromId(selectedResponsibility)?.let {
+        stringResource(it.nameRes)
+    } ?: selectedResponsibility
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(

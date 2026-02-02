@@ -28,6 +28,7 @@
     <string name="preview_thickness">Thickness</string>
     <string name="preview_joint_type">Joint type</string>
     <string name="preview_responsibility">Responsibility</string>
+    <string name="preview_welding_type">Welding Type</string>
     <string name="preview_engineer">Engineer</string>
     <string name="preview_standard">Standard</string>
     <string name="preview_back">Back</string>

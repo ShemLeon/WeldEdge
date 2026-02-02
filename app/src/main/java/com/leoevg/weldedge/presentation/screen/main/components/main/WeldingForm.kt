@@ -62,8 +62,7 @@ fun WeldingForm(
                 selectedType = params.jointType,
                 isExpanded = state.isJointTypeExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleJointTypeExpanded) },
-                onTypeSelected = { onEvent(MainScreenEvent.JointTypeChanged(it)) },
-                language = state.language
+                onTypeSelected = { onEvent(MainScreenEvent.JointTypeChanged(it)) }
             )
 
             DashedDivider()
@@ -73,8 +72,7 @@ fun WeldingForm(
                 selectedResponsibility = params.responsibility,
                 isExpanded = state.isResponsibilityExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleResponsibilityExpanded) },
-                onResponsibilitySelected = { onEvent(MainScreenEvent.ResponsibilityChanged(it)) },
-                language = state.language
+                onResponsibilitySelected = { onEvent(MainScreenEvent.ResponsibilityChanged(it)) }
             )
 
             DashedDivider()
