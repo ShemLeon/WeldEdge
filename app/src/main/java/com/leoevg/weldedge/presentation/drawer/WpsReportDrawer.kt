@@ -239,13 +239,13 @@ class WpsReportDrawer(private val context: Context) {
         try {
             if (params.edgePreparation.isNotEmpty()) {
                 val folder = when (params.jointType) {
-                    "стык" -> "groove"
-                    "тавр" -> "t"
-                    "нахлест" -> "lap"
-                    "угловое" -> "corner"
-                    else -> "groove"
-                }
-                val subFolder = if (params.responsibility == "нагруженный") "stress" else "simple"
+    "butt" -> "groove"
+    "t_joint" -> "t"
+    "lap" -> "lap"
+    "corner" -> "corner"
+    else -> "groove"
+}
+val subFolder = if (params.responsibility == "stress") "stress" else "simple"
                 val fullPath = "edge_preparation/$folder/$subFolder/${params.edgePreparation}"
 
                 val inputStream = context.assets.open(fullPath)
