@@ -41,10 +41,10 @@ class WpsReportDrawer(private val context: Context) {
             rows = 5,
             headerRow = listOf("Base Metal", "Specification", "Type or Grade", "M", "AWS Group No."),
             data = listOf(
-                listOf("Base Material", getEnglishMetalType(params.metalType), "", "", ""),
-                listOf("Welded To", getEnglishMetalType(params.metalType), "", "", ""),
+                listOf("Base Material", params.getEnglishMetalType(), "", "", ""),
+                listOf("Welded To", params.getEnglishMetalType(), "", "", ""),
                 listOf("Backing Material", "", "", "", ""),
-                listOf("Other", "Standard: ${getEnglishStandard(params.standard)}", "", "", ""),
+                listOf("Other", "Standard: ${params.getEnglishStandard()}", "", "", ""),
                 listOf("", "", "", "", "")
             ),
             columnWeights = listOf(2.2f, 1.8f, 1.2f, 0.4f, 1.2f),
@@ -100,12 +100,12 @@ class WpsReportDrawer(private val context: Context) {
             rows = 6,
             headerTitle = "Joint Details",
             data = listOf(
-                listOf("Joint Type", getEnglishJointType(params.jointType)),
+                listOf("Joint Type", params.getEnglishJointType()),
                 listOf("Groove Angle (Deg)", "60"),
                 listOf("Root Opening (mm)", "1.6"),
                 listOf("Root Face (mm)", "0.5"),
                 listOf("Back gouging", "NO"),
-                listOf("Responsibility", getEnglishResponsibility(params.responsibility))
+                listOf("Responsibility", params.getEnglishResponsibility())
             ),
             columnWeights = listOf(1.5f, 1f),
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
@@ -240,15 +240,7 @@ class WpsReportDrawer(private val context: Context) {
 
         try {
             if (params.edgePreparation.isNotEmpty()) {
-                val folder = when (params.jointType) {
-    "butt" -> "groove"
-    "t_joint" -> "t"
-    "lap" -> "lap"
-    "corner" -> "corner"
-    else -> "groove"
-}
-val subFolder = if (params.responsibility == "stress") "stress" else "simple"
-                val fullPath = "edge_preparation/$folder/$subFolder/${params.edgePreparation}"
+                val fullPath = params.getEdgePreparationFullPath()
 
                 val inputStream = context.assets.open(fullPath)
                 val svg = SVG.getFromInputStream(inputStream)
@@ -344,7 +336,7 @@ val subFolder = if (params.responsibility == "stress") "stress" else "simple"
         } catch (e: Exception) {}
 
         canvas.drawLine(x + logoWidth, y + rowHeight, x + width, y + rowHeight, paint)
-        canvas.drawText("Welding Procedure Specification (WPS)", x + logoWidth + dataWidth / 2, y + rowHeight - 4f, boldPaint)
+        canvas.drawText("Welding Procedure Specification WPS ${params.getWPSnumber()}", x + logoWidth + dataWidth / 2, y + rowHeight - 4f, boldPaint)
 
         canvas.drawLine(x + logoWidth, y + rowHeight * 2, x + width, y + rowHeight * 2, paint)
         val date = java.text.SimpleDateFormat("dd/MM/yy", java.util.Locale.getDefault()).format(java.util.Date())
@@ -363,37 +355,4 @@ val subFolder = if (params.responsibility == "stress") "stress" else "simple"
         return y + rowHeight * 3
     }
 
-    private fun getEnglishJointType(jointType: String): String {
-        return when (jointType) {
-            "butt" -> "Butt"
-            "t_joint" -> "T-joint"
-            "corner" -> "Corner"
-            "lap" -> "Lap"
-            else -> jointType.replaceFirstChar { it.uppercase() }
-        }
-    }
-
-    private fun getEnglishResponsibility(responsibility: String): String {
-        return when (responsibility) {
-            "stress" -> "With groove"
-            "simple" -> "Without groove"
-            else -> responsibility
-        }
-    }
-
-    private fun getEnglishMetalType(metalType: String): String {
-        return when (metalType) {
-            "нержавейка" -> "Stainless Steel"
-            "углеродистая сталь" -> "Carbon Steel"
-            "алюминий" -> "Aluminum"
-            else -> metalType // Уже на английском (например, AISI316L)
-        }
-    }
-
-    private fun getEnglishStandard(standard: String): String {
-        return when (standard) {
-            "ГОСТ" -> "GOST"
-            else -> standard
-        }
-    }
 }

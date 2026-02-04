@@ -99,11 +99,6 @@ fun WeldingForm(
 
             DashedDivider()
 
-            // Standard
-            StandardSelection(
-                selectedStandard = params.standard,
-                onStandardSelected = { onEvent(MainScreenEvent.StandardChanged(it)) }
-            )
 
             SubmitButton(
                 onClick = { onEvent(MainScreenEvent.SubmitClicked) }
