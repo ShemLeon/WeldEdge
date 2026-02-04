@@ -34,13 +34,20 @@ fun WeldingTypeSelection(
     onTypeSelected: (String) -> Unit
 ) {
     val context = LocalContext.current
+    
     val items = remember {
         val fullPath = "type_of_welding"
         try {
             context.assets.list(fullPath)?.map { fileName ->
+                val label = when (fileName) {
+                    "type_1_TIG.svg" -> "TIG"
+                    "type_2_MAG-MIG.svg" -> "MIG / MAG"
+                    "type_3_MMA.svg" -> "MMA / Stick"
+                    else -> fileName.removeSuffix(".svg")
+                }
                 WeldingTypeItem(
                     id = fileName,
-                    label = fileName.removeSuffix(".svg"),
+                    label = label,
                     assetPath = "file:///android_asset/$fullPath/$fileName"
                 )
             }?.sortedBy { it.id } ?: emptyList()
