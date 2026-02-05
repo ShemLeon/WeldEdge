@@ -37,7 +37,7 @@ fun AlloyCategorySelector(
 @Composable
 fun AlloyCategorySelectorPreview() {
     AlloyCategorySelector(
-        categories = listOf("Fe", "Fe++", "Al", "Ti"),
+        categories = listOf("Fe", "SS", "Al"),
         selectedCategory = "Fe",
         onCategorySelected = {}
     )
