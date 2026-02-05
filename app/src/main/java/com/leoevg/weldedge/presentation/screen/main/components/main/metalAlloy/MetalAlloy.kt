@@ -4,45 +4,29 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.data.local.PreferencesManager
 import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 
 @Composable
 fun MetalAlloy(
-    selectedType: String,
-    onTypeSelected: (String) -> Unit,
-    preferencesManager: PreferencesManager
+    selectedAlloy: String,
+    onAlloySelected: (String) -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
-
-    val categories = listOf("Fe", "SS", "Al")
-    val isCategorySelected = selectedType in categories
-
-    val detectedCategory = if (isCategorySelected) {
-        selectedType
-    } else {
-        categories.find { selectedType.startsWith(it) }
+    var selectedCategory by remember { 
+        mutableStateOf(
+            Alloys.allAlloys.find { it.name == selectedAlloy }?.category
+        ) 
     }
 
-    LaunchedEffect(detectedCategory) {
-        if (detectedCategory != null) {
-            selectedCategory = detectedCategory
-        }
-    }
-
-    val history = remember(selectedCategory) {
-        selectedCategory?.let { preferencesManager.getMetalAlloyHistory(it) } ?: emptyList()
+    val alloysInCategory = remember(selectedCategory) {
+        selectedCategory?.let { Alloys.getAlloysByCategory(it) } ?: emptyList()
     }
 
     FormField(label = stringResource(R.string.alloy_label), required = true) {
@@ -51,22 +35,21 @@ fun MetalAlloy(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             AlloyCategorySelector(
-                categories = categories,
                 selectedCategory = selectedCategory,
                 onCategorySelected = { category ->
                     selectedCategory = category
-                    onTypeSelected(category)
+                    // При смене категории можно либо сбрасывать выбор, либо оставлять текущий если он совпадает
+                    if (alloysInCategory.none { it.name == selectedAlloy }) {
+                        // onAlloySelected("") // Опционально: сбрасывать выбор при смене категории
+                    }
                 }
             )
 
-            if (selectedCategory != null && history.isNotEmpty()) {
+            if (selectedCategory != null) {
                 AlloyHistoryChips(
-                    history = history,
-                    selectedAlloy = if (isCategorySelected) "" else selectedType,
-                    onAlloySelected = { alloyName ->
-                        focusManager.clearFocus()
-                        onTypeSelected(alloyName)
-                    }
+                    history = alloysInCategory.map { it.name },
+                    selectedAlloy = selectedAlloy,
+                    onAlloySelected = onAlloySelected
                 )
             }
         }

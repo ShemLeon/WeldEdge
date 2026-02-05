@@ -13,9 +13,8 @@ import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 @Composable
 fun AlloyCategorySelector(
-    categories: List<String>,
-    selectedCategory: String?,
-    onCategorySelected: (String) -> Unit,
+    selectedCategory: AlloyCategory?,
+    onCategorySelected: (AlloyCategory) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -23,9 +22,9 @@ fun AlloyCategorySelector(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
-        items(categories) { category ->
+        items(AlloyCategory.entries) { category ->
             SelectableButton(
-                text = category.replaceFirstChar { it.uppercase() },
+                text = category.displayName,
                 isSelected = selectedCategory == category,
                 onClick = { onCategorySelected(category) }
             )
@@ -37,8 +36,7 @@ fun AlloyCategorySelector(
 @Composable
 fun AlloyCategorySelectorPreview() {
     AlloyCategorySelector(
-        categories = listOf("Fe", "SS", "Al"),
-        selectedCategory = "Fe",
+        selectedCategory = AlloyCategory.STEEL,
         onCategorySelected = {}
     )
 }

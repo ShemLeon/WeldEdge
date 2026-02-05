@@ -41,9 +41,8 @@ fun WeldingForm(
         ) {
             // Metal Type
             MetalAlloy(
-                selectedType = params.metalType,
-                onTypeSelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) },
-                preferencesManager = preferencesManager
+                selectedAlloy = params.metalType,
+                onAlloySelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
             )
 
             DashedDivider()
