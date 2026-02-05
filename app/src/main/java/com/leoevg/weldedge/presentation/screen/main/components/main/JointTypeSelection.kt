@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,12 @@ fun JointTypeSelection(
 ) {
     val jointTypes = JointType.entries.map { jointType ->
         JointTypeItem(jointType.id, stringResource(jointType.nameRes), jointType.iconRes)
+    }
+
+    LaunchedEffect(jointTypes) {
+        if (selectedType.isEmpty() && jointTypes.isNotEmpty()) {
+            onTypeSelected(jointTypes.first().id)
+        }
     }
 
     val selectedJointType = JointType.fromId(selectedType)

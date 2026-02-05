@@ -13,11 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.WeldingType
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 data class WeldingTypeItem(
@@ -33,26 +33,13 @@ fun WeldingTypeSelection(
     onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    
     val items = remember {
-        val fullPath = "type_of_welding"
-        try {
-            context.assets.list(fullPath)?.map { fileName ->
-                val label = when (fileName) {
-                    "type_1_TIG.svg" -> "TIG"
-                    "type_2_MAG-MIG.svg" -> "MIG / MAG"
-                    "type_3_MMA.svg" -> "MMA / Stick"
-                    else -> fileName.removeSuffix(".svg")
-                }
-                WeldingTypeItem(
-                    id = fileName,
-                    label = label,
-                    assetPath = "file:///android_asset/$fullPath/$fileName"
-                )
-            }?.sortedBy { it.id } ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
+        WeldingType.entries.map { type ->
+            WeldingTypeItem(
+                id = type.id,
+                label = type.displayName,
+                assetPath = "file:///android_asset/type_of_welding/${type.assetName}"
+            )
         }
     }
 

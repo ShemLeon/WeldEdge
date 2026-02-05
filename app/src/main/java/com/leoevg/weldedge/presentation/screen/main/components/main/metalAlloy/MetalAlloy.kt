@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.Alloys
 import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 
 @Composable

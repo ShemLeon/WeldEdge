@@ -73,7 +73,7 @@ class WpsReportDrawer(private val context: Context) {
         currentY = maxOf(yAfterBaseMetal, yAfterThickness) + 8f
 
         // 3. FILLER METAL TABLE
-        currentY = drawFillerMetalWithComplexHeader(canvas, drawer, tableConfig, margin, currentY, tableWidth)
+        currentY = drawFillerMetalWithComplexHeader(canvas, drawer, tableConfig, margin, currentY, tableWidth, params)
         
         currentY += 8f
 
@@ -137,7 +137,7 @@ class WpsReportDrawer(private val context: Context) {
         currentY = maxOf(yAfterPwht, yAfterSketch) + 8f
 
         // 8. Large Parameters Table
-        val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth)
+        val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth, params)
 
         // 9. Footer Text
         val footerPaint = Paint().apply {
@@ -150,7 +150,7 @@ class WpsReportDrawer(private val context: Context) {
         canvas.drawText("${engineerText}1 list from 1", margin, finalY + 20f, footerPaint)
     }
 
-    private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float): Float {
+    private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float, params: WeldingParams): Float {
         var curY = y
         val colWeights2 = listOf(1.5f, 1f)
         val colAligns2 = listOf(Paint.Align.LEFT, Paint.Align.CENTER)
@@ -160,12 +160,12 @@ class WpsReportDrawer(private val context: Context) {
             rows = 17,
             data = listOf(
                 listOf("Weld Layers / Passes", "1-5"),
-                listOf("Process", "GTAW"),
+                listOf("Process", params.getProcess()),
                 listOf("Type (Manual / Semiautomatic / Automatic)", "Manual"),
                 listOf("Preheat Temperature (C°)", "20"),
                 listOf("Interpass Temperature (C°)", "150"),
-                listOf("Filler Metal (AWS Spe)", "A5.18"),
-                listOf("AWS Classification", "ER316L"),
+                listOf("Filler Metal (AWS Spe)", ""),
+                listOf("AWS Classification", params.getAwsClassification()),
                 listOf("F No / A No", "6"),
                 listOf("Nominal composition", ""),
                 listOf("Manufacturer / Trade name", "ZIKA"),
@@ -279,7 +279,8 @@ class WpsReportDrawer(private val context: Context) {
         config: TableConfig,
         x: Float,
         y: Float,
-        width: Float
+        width: Float,
+        params: WeldingParams
     ): Float {
         val rowHeight = config.textSize + (2 * config.cellPaddingVertical)
         val weights = listOf(1.2f, 1.5f, 2.0f, 0.7f, 0.7f, 2.0f, 1.2f, 1.2f)
@@ -306,7 +307,7 @@ class WpsReportDrawer(private val context: Context) {
             columns = 8,
             rows = 1,
             headerRow = listOf("Process", "AWS Spec", "AWS Classification", "F-No", "A-No", "Trade Name", "As Weld", "With PWHT"),
-            data = listOf(listOf("GTAW", "ER316L", "A5.9", "6", "", "", "2-6", "")),
+            data = listOf(listOf(params.getProcess(), "", params.getAwsClassification(), "6", "", "", "${params.thickness}", "")),
             columnWeights = weights,
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
             config = config.copy(headerBold = false)

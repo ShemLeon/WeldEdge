@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.WeldingType
 
 @Composable
 fun DocumentPreviewScreen(
@@ -96,8 +97,8 @@ fun DocumentPreviewScreen(
                 PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
                 PreviewRow(stringResource(R.string.preview_responsibility), responsibilityLocalized)
                 if (params.weldingType.isNotEmpty()) {
-                    val weldingTypeLabel = params.weldingType.removeSuffix(".svg").replace("_", " ")
-                    PreviewRow(stringResource(R.string.preview_welding_type), weldingTypeLabel)
+                    val weldingTypeDisplayName = WeldingType.fromId(params.weldingType)?.displayName ?: params.weldingType
+                    PreviewRow(stringResource(R.string.preview_welding_type), weldingTypeDisplayName)
                 }
                 if (params.engineerName.isNotEmpty()) {
                     PreviewRow(stringResource(R.string.preview_engineer), params.engineerName)

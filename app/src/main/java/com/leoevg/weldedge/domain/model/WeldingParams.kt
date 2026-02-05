@@ -11,7 +11,12 @@ data class WeldingParams(
     val standard: String = ""
 ) {
 
-    // Функции для получения номера стандарта
+    // Функция для получения номера классификации по AWS
+    fun getAwsClassification(): String {
+        return Alloys.findByName(metalType)?.getEffectiveAwsClassification() ?: "_________"
+    }
+
+    // Функция для получения номера стандарта
     fun getWPSnumber(): String {
         return when (jointType) {
             "butt" -> "3092 (013)"
@@ -21,12 +26,7 @@ data class WeldingParams(
 
     // Функции для получения типа сварки в отчете (Process)
     fun getProcess(): String {
-        return when (weldingType) {
-            "TIG" -> "GTAW"
-            "MIGMAG" -> "GMAW"
-            "MMA" -> "SMAW"
-            else -> "_________"
-        }
+        return WeldingType.fromId(weldingType)?.processName ?: "_________"
     }
 
     // Функции для получения преобразованных значений
@@ -49,12 +49,7 @@ data class WeldingParams(
     }
 
     fun getEnglishMetalType(): String {
-        return when (metalType) {
-            "нержавейка" -> "Stainless Steel"
-            "углеродистая сталь" -> "Carbon Steel"
-            "алюминий" -> "Aluminum"
-            else -> metalType
-        }
+        return Alloys.findByName(metalType)?.getFullName() ?: metalType
     }
 
     fun getEnglishStandard(): String {

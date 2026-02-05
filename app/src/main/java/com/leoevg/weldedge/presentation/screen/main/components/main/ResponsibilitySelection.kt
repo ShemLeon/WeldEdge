@@ -2,6 +2,7 @@ package com.leoevg.weldedge.presentation.screen.main.components.main
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -20,6 +21,13 @@ fun Responsibility(
     val options = ResponsibilityEnum.entries.map { 
         it.id to stringResource(it.nameRes) 
     }
+
+    LaunchedEffect(options) {
+        if (selectedResponsibility.isEmpty() && options.isNotEmpty()) {
+            onResponsibilitySelected(options.first().first)
+        }
+    }
+
     val selectedLabel = ResponsibilityEnum.fromId(selectedResponsibility)?.let {
         stringResource(it.nameRes)
     } ?: selectedResponsibility

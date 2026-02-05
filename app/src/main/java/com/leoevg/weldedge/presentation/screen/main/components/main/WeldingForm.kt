@@ -27,7 +27,6 @@ fun WeldingForm(
 ) {
     val params = state.params
     val context = LocalContext.current
-    val preferencesManager = remember { AppModule.providePreferencesManager(context) }
     
     Card(
         modifier = Modifier.fillMaxWidth(1f),
