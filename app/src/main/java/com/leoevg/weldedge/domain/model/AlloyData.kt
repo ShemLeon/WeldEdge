@@ -12,6 +12,11 @@ data class Alloy(
     val awsClassification: String? = null
 ) {
     fun getFullName(): String {
+        // Для конструкционных сталей (начинаются на S) префикс не нужен или другой
+        if (category == AlloyCategory.STEEL && name.startsWith("S")) {
+            return name
+        }
+        
         val prefix = when (category) {
             AlloyCategory.ALUMINIUM -> "AL"
             AlloyCategory.STAINLESS_STEEL -> "SS"
@@ -25,23 +30,29 @@ data class Alloy(
         return when (category) {
             AlloyCategory.ALUMINIUM -> "A 5.10"
             AlloyCategory.STAINLESS_STEEL -> "A 5.9"
-            AlloyCategory.STEEL -> "A 5.18" // Default for steel if not specified
+            AlloyCategory.STEEL -> "A 5.18" 
         }
     }
 }
 
 object Alloys {
     val allAlloys = listOf(
-        // Aluminium
+        // Aluminium (Standard A 5.10)
         Alloy("5052", AlloyCategory.ALUMINIUM),
         Alloy("5086", AlloyCategory.ALUMINIUM),
         Alloy("6061", AlloyCategory.ALUMINIUM),
         Alloy("2014", AlloyCategory.ALUMINIUM),
         Alloy("1100", AlloyCategory.ALUMINIUM),
-        // Stainless Steel
+        
+        // Stainless Steel (Standard A 5.9)
         Alloy("304", AlloyCategory.STAINLESS_STEEL),
         Alloy("304L", AlloyCategory.STAINLESS_STEEL),
         Alloy("308L", AlloyCategory.STAINLESS_STEEL),
+        Alloy("316", AlloyCategory.STAINLESS_STEEL),
+        Alloy("316L", AlloyCategory.STAINLESS_STEEL),
+        Alloy("15-5 PH", AlloyCategory.STAINLESS_STEEL),
+        Alloy("17-4 PH", AlloyCategory.STAINLESS_STEEL),
+
         // Steel
         Alloy("4130", AlloyCategory.STEEL, awsClassification = "A 5.9"),
         Alloy("4340", AlloyCategory.STEEL, awsClassification = "A 5.28"),

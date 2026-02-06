@@ -11,6 +11,11 @@ data class WeldingParams(
     val standard: String = ""
 ) {
 
+    // Функция для получения рекомендованной проволоки
+    fun getRecommendedWire(): String {
+        return Wires.getRecommendedWire(metalType)?.name ?: "_________"
+    }
+
     // Функция для получения номера классификации по AWS
     fun getAwsClassification(): String {
         return Alloys.findByName(metalType)?.getEffectiveAwsClassification() ?: "_________"

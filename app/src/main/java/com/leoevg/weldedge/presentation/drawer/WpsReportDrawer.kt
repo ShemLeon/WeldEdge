@@ -307,7 +307,7 @@ class WpsReportDrawer(private val context: Context) {
             columns = 8,
             rows = 1,
             headerRow = listOf("Process", "AWS Spec", "AWS Classification", "F-No", "A-No", "Trade Name", "As Weld", "With PWHT"),
-            data = listOf(listOf(params.getProcess(), "", params.getAwsClassification(), "6", "", "", "${params.thickness}", "")),
+            data = listOf(listOf(params.getProcess(), params.getRecommendedWire(), params.getAwsClassification(), "6", "", "", "${params.thickness}", "")),
             columnWeights = weights,
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
             config = config.copy(headerBold = false)
