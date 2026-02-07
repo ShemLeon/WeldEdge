@@ -15,16 +15,11 @@ data class WeldingParams(
     fun getRootOpening(): String {
         val process = getProcess()
         val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
-        val edgePrep = EdgePreparation.fromId(edgePreparation)
         
-        return if (process == "GTAW") {
-            if (edgePrep == EdgePreparation.GROOVE_SQUARE_SINGLE && thicknessVal <= 2.5) {
-                "1.1"
-            } else {
-                "0.76"
-            }
+        return if (process == "GTAW" && thicknessVal <= 2.5) {
+            "1.1"
         } else {
-            "1.6" // Default value for other processes
+            "0.76"
         }
     }
 
