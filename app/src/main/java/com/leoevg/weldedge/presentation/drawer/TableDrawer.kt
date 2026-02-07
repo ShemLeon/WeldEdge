@@ -136,11 +136,17 @@ class TableDrawer(private val config: TableConfig = TableConfig()) {
             
             val textAlign = table.columnAligns?.getOrNull(colIndex) ?: Paint.Align.CENTER
             
+            // Logic for bold text and padding from screenshot:
+            // If text starts with 2 spaces, it's a sub-item (normal weight).
+            // If it's the first column and not a sub-item, it's a category (bold weight).
+            val isSubItem = text.startsWith("  ")
+            val isBoldCategory = colIndex == 0 && !isSubItem && !isHeader
+
             val textPaint = Paint().apply {
                 textSize = if (isHeader) config.headerTextSize else config.textSize
                 color = if (isHeader) config.headerTextColor else config.cellTextColor
                 isAntiAlias = true
-                isFakeBoldText = isHeader && config.headerBold
+                isFakeBoldText = (isHeader && config.headerBold) || isBoldCategory
                 this.textAlign = textAlign
             }
 
