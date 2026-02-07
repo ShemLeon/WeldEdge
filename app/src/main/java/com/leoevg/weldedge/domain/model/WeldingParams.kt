@@ -13,14 +13,24 @@ data class WeldingParams(
 
     // Функция для расчета Root Opening
     fun getRootOpening(): String {
-        val process = getProcess()
         val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
         
-        return if (process == "GTAW" && thicknessVal <= 2.5) {
+        val value = if (responsibility == "simple" && thicknessVal <= 2.5) {
             "1.1"
         } else {
             "0.76"
         }
+        return "≤ $value"
+    }
+
+    // Функция для расчета Root Face
+    fun getRootFace(): String {
+        val value = if (responsibility == "simple") {
+            "0.76"
+        } else {
+            "_________"
+        }
+        return if (value.contains("_")) value else "≤ $value"
     }
 
     // Функция для получения рекомендованной проволоки
