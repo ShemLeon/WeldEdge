@@ -136,7 +136,7 @@ class WpsReportDrawer(private val context: Context) {
         val yAfterSketch = startYForDetails + 150f 
         currentY = maxOf(yAfterPwht, yAfterSketch) + 8f
 
-        // 8. Large Parameters Table
+        // 8. Large Parameters Table (UPDATED TO 4 COLUMNS WITH HIERARCHY)
         val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth, params)
 
         // 9. Footer Text
@@ -152,76 +152,77 @@ class WpsReportDrawer(private val context: Context) {
 
     private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float, params: WeldingParams): Float {
         var curY = y
-        val colWeights2 = listOf(1.5f, 1f)
-        val colAligns2 = listOf(Paint.Align.LEFT, Paint.Align.CENTER)
+        // Weights for 4 columns: Label, Value, Empty, Empty
+        val colWeights = listOf(2.5f, 1.5f, 1f, 1f)
+        val colAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER)
 
         val weldLayersTable = Table(
-            columns = 2,
+            columns = 4,
             rows = 17,
             data = listOf(
-                listOf("Weld Layers / Passes", "1-5"),
-                listOf("Process", params.getProcess()),
-                listOf("Type (Manual / Semiautomatic / Automatic)", "Manual"),
-                listOf("Preheat Temperature (C°)", "20"),
-                listOf("Interpass Temperature (C°)", "150"),
-                listOf("Filler Metal (AWS Spe)", ""),
-                listOf("AWS Classification", params.getAwsClassification()),
-                listOf("F No / A No", "6"),
-                listOf("Nominal composition", ""),
-                listOf("Manufacturer / Trade name", "ZIKA"),
-                listOf("Filler Metal Diameter (mm)", "1.6"),
-                listOf("Deposited Thickness (mm)", ""),
-                listOf("Mas Pass Thickness (mm)", ""),
-                listOf("Position", "F for BW / F, H for FW"),
-                listOf("Vertical Progression (Up / Dune)", "-"),
-                listOf("Shielding Gas compos", "Ar 99.999%"),
-                listOf("Flow Rate (L / Min)", "14-15")
+                listOf("Weld Layers / Passes", "1-5", "", ""),
+                listOf("Process", params.getProcess(), "", ""),
+                listOf("  Type (Manual / Semiautomatic / Automatic)", "Manual", "", ""),
+                listOf("Preheat Temperature (C°), Range 56", "20", "", ""),
+                listOf("  Interpass Temperature (C°), Range 56", "150", "", ""),
+                listOf("Filler Metal (AWS Spe)", "", "", ""),
+                listOf("  AWS Classification", params.getAwsClassification(), "", ""),
+                listOf("  F No / A No", "6", "", ""),
+                listOf("  Nominal composition", "", "", ""),
+                listOf("  Manufacturer / Trade name", "ZIKA", "", ""),
+                listOf("  Filler Metal Diameter (mm)", "1.6", "", ""),
+                listOf("  Deposited Thickness (mm)", "", "", ""),
+                listOf("  Mas Pass Thickness (mm)", "", "", ""),
+                listOf("Position", "F for BW / F, H for FW", "", ""),
+                listOf("  Vertical Progression (Up / Dune)", "-", "", ""),
+                listOf("Shielding Gas compos", "Ar 99.999%", "", ""),
+                listOf("  Flow Rate (L / Min), Range: 80 - 150%", "14-15", "", "")
             ),
-            columnWeights = colWeights2,
-            columnAligns = colAligns2,
+            columnWeights = colWeights,
+            columnAligns = colAligns,
             config = config
         )
         curY = drawer.drawTable(canvas, weldLayersTable, x, curY, width)
 
         val electricalTable = Table(
-            columns = 2,
+            columns = 4,
             rows = 9,
             headerTitle = "Electrical Characteristics",
             data = listOf(
-                listOf("Electrode Diameter (GTAW)", "Red 3.2"),
-                listOf("Electrode Specification (GTAW)", "WT20"),
-                listOf("Multiple or Single Electrode", "Single"),
-                listOf("Current Type & Polarity", "DC-"),
-                listOf("Amps (A)", "120"),
-                listOf("Volts (V)", "12-14"),
-                listOf("Cold or hote wire feed (GTAW)", "Cold"),
-                listOf("Travel Speed (mm/Min)", ""),
-                listOf("Maximum Heat Input (KJ/mm)", "1")
+                listOf("  Electrode Diameter (GTAW)", "Red 3.2", "", ""),
+                listOf("  Electrode Specification (GTAW)", "WT20", "", ""),
+                listOf("  Multiple or Single Electrode", "Single", "", ""),
+                listOf("  Current Type & Polarity", "DC-", "", ""),
+                listOf("  Amps (A): GTAW ±5%, GMAW / FCAW ±10%", "120", "", ""),
+                listOf("  Volts (V): GTAW ±5%", "12-14", "", ""),
+                listOf("  Cold or hote wire feed (GTAW)", "Cold", "", ""),
+                listOf("  Travel Speed (mm/Min): GTAW ±5%, GMAW / FCAW ±10%", "", "", ""),
+                listOf("  Maximum Heat Input (KJ/mm)", "1", "", "")
             ),
-            columnWeights = colWeights2,
-            columnAligns = colAligns2,
+            columnWeights = colWeights,
+            columnAligns = colAligns,
             config = config.copy(headerBold = true)
         )
         curY = drawer.drawTable(canvas, electricalTable, x, curY, width)
 
         val techniqueTable = Table(
-            columns = 2,
+            columns = 4,
             rows = 10,
             headerTitle = "Technique",
             data = listOf(
-                listOf("Cap or Nozzle Size (mm)", "16"),
-                listOf("Wire Feed Speed", "-"),
-                listOf("Stringer or Weave", "Stringer"),
-                listOf("Multi or Single Pass (per side)", "Multi or Single"),
-                listOf("Oscillation (Mech/Auto)", "Auto"),
-                listOf("Transfer Length / Speed", "-"),
-                listOf("Dwell Time", "-"),
-                listOf("Peening", "No"),
-                listOf("Interpass Cleaning", "Yes"),
-                listOf("Other", "")
+                listOf("  Cap or Nozzle Size (mm)", "16", "", ""),
+                listOf("  Wire Feed Speed", "-", "", ""),
+                listOf("  Stringer or Weave", "Stringer", "", ""),
+                listOf("  Multi or Single Pass (per side)", "Multi or Single", "", ""),
+                listOf("  Oscillation (Mech/Auto)", "Auto", "", ""),
+                listOf("  Transfer Length / Speed", "-", "", ""),
+                listOf("  Dwell Time", "-", "", ""),
+                listOf("Peening", "No", "", ""),
+                listOf("  Interpass Cleaning", "Yes", "", ""),
+                listOf("Other", "Cleaning oil and rusty", "", "")
             ),
-            columnWeights = colWeights2,
-            columnAligns = colAligns2,
+            columnWeights = colWeights,
+            columnAligns = colAligns,
             config = config.copy(headerBold = true)
         )
         return drawer.drawTable(canvas, techniqueTable, x, curY, width)
