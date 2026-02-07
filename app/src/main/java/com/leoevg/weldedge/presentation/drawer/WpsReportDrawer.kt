@@ -102,7 +102,7 @@ class WpsReportDrawer(private val context: Context) {
             data = listOf(
                 listOf("Joint Type", params.getEnglishJointType()),
                 listOf("Groove Angle (Deg)", "60"),
-                listOf("Root Opening (mm)", "1.6"),
+                listOf("Root Opening (mm)", params.getRootOpening()),
                 listOf("Root Face (mm)", "0.5"),
                 listOf("Back gouging", "NO"),
                 listOf("Responsibility", params.getEnglishResponsibility())

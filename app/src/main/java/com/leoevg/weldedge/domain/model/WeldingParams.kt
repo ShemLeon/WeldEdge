@@ -11,6 +11,23 @@ data class WeldingParams(
     val standard: String = ""
 ) {
 
+    // Функция для расчета Root Opening
+    fun getRootOpening(): String {
+        val process = getProcess()
+        val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
+        val edgePrep = EdgePreparation.fromId(edgePreparation)
+        
+        return if (process == "GTAW") {
+            if (edgePrep == EdgePreparation.GROOVE_SQUARE_SINGLE && thicknessVal <= 2.5) {
+                "1.1"
+            } else {
+                "0.76"
+            }
+        } else {
+            "1.6" // Default value for other processes
+        }
+    }
+
     // Функция для получения рекомендованной проволоки
     fun getRecommendedWire(): String {
         return Wires.getRecommendedWire(metalType)?.name ?: "_________"
@@ -64,25 +81,7 @@ data class WeldingParams(
         }
     }
 
-    fun getEdgePreparationFolder(): String {
-        return when (jointType) {
-            "butt" -> "groove"
-            "t_joint" -> "t"
-            "lap" -> "lap"
-            "corner" -> "corner"
-            else -> "groove"
-        }
-    }
-
-    fun getEdgePreparationSubFolder(): String {
-        return if (responsibility == "stress") "stress" else "simple"
-    }
-
     fun getEdgePreparationFullPath(): String {
-        return if (edgePreparation.isNotEmpty()) {
-            "edge_preparation/${getEdgePreparationFolder()}/${getEdgePreparationSubFolder()}/$edgePreparation"
-        } else {
-            ""
-        }
+        return EdgePreparation.fromId(edgePreparation)?.getAssetPath() ?: ""
     }
 }
