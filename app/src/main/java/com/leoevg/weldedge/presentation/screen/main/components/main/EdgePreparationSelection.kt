@@ -13,46 +13,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.EdgePreparation
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
-import com.leoevg.weldedge.domain.model.EdgePreparationItem
+
+data class EdgePreparationItem(
+    val id: String,
+    val label: String,
+    val assetPath: String
+)
 
 @Composable
 fun EdgePreparationSelection(
     jointType: String,
     responsibility: String,
+    weldingType: String,
+    thickness: String,
     selectedType: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    val items = remember<List<EdgePreparationItem>>(jointType, responsibility) {
-        val folder = when (jointType) {
-            "butt" -> "groove"
-            "t_joint" -> "t"
-            "lap" -> "lap"
-            "corner" -> "corner"
-            else -> "groove"
-        }
-        val subFolder = if (responsibility == "stress") "stress" else "simple"
-        val fullPath = "edge_preparation/$folder/$subFolder"
-        
-        try {
-            context.assets.list(fullPath)?.map<String, EdgePreparationItem> { fileName ->
-                EdgePreparationItem(
-                    id = fileName,
-                    label = fileName.removeSuffix(".svg").replace("_", " "),
-                    assetPath = "file:///android_asset/$fullPath/$fileName"
-                )
-            }?.sortedBy { it.id } ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
+    val items = remember(jointType, responsibility, weldingType, thickness) {
+        EdgePreparation.getForSelection(jointType, responsibility, weldingType, thickness).map { prep ->
+            EdgePreparationItem(
+                id = prep.id,
+                label = prep.displayName,
+                assetPath = "file:///android_asset/${prep.getAssetPath()}"
+            )
         }
     }
 

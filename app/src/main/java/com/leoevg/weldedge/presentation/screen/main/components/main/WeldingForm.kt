@@ -9,12 +9,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.leoevg.weldedge.di.AppModule
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.MetalAlloy
@@ -26,7 +23,8 @@ fun WeldingForm(
     onEvent: (MainScreenEvent) -> Unit
 ) {
     val params = state.params
-    val context = LocalContext.current
+    val thicknessValue = params.thickness.toDoubleOrNull() ?: 0.0
+    val isStressAllowed = thicknessValue >= 1.5
     
     Card(
         modifier = Modifier.fillMaxWidth(1f),
@@ -70,15 +68,21 @@ fun WeldingForm(
                 selectedResponsibility = params.responsibility,
                 isExpanded = state.isResponsibilityExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleResponsibilityExpanded) },
-                onResponsibilitySelected = { onEvent(MainScreenEvent.ResponsibilityChanged(it)) }
+                onResponsibilitySelected = { 
+                    // Блокируем выбор "С разделкой" на программном уровне, если толщина мала
+                    if (it == "stress" && !isStressAllowed) return@Responsibility
+                    onEvent(MainScreenEvent.ResponsibilityChanged(it)) 
+                }
             )
 
             DashedDivider()
 
-            // Edge Preparation
+            // Edge Preparation (Виден всегда, но список внутри отфильтрован)
             EdgePreparationSelection(
                 jointType = params.jointType,
                 responsibility = params.responsibility,
+                weldingType = params.weldingType,
+                thickness = params.thickness,
                 selectedType = params.edgePreparation,
                 isExpanded = state.isEdgePreparationExpanded,
                 onToggleExpand = { onEvent(MainScreenEvent.ToggleEdgePreparationExpanded) },
