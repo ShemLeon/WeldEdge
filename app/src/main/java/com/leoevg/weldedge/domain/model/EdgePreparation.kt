@@ -71,8 +71,34 @@ enum class EdgePreparation(
     companion object {
         fun fromId(id: String): EdgePreparation? = entries.find { it.id == id }
         
-        fun getForSelection(jointType: String, responsibility: String): List<EdgePreparation> {
-            return entries.filter { it.jointType == jointType && it.responsibility == responsibility }
+        fun getForSelection(
+            jointType: String, 
+            responsibility: String,
+            weldingType: String = "",
+            thickness: String = ""
+        ): List<EdgePreparation> {
+            val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
+            val process = WeldingType.fromId(weldingType)?.processName ?: ""
+
+            return entries.filter { prep ->
+                // Базовая фильтрация по типу соединения и ответственности
+                if (prep.jointType != jointType || prep.responsibility != responsibility) {
+                    return@filter false
+                }
+
+                // Специфическое условие для Single Bevel Groove:
+                // GTAW: 1.5 - 13.0 мм
+                // GMAW или SAW: 1.5 мм и выше
+                if (prep == GROOVE_BEVEL_SINGLE) {
+                    return@filter when (process) {
+                        "GTAW" -> thicknessVal in 1.5..13.0
+                        "GMAW", "SAW" -> thicknessVal >= 1.5
+                        else -> false
+                    }
+                }
+
+                true
+            }
         }
     }
 }

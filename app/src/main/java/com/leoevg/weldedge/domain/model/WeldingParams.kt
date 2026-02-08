@@ -25,11 +25,22 @@ data class WeldingParams(
 
     // Функция для расчета Root Face
     fun getRootFace(): String {
+        val process = getProcess()
+        val edgePrep = EdgePreparation.fromId(edgePreparation)
+
+        // Для Single Bevel Groove особые условия
+        if (edgePrep == EdgePreparation.GROOVE_BEVEL_SINGLE) {
+            val value = if (process == "GTAW") "1.5" else "2.3"
+            return "≤ $value"
+        }
+
+        // Базовое условие для швов без разделки
         val value = if (responsibility == "simple") {
             "0.76"
         } else {
             "_________"
         }
+
         return if (value.contains("_")) value else "≤ $value"
     }
 
