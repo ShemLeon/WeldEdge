@@ -13,6 +13,7 @@ enum class EdgePreparation(
     GROOVE_FLARE_V_SINGLE("groove_3_flare_v.svg", "Flare-V single", "groove_3_flare_v.svg", "butt", "simple"),
     GROOVE_FLARE_V_DOUBLE("groove_4_flare_v_double.svg", "Flare-V double", "groove_4_flare_v_double.svg", "butt", "simple"),
 
+
     // GROOVE STRESS
     GROOVE_V_SINGLE("groove_v_single.svg", "V single", "groove_v_single.svg", "butt", "stress"),
     GROOVE_V_DOUBLE("groove_v_double.svg", "V double", "groove_v_double.svg", "butt", "stress"),
