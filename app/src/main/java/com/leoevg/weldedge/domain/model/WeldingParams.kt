@@ -26,7 +26,7 @@ data class WeldingParams(
     // Функция для расчета Root Face
     fun getRootFace(): String {
         if (responsibility == "simple") {
-            return "X"
+            return "-"
         }
 
         val process = getProcess()
@@ -89,6 +89,51 @@ data class WeldingParams(
                 "GMAW", "SAW" -> "1.25-2.26"
                 else -> "_________"
             }
+
+            else -> "_________"
+        }
+    }
+
+    // Функция для расчета Groove Angle
+    fun getGrooveAngle(): String {
+        if (responsibility == "simple") {
+            return "-"
+        }
+
+        val process = getProcess()
+        val edgePrep = EdgePreparation.fromId(edgePreparation)
+        val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
+        val alloy = Alloys.findByName(metalType)
+        val isAluOrTi = alloy?.category == AlloyCategory.ALUMINIUM || alloy?.category?.displayName == "Ti"
+
+        return when {
+            // Bevel и V (все типы соединений, single и double)
+            edgePrep == EdgePreparation.GROOVE_BEVEL_SINGLE || 
+            edgePrep == EdgePreparation.T_BEVEL_SINGLE || 
+            edgePrep == EdgePreparation.LAP_BEVEL || 
+            edgePrep == EdgePreparation.CORNER_BEVEL_INSIDE || 
+            edgePrep == EdgePreparation.CORNER_BEVEL_OUTSIDE ||
+            edgePrep == EdgePreparation.GROOVE_V_SINGLE || 
+            edgePrep == EdgePreparation.CORNER_V_GROOVE ||
+            edgePrep == EdgePreparation.GROOVE_BEVEL_DOUBLE || 
+            edgePrep == EdgePreparation.T_BEVEL_DOUBLE ||
+            edgePrep == EdgePreparation.GROOVE_V_DOUBLE -> {
+                when (process) {
+                    "GTAW" -> if (thicknessVal in 1.5..13.0) "60°" else "_________"
+                    "GMAW", "SAW" -> if (isAluOrTi) "60°" else "45°"
+                    else -> "_________"
+                }
+            }
+            // Все U-Groove
+            edgePrep == EdgePreparation.GROOVE_U_SINGLE || 
+            edgePrep == EdgePreparation.GROOVE_U_DOUBLE || 
+            edgePrep == EdgePreparation.CORNER_U -> "20°"
+            
+            // Все J-Groove
+            edgePrep == EdgePreparation.GROOVE_J_SINGLE || 
+            edgePrep == EdgePreparation.GROOVE_J_DOUBLE || 
+            edgePrep == EdgePreparation.CORNER_J_INSIDE || 
+            edgePrep == EdgePreparation.CORNER_J_OUTSIDE -> "30°"
 
             else -> "_________"
         }
