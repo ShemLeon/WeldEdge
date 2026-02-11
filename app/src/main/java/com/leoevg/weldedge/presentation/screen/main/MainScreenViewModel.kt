@@ -28,7 +28,7 @@ class MainScreenViewModel @Inject constructor(
             preferencesManager.saveJointType(it)
         }
         // Map old stress/simple to BW/FW if necessary, or just use new defaults
-        val rawResponsibility = preferencesManager.getResponsibility()
+        val rawResponsibility = preferencesManager.getTypeOfWeld()
         val typeOfWeld = when (rawResponsibility) {
             "stress" -> "BW"
             "simple" -> "FW"
@@ -53,7 +53,7 @@ class MainScreenViewModel @Inject constructor(
                 weldingType = weldingType
             ),
             isJointTypeExpanded = preferencesManager.isJointTypeExpanded(),
-            isTypeOfWeldExpanded = preferencesManager.isResponsibilityExpanded(),
+            isTypeOfWeldExpanded = preferencesManager.isTypeOfWeldExpanded(),
             isEdgePreparationExpanded = true,
             isWeldingTypeExpanded = preferencesManager.isWeldingTypeExpanded(),
             language = preferencesManager.getLanguage(),
@@ -143,7 +143,7 @@ class MainScreenViewModel @Inject constructor(
             "FW" -> "simple"
             else -> value
         }
-        preferencesManager.saveResponsibility(storedValue)
+        preferencesManager.saveTypeOfWeld(storedValue)
         _state.update { 
             it.copy(
                 params = it.params.copy(
@@ -186,7 +186,7 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onToggleTypeOfWeldExpanded() {
         val newState = !_state.value.isTypeOfWeldExpanded
-        preferencesManager.saveResponsibilityExpanded(newState)
+        preferencesManager.saveTypeOfWeldExpanded(newState)
         _state.update { it.copy(isTypeOfWeldExpanded = newState) }
     }
 

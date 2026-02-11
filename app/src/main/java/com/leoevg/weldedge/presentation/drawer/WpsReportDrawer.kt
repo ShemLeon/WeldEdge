@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.JointType
-import com.leoevg.weldedge.domain.model.Responsibility
 import com.leoevg.weldedge.domain.model.Table
 import com.leoevg.weldedge.domain.model.TableConfig
 import com.leoevg.weldedge.domain.model.WeldingParams

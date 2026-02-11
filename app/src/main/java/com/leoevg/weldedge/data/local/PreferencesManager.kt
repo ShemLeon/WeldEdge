@@ -57,11 +57,11 @@ class PreferencesManager @Inject constructor(context: Context) {
         return prefs.getString(KEY_JOINT_TYPE, null)
     }
 
-    fun saveResponsibility(responsibility: String) {
-        prefs.edit().putString(KEY_RESPONSIBILITY, responsibility).apply()
+    fun saveTypeOfWeld(typeOfWeld: String) {
+        prefs.edit().putString(KEY_RESPONSIBILITY, typeOfWeld).apply()
     }
 
-    fun getResponsibility(): String? {
+    fun getTypeOfWeld(): String? {
         return prefs.getString(KEY_RESPONSIBILITY, null)
     }
 
@@ -89,11 +89,11 @@ class PreferencesManager @Inject constructor(context: Context) {
         return prefs.getBoolean(KEY_JOINT_TYPE_EXPANDED, true)
     }
 
-    fun saveResponsibilityExpanded(isExpanded: Boolean) {
+    fun saveTypeOfWeldExpanded(isExpanded: Boolean) {
         prefs.edit().putBoolean(KEY_RESPONSIBILITY_EXPANDED, isExpanded).apply()
     }
 
-    fun isResponsibilityExpanded(): Boolean {
+    fun isTypeOfWeldExpanded(): Boolean {
         return prefs.getBoolean(KEY_RESPONSIBILITY_EXPANDED, true)
     }
 

@@ -42,7 +42,7 @@ fun DocumentPreviewScreen(
     val jointTypeLocalized = JointType.fromId(params.jointType)?.let {
         stringResource(it.nameRes)
     } ?: params.jointType
-    val typeOfWeldLocalized = TypeOfWelds.fromId(params.typeOfWeld)?.let {
+    val typeOfWeldsLocalized = TypeOfWelds.fromId(params.typeOfWeld)?.let {
         stringResource(it.nameRes)
     } ?: params.typeOfWeld
     
@@ -93,7 +93,7 @@ fun DocumentPreviewScreen(
                 PreviewRow(stringResource(R.string.preview_metal_type), params.metalType)
                 PreviewRow(stringResource(R.string.preview_thickness), "${params.thickness} ${stringResource(R.string.unit_mm)}")
                 PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
-                PreviewRow(stringResource(R.string.preview_type_of_welds), typeOfWeldLocalized)
+                PreviewRow(stringResource(R.string.preview_type_of_welds), typeOfWeldsLocalized)
                 if (params.weldingType.isNotEmpty()) {
                     val weldingTypeDisplayName = WeldingType.fromId(params.weldingType)?.displayName ?: params.weldingType
                     PreviewRow(stringResource(R.string.preview_welding_type), weldingTypeDisplayName)

@@ -18,7 +18,7 @@ fun TypeOfWeldsSelection(
     onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
-    val options = TypeOfWelds.entries.map { 
+    val options = TypeOfWelds.entries.map {
         it.id to stringResource(it.nameRes) 
     }
 
