@@ -2,6 +2,7 @@ package com.leoevg.weldedge.domain.model
 
 data class WeldingParams(
     val metalType: String = "",
+    val metalType2: String = "",
     val thickness: String = "",
     val jointType: String = "",
     val typeOfWeld: String = "",
@@ -183,6 +184,10 @@ data class WeldingParams(
 
     fun getEnglishMetalType(): String {
         return Alloys.findByName(metalType)?.getFullName() ?: metalType
+    }
+
+    fun getEnglishMetalType2(): String {
+        return Alloys.findByName(metalType2)?.getFullName() ?: metalType2
     }
 
     fun getEnglishStandard(): String {

@@ -17,6 +17,14 @@ class PreferencesManager @Inject constructor(context: Context) {
         return prefs.getString(KEY_METAL_TYPE, null)
     }
 
+    fun saveMetalType2(type: String) {
+        prefs.edit().putString(KEY_METAL_TYPE_2, type).apply()
+    }
+
+    fun getMetalType2(): String? {
+        return prefs.getString(KEY_METAL_TYPE_2, null)
+    }
+
     fun saveMetalCategory(category: String) {
         prefs.edit().putString(KEY_METAL_CATEGORY, category).apply()
     }
@@ -115,6 +123,7 @@ class PreferencesManager @Inject constructor(context: Context) {
 
     companion object {
         private const val KEY_METAL_TYPE = "metal_type"
+        private const val KEY_METAL_TYPE_2 = "metal_type_2"
         private const val KEY_METAL_CATEGORY = "metal_category"
         private const val KEY_LANGUAGE = "language"
         private const val KEY_JOINT_TYPE = "joint_type"

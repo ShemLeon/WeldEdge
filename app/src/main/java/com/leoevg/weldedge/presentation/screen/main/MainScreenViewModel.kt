@@ -24,6 +24,9 @@ class MainScreenViewModel @Inject constructor(
         val metalType = preferencesManager.getMetalType() ?: "AISI316L".also {
             preferencesManager.saveMetalType(it)
         }
+        val metalType2 = preferencesManager.getMetalType2() ?: "AISI316L".also {
+            preferencesManager.saveMetalType2(it)
+        }
         val jointType = preferencesManager.getJointType() ?: "butt".also {
             preferencesManager.saveJointType(it)
         }
@@ -45,6 +48,7 @@ class MainScreenViewModel @Inject constructor(
         return MainScreenState(
             params = WeldingParams(
                 metalType = metalType,
+                metalType2 = metalType2,
                 thickness = "2",
                 jointType = jointType,
                 typeOfWeld = typeOfWeld,
@@ -66,6 +70,7 @@ class MainScreenViewModel @Inject constructor(
     fun onEvent(event: MainScreenEvent) {
         when (event) {
             is MainScreenEvent.MetalTypeChanged -> onMetalTypeChanged(event.value)
+            is MainScreenEvent.MetalType2Changed -> onMetalType2Changed(event.value)
             is MainScreenEvent.MetalCategoryChanged -> onMetalCategoryChanged(event.category)
             is MainScreenEvent.MetalAlloyConfirmed -> onMetalAlloyConfirmed(event.alloy)
             MainScreenEvent.DismissAlloyDialog -> onDismissAlloyDialog()
@@ -90,6 +95,11 @@ class MainScreenViewModel @Inject constructor(
     private fun onMetalTypeChanged(value: String) {
         preferencesManager.saveMetalType(value)
         _state.update { it.copy(params = it.params.copy(metalType = value)) }
+    }
+
+    private fun onMetalType2Changed(value: String) {
+        preferencesManager.saveMetalType2(value)
+        _state.update { it.copy(params = it.params.copy(metalType2 = value)) }
     }
 
     private fun onMetalCategoryChanged(category: String) {

@@ -18,7 +18,8 @@ import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 @Composable
 fun MetalAlloy(
     selectedAlloy: String,
-    onAlloySelected: (String) -> Unit
+    onAlloySelected: (String) -> Unit,
+    label: String? = null
 ) {
     var selectedCategory by remember { 
         mutableStateOf(
@@ -30,7 +31,7 @@ fun MetalAlloy(
         selectedCategory?.let { Alloys.getAlloysByCategory(it) } ?: emptyList()
     }
 
-    FormField(label = stringResource(R.string.alloy_label), required = true) {
+    val content: @Composable () -> Unit = {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -39,9 +40,8 @@ fun MetalAlloy(
                 selectedCategory = selectedCategory,
                 onCategorySelected = { category ->
                     selectedCategory = category
-                    // При смене категории можно либо сбрасывать выбор, либо оставлять текущий если он совпадает
                     if (alloysInCategory.none { it.name == selectedAlloy }) {
-                        // onAlloySelected("") // Опционально: сбрасывать выбор при смене категории
+                        // onAlloySelected("")
                     }
                 }
             )
@@ -54,5 +54,13 @@ fun MetalAlloy(
                 )
             }
         }
+    }
+
+    if (label != null) {
+        FormField(label = label, required = true) {
+            content()
+        }
+    } else {
+        content()
     }
 }

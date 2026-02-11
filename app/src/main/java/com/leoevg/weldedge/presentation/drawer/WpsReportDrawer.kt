@@ -41,7 +41,7 @@ class WpsReportDrawer(private val context: Context) {
             headerRow = listOf("Base Metal", "Specification", "Type or Grade", "M", "AWS Group No."),
             data = listOf(
                 listOf("Base Material", params.getEnglishMetalType(), "", "", ""),
-                listOf("Welded To", params.getEnglishMetalType(), "", "", ""),
+                listOf("Welded To", params.getEnglishMetalType2(), "", "", ""),
                 listOf("Backing Material", "", "", "", ""),
                 listOf("Other", "Standard: ${params.getEnglishStandard()}", "", "", ""),
                 listOf("", "", "", "", "")

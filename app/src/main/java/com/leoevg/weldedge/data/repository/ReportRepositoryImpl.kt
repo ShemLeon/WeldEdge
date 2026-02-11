@@ -32,7 +32,7 @@ class ReportRepositoryImpl @Inject constructor(
             pdfDocument.finishPage(page)
 
             val date = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault()).format(java.util.Date())
-            val fileName = "WPS_${params.metalType}_${params.jointType}_${date}.pdf"
+            val fileName = "WPS_${params.metalType}_${params.metalType2}_${params.jointType}_${date}.pdf"
             val file = File(context.getExternalFilesDir(null), fileName)
 
             pdfDocument.writeTo(FileOutputStream(file))

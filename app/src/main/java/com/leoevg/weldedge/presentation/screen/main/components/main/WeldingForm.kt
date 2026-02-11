@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.leoevg.weldedge.R
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.MetalAlloy
@@ -36,11 +38,19 @@ fun WeldingForm(
             modifier = Modifier.padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Metal Type
-            MetalAlloy(
-                selectedAlloy = params.metalType,
-                onAlloySelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
-            )
+            // Welded Metals (two alloy selectors)
+            FormField(label = stringResource(R.string.welded_metals_label), required = true) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    MetalAlloy(
+                        selectedAlloy = params.metalType,
+                        onAlloySelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
+                    )
+                    MetalAlloy(
+                        selectedAlloy = params.metalType2,
+                        onAlloySelected = { onEvent(MainScreenEvent.MetalType2Changed(it)) }
+                    )
+                }
+            }
 
             DashedDivider()
 

@@ -41,4 +41,6 @@
     <string name="error_invalid_thickness">Enter correct metal thickness</string>
     <string name="standard_label">Standard (optional)</string>
     <string name="alloy_label">Alloy</string>
+    <string name="welded_metals_label">Welded metals</string>
+    <string name="preview_metal_type_2">Welded to</string>
 </resources>
