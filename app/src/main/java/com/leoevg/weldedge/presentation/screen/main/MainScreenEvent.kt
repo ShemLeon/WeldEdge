@@ -8,7 +8,7 @@ sealed class MainScreenEvent {
 
     data class ThicknessChanged(val value: String) : MainScreenEvent()
     data class JointTypeChanged(val value: String) : MainScreenEvent()
-    data class ResponsibilityChanged(val value: String) : MainScreenEvent()
+    data class TypeOfWeldChanged(val value: String) : MainScreenEvent()
     data class EdgePreparationChanged(val value: String) : MainScreenEvent()
     data class WeldingTypeChanged(val value: String) : MainScreenEvent()
     data class EngineerNameChanged(val value: String) : MainScreenEvent()
@@ -17,7 +17,7 @@ sealed class MainScreenEvent {
     object SubmitClicked : MainScreenEvent()
     object BackClicked : MainScreenEvent()
     object ToggleJointTypeExpanded : MainScreenEvent()
-    object ToggleResponsibilityExpanded : MainScreenEvent()
+    object ToggleTypeOfWeldExpanded : MainScreenEvent()
     object ToggleEdgePreparationExpanded : MainScreenEvent()
     object ToggleWeldingTypeExpanded : MainScreenEvent()
     object GeneratePdfClicked : MainScreenEvent()

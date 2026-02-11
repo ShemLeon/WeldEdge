@@ -37,4 +37,7 @@
     <string name="error_invalid_thickness">Укажите корректную толщину металла</string>
     <string name="standard_label">Стандарт (опционально)</string>
     <string name="alloy_label">Сплав</string>
+    <string name="type_of_welds_label">Провар</string>
+    <string name="type_of_welds_bw">Частичный</string>
+    <string name="type_of_welds_fw">Полный</string>
 </resources>

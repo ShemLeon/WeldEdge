@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.domain.model.JointType
-import com.leoevg.weldedge.domain.model.Responsibility
+import com.leoevg.weldedge.domain.model.TypeOfWelds
 import com.leoevg.weldedge.domain.model.WeldingParams
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -42,9 +42,9 @@ fun DocumentPreviewScreen(
     val jointTypeLocalized = JointType.fromId(params.jointType)?.let {
         stringResource(it.nameRes)
     } ?: params.jointType
-    val responsibilityLocalized = Responsibility.fromId(params.responsibility)?.let {
+    val typeOfWeldLocalized = TypeOfWelds.fromId(params.typeOfWeld)?.let {
         stringResource(it.nameRes)
-    } ?: params.responsibility
+    } ?: params.typeOfWeld
     
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -65,11 +65,9 @@ fun DocumentPreviewScreen(
                 )
 
                 // Edge preparation image
-                val imagePath = getEdgePreparationImagePath(
-                    jointType = params.jointType,
-                    responsibility = params.responsibility,
-                    edgePreparation = params.edgePreparation
-                )
+                val imagePath = params.getEdgePreparationFullPath().let { 
+                    if (it.isNotEmpty()) "file:///android_asset/$it" else null 
+                }
 
                 if (imagePath != null) {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -95,7 +93,7 @@ fun DocumentPreviewScreen(
                 PreviewRow(stringResource(R.string.preview_metal_type), params.metalType)
                 PreviewRow(stringResource(R.string.preview_thickness), "${params.thickness} ${stringResource(R.string.unit_mm)}")
                 PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
-                PreviewRow(stringResource(R.string.preview_responsibility), responsibilityLocalized)
+                PreviewRow(stringResource(R.string.preview_type_of_welds), typeOfWeldLocalized)
                 if (params.weldingType.isNotEmpty()) {
                     val weldingTypeDisplayName = WeldingType.fromId(params.weldingType)?.displayName ?: params.weldingType
                     PreviewRow(stringResource(R.string.preview_welding_type), weldingTypeDisplayName)

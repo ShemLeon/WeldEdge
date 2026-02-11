@@ -27,9 +27,14 @@ class MainScreenViewModel @Inject constructor(
         val jointType = preferencesManager.getJointType() ?: "butt".also {
             preferencesManager.saveJointType(it)
         }
-        val responsibility = preferencesManager.getResponsibility() ?: "stress".also {
-            preferencesManager.saveResponsibility(it)
+        // Map old stress/simple to BW/FW if necessary, or just use new defaults
+        val rawResponsibility = preferencesManager.getResponsibility()
+        val typeOfWeld = when (rawResponsibility) {
+            "stress" -> "BW"
+            "simple" -> "FW"
+            else -> rawResponsibility ?: "BW"
         }
+        
         val standard = preferencesManager.getStandard() ?: "AWS".also {
             preferencesManager.saveStandard(it)
         }
@@ -42,13 +47,13 @@ class MainScreenViewModel @Inject constructor(
                 metalType = metalType,
                 thickness = "2",
                 jointType = jointType,
-                responsibility = responsibility,
+                typeOfWeld = typeOfWeld,
                 standard = standard,
                 engineerName = preferencesManager.getEngineerName(),
                 weldingType = weldingType
             ),
             isJointTypeExpanded = preferencesManager.isJointTypeExpanded(),
-            isResponsibilityExpanded = preferencesManager.isResponsibilityExpanded(),
+            isTypeOfWeldExpanded = preferencesManager.isResponsibilityExpanded(),
             isEdgePreparationExpanded = true,
             isWeldingTypeExpanded = preferencesManager.isWeldingTypeExpanded(),
             language = preferencesManager.getLanguage(),
@@ -66,14 +71,14 @@ class MainScreenViewModel @Inject constructor(
             MainScreenEvent.DismissAlloyDialog -> onDismissAlloyDialog()
             is MainScreenEvent.ThicknessChanged -> onThicknessChanged(event.value)
             is MainScreenEvent.JointTypeChanged -> onJointTypeChanged(event.value)
-            is MainScreenEvent.ResponsibilityChanged -> onResponsibilityChanged(event.value)
+            is MainScreenEvent.TypeOfWeldChanged -> onTypeOfWeldChanged(event.value)
             is MainScreenEvent.EdgePreparationChanged -> onEdgePreparationChanged(event.value)
             is MainScreenEvent.WeldingTypeChanged -> onWeldingTypeChanged(event.value)
             is MainScreenEvent.EngineerNameChanged -> onEngineerNameChanged(event.value)
             is MainScreenEvent.StandardChanged -> onStandardChanged(event.value)
             is MainScreenEvent.LanguageChanged -> onLanguageChanged(event.language)
             MainScreenEvent.ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
-            MainScreenEvent.ToggleResponsibilityExpanded -> onToggleResponsibilityExpanded()
+            MainScreenEvent.ToggleTypeOfWeldExpanded -> onToggleTypeOfWeldExpanded()
             MainScreenEvent.ToggleEdgePreparationExpanded -> onToggleEdgePreparationExpanded()
             MainScreenEvent.ToggleWeldingTypeExpanded -> onToggleWeldingTypeExpanded()
             MainScreenEvent.SubmitClicked -> onSubmitClicked()
@@ -125,19 +130,25 @@ class MainScreenViewModel @Inject constructor(
             it.copy(
                 params = it.params.copy(
                     jointType = value,
-                    edgePreparation = "" // Сброс подготовки кромок при смене типа соединения
+                    edgePreparation = "" 
                 )
             )
         }
     }
 
-    private fun onResponsibilityChanged(value: String) {
-        preferencesManager.saveResponsibility(value)
+    private fun onTypeOfWeldChanged(value: String) {
+        // Map BW/FW back to stress/simple for storage if needed, or update PreferencesManager
+        val storedValue = when(value) {
+            "BW" -> "stress"
+            "FW" -> "simple"
+            else -> value
+        }
+        preferencesManager.saveResponsibility(storedValue)
         _state.update { 
             it.copy(
                 params = it.params.copy(
-                    responsibility = value,
-                    edgePreparation = "" // Сброс подготовки кромок при смене ответственности
+                    typeOfWeld = value,
+                    edgePreparation = "" 
                 )
             )
         }
@@ -173,10 +184,10 @@ class MainScreenViewModel @Inject constructor(
         _state.update { it.copy(isJointTypeExpanded = newState) }
     }
 
-    private fun onToggleResponsibilityExpanded() {
-        val newState = !_state.value.isResponsibilityExpanded
+    private fun onToggleTypeOfWeldExpanded() {
+        val newState = !_state.value.isTypeOfWeldExpanded
         preferencesManager.saveResponsibilityExpanded(newState)
-        _state.update { it.copy(isResponsibilityExpanded = newState) }
+        _state.update { it.copy(isTypeOfWeldExpanded = newState) }
     }
 
     private fun onToggleEdgePreparationExpanded() {
@@ -205,7 +216,6 @@ class MainScreenViewModel @Inject constructor(
     private fun onGeneratePdfClicked() {
         viewModelScope.launch {
             generateReportUseCase(_state.value.params).onFailure {
-                // Here you could handle errors via state, e.g., show a snackbar event
             }
         }
     }

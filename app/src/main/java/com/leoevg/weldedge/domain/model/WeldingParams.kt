@@ -4,7 +4,7 @@ data class WeldingParams(
     val metalType: String = "",
     val thickness: String = "",
     val jointType: String = "",
-    val responsibility: String = "",
+    val typeOfWeld: String = "",
     val edgePreparation: String = "",
     val weldingType: String = "",
     val engineerName: String = "",
@@ -15,7 +15,7 @@ data class WeldingParams(
     fun getRootOpening(): String {
         val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
         
-        val value = if (responsibility == "simple" && thicknessVal <= 2.5) {
+        val value = if (typeOfWeld == "FW" && thicknessVal <= 2.5) {
             "1.1"
         } else {
             "0.76"
@@ -25,7 +25,7 @@ data class WeldingParams(
 
     // Функция для расчета Root Face
     fun getRootFace(): String {
-        if (responsibility == "simple") {
+        if (typeOfWeld == "FW") {
             return "-"
         }
 
@@ -96,7 +96,7 @@ data class WeldingParams(
 
     // Функция для расчета Groove Angle
     fun getGrooveAngle(): String {
-        if (responsibility == "simple") {
+        if (typeOfWeld == "FW") {
             return "-"
         }
 
@@ -173,11 +173,11 @@ data class WeldingParams(
         }
     }
 
-    fun getEnglishResponsibility(): String {
-        return when (responsibility) {
-            "stress" -> "With groove"
-            "simple" -> "Without groove"
-            else -> responsibility
+    fun getEnglishTypeOfWeld(): String {
+        return when (typeOfWeld) {
+            "BW" -> "BW"
+            "FW" -> "FW"
+            else -> typeOfWeld
         }
     }
 

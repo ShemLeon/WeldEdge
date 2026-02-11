@@ -24,7 +24,7 @@ fun WeldingForm(
 ) {
     val params = state.params
     val thicknessValue = params.thickness.toDoubleOrNull() ?: 0.0
-    val isStressAllowed = thicknessValue >= 1.5
+    val isBWAllowed = thicknessValue >= 1.5
     
     Card(
         modifier = Modifier.fillMaxWidth(1f),
@@ -63,24 +63,24 @@ fun WeldingForm(
 
             DashedDivider()
 
-            // Responsibility
-            Responsibility(
-                selectedResponsibility = params.responsibility,
-                isExpanded = state.isResponsibilityExpanded,
-                onToggleExpand = { onEvent(MainScreenEvent.ToggleResponsibilityExpanded) },
-                onResponsibilitySelected = { 
-                    // Блокируем выбор "С разделкой" на программном уровне, если толщина мала
-                    if (it == "stress" && !isStressAllowed) return@Responsibility
-                    onEvent(MainScreenEvent.ResponsibilityChanged(it)) 
+            // Type of Weld (formerly Responsibility)
+            TypeOfWeldsSelection(
+                selectedType = params.typeOfWeld,
+                isExpanded = state.isTypeOfWeldExpanded,
+                onToggleExpand = { onEvent(MainScreenEvent.ToggleTypeOfWeldExpanded) },
+                onTypeSelected = { 
+                    // Блокируем выбор "BW" на программном уровне, если толщина мала
+                    if (it == "BW" && !isBWAllowed) return@TypeOfWeldsSelection
+                    onEvent(MainScreenEvent.TypeOfWeldChanged(it)) 
                 }
             )
 
             DashedDivider()
 
-            // Edge Preparation (Виден всегда, но список внутри отфильтрован)
+            // Edge Preparation
             EdgePreparationSelection(
                 jointType = params.jointType,
-                responsibility = params.responsibility,
+                typeOfWeld = params.typeOfWeld,
                 weldingType = params.weldingType,
                 thickness = params.thickness,
                 selectedType = params.edgePreparation,

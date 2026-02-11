@@ -30,7 +30,7 @@ data class EdgePreparationItem(
 @Composable
 fun EdgePreparationSelection(
     jointType: String,
-    responsibility: String,
+    typeOfWeld: String,
     weldingType: String,
     thickness: String,
     selectedType: String,
@@ -38,8 +38,8 @@ fun EdgePreparationSelection(
     onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
-    val items = remember(jointType, responsibility, weldingType, thickness) {
-        EdgePreparation.getForSelection(jointType, responsibility, weldingType, thickness).map { prep ->
+    val items = remember(jointType, typeOfWeld, weldingType, thickness) {
+        EdgePreparation.getForSelection(jointType, typeOfWeld, weldingType, thickness).map { prep ->
             EdgePreparationItem(
                 id = prep.id,
                 label = prep.displayName,
