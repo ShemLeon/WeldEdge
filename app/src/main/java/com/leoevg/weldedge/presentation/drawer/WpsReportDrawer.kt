@@ -104,8 +104,8 @@ class WpsReportDrawer(private val context: Context) {
                 listOf("Groove Angle (Deg)", params.getGrooveAngle()),
                 listOf("Root Opening (mm)", params.getRootOpening()),
                 listOf("Root Face (mm)", params.getRootFace()),
-                listOf("Back gouging", "NO"),
-                listOf("Responsibility", params.getEnglishResponsibility())
+                 listOf("Back gouging", ""),
+                listOf("  Method", "")
             ),
             columnWeights = listOf(1.5f, 1f),
             columnAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER),
@@ -292,14 +292,17 @@ class WpsReportDrawer(private val context: Context) {
         val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
 
         var currentX = x
-        canvas.drawRect(currentX, y, currentX + colWidths[0], y + rowHeight, paint)
-        canvas.drawText("Filler Metal", currentX + colWidths[0] / 2, y + rowHeight / 2 + 3f, textPaint)
-        currentX += colWidths[0]
+        // Box for "Filler Metals" spanning Process and AWS Spec (first two columns)
+        val fillerMetalsWidth = colWidths[0] + colWidths[1]
+        canvas.drawRect(currentX, y, currentX + fillerMetalsWidth, y + rowHeight, paint)
+        canvas.drawText("Filler Metals", currentX + fillerMetalsWidth / 2, y + rowHeight / 2 + 3f, textPaint)
+        currentX += fillerMetalsWidth
 
-        val middlePartWidth = colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5]
-        canvas.drawRect(currentX, y, currentX + middlePartWidth, y + rowHeight, paint)
+        // Empty part spanning middle columns - NO BORDER drawn here
+        val middlePartWidth = colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5]
         currentX += middlePartWidth
 
+        // Box for "Thickness Range" spanning last two columns
         val lastTwoWidth = colWidths[6] + colWidths[7]
         canvas.drawRect(currentX, y, currentX + lastTwoWidth, y + rowHeight, paint)
         canvas.drawText("Thickness Range", currentX + lastTwoWidth / 2, y + rowHeight / 2 + 3f, textPaint)
