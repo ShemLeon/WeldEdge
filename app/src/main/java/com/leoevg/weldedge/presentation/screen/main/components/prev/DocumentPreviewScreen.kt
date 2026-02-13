@@ -103,6 +103,11 @@ fun DocumentPreviewScreen(
                     PreviewRow(stringResource(R.string.preview_engineer), params.engineerName)
                 }
                 PreviewRow(stringResource(R.string.preview_standard), params.standard)
+                val wpsValue = params.getWPSnumber()
+                PreviewRow(
+                    stringResource(R.string.preview_wps),
+                    if (wpsValue == "_________") "—" else wpsValue
+                )
             }
         }
 

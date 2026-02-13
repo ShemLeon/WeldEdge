@@ -30,6 +30,7 @@
     <string name="preview_welding_type">Тип сварки</string>
     <string name="preview_engineer">Инженер</string>
     <string name="preview_standard">Стандарт</string>
+    <string name="preview_wps">WPS</string>
     <string name="preview_back">Назад</string>
     <string name="preview_download_pdf">Скачать PDF</string>
     <string name="preview_edge_image_description">Разделка кромок</string>

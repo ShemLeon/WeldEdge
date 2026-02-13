@@ -34,6 +34,7 @@
     <string name="preview_welding_type">Welding Type</string>
     <string name="preview_engineer">Engineer</string>
     <string name="preview_standard">Standard</string>
+    <string name="preview_wps">WPS</string>
     <string name="preview_back">Back</string>
     <string name="preview_download_pdf">Download PDF</string>
     <string name="preview_edge_image_description">Edge preparation</string>

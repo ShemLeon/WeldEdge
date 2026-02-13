@@ -11,6 +11,19 @@ data class WeldingParams(
     val engineerName: String = "",
     val standard: String = ""
 ) {
+    // Функция для расчета номера WPS по таблице
+    fun getWPSnumber(): String {
+        val thicknessVal = thickness.toDoubleOrNull() ?: return "_________"
+        val process = getProcess()
+        if (process == "_________") return "_________"
+
+        // Определяем категорию каждого металла
+        val cat1 = Alloys.findByName(metalType)?.category?.displayName ?: return "_________"
+        val cat2 = Alloys.findByName(metalType2)?.category?.displayName ?: return "_________"
+
+        val entry = WpsTable.findWps(cat1, cat2, process, typeOfWeld, jointType, thicknessVal)
+        return entry?.wpsNumber?.ifEmpty { "_________" } ?: "_________"
+    }
 
     // Функция для расчета Root Opening
     fun getRootOpening(): String {
@@ -148,14 +161,6 @@ data class WeldingParams(
     // Функция для получения номера классификации по AWS
     fun getAwsClassification(): String {
         return Alloys.findByName(metalType)?.getEffectiveAwsClassification() ?: "_________"
-    }
-
-    // Функция для получения номера стандарта
-    fun getWPSnumber(): String {
-        return when (jointType) {
-            "butt" -> "3092 (013)"
-            else -> "_________"
-        }
     }
 
     // Функции для получения типа сварки в отчете (Process)
