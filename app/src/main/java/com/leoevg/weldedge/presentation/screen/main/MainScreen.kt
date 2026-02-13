@@ -154,7 +154,7 @@ fun MainScreenPreview() {
     MainScreenContent(
         state = MainScreenState(
             params = WeldingParams(
-                metalType = "Fe",
+                metalType = "CS",
                 thickness = "3.0",
                 jointType = "стык"
             )

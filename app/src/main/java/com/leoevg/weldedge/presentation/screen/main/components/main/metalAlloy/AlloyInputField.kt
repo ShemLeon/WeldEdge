@@ -31,7 +31,7 @@ fun AlloyInputField(
     var isFocused by remember { mutableStateOf(false) }
     
     // Категории для проверки: если выбрана категория, в поле пусто
-    val categories = listOf("Fe", "Fe++", "Al", "Ti")
+    val categories = listOf("CS", "SS", "Al", "Ti")
     val isCategorySelected = selectedType in categories
     
     // Если мы не в фокусе и выбрана категория (а не конкретный сплав) — показываем пустоту

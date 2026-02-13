@@ -3,7 +3,7 @@ package com.leoevg.weldedge.domain.model
 enum class AlloyCategory(val displayName: String) {
     ALUMINIUM("Al"),
     STAINLESS_STEEL("SS"),
-    STEEL("Fe")
+    STEEL("CS")
 }
 
 data class Alloy(

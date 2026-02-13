@@ -61,8 +61,8 @@ class MainScreenViewModel @Inject constructor(
             isEdgePreparationExpanded = true,
             isWeldingTypeExpanded = preferencesManager.isWeldingTypeExpanded(),
             language = preferencesManager.getLanguage(),
-            selectedMetalCategory = "Fe",
-            metalAlloyHistory = preferencesManager.getMetalAlloyHistory("Fe")
+            selectedMetalCategory = "CS",
+            metalAlloyHistory = preferencesManager.getMetalAlloyHistory("CS")
         )
     }
     val state: StateFlow<MainScreenState> = _state.asStateFlow()

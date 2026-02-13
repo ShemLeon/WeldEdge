@@ -30,7 +30,7 @@ class PreferencesManager @Inject constructor(context: Context) {
     }
 
     fun getMetalCategory(): String {
-        return prefs.getString(KEY_METAL_CATEGORY, "Fe") ?: "Fe"
+        return prefs.getString(KEY_METAL_CATEGORY, "CS") ?: "CS"
     }
 
     fun saveMetalAlloyHistory(category: String, alloyName: String) {
