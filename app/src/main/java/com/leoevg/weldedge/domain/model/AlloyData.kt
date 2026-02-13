@@ -1,9 +1,12 @@
 package com.leoevg.weldedge.domain.model
 
-enum class AlloyCategory(val displayName: String) {
-    ALUMINIUM("Al"),
-    STAINLESS_STEEL("SS"),
-    STEEL("CS")
+enum class AlloyCategory(
+    val displayName: String,
+    val colorValue: Long
+) {
+    ALUMINIUM("Al", 0xFF66BB6A),
+    STAINLESS_STEEL("SS", 0xFF42A5F5),
+    STEEL("CS", 0xFFFFA726)
 }
 
 data class Alloy(
