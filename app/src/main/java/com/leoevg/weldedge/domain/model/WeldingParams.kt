@@ -21,7 +21,7 @@ data class WeldingParams(
         val cat1 = Alloys.findByName(metalType)?.category?.displayName ?: return "_________"
         val cat2 = Alloys.findByName(metalType2)?.category?.displayName ?: return "_________"
 
-        val entry = WpsTable.findWps(cat1, cat2, process, typeOfWeld, jointType, thicknessVal)
+        val entry = WpsTable.findWps(cat1, cat2, metalType, metalType2, process, typeOfWeld, jointType, thicknessVal)
         return entry?.wpsNumber?.ifEmpty { "_________" } ?: "_________"
     }
 
