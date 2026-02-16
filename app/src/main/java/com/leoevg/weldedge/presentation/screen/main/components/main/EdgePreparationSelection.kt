@@ -85,7 +85,7 @@ fun EdgePreparationSelection(
                     items(items) { item ->
                         Box(
                             modifier = Modifier
-                                .size(width = 120.dp, height = 90.dp)
+                                .size(width = 210.dp, height = 158.dp)
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(if (selectedType == item.id) Color(0xFFEFF6FF) else Color.Transparent)
                                 .then(

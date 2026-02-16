@@ -51,12 +51,14 @@ data class WeldingParams(
             // Single Bevel (все типы соединений)
             edgePrep == EdgePreparation.GROOVE_BEVEL_SINGLE || 
             edgePrep == EdgePreparation.T_BEVEL_SINGLE || 
+            edgePrep == EdgePreparation.T_BEVEL_SUPPORT || 
             edgePrep == EdgePreparation.LAP_BEVEL || 
             edgePrep == EdgePreparation.CORNER_BEVEL_INSIDE || 
             edgePrep == EdgePreparation.CORNER_BEVEL_OUTSIDE -> "0.76-1.52"
             
             // Single J (все типы соединений)
             edgePrep == EdgePreparation.GROOVE_J_SINGLE || 
+            edgePrep == EdgePreparation.T_J_GROOVE_SINGLE ||
             edgePrep == EdgePreparation.CORNER_J_INSIDE || 
             edgePrep == EdgePreparation.CORNER_J_OUTSIDE -> when (process) {
                 "GTAW" -> "0.76-1.52"
@@ -82,7 +84,8 @@ data class WeldingParams(
 
             // Double U и Double J
             edgePrep == EdgePreparation.GROOVE_U_DOUBLE || 
-            edgePrep == EdgePreparation.GROOVE_J_DOUBLE -> when (process) {
+            edgePrep == EdgePreparation.GROOVE_J_DOUBLE ||
+            edgePrep == EdgePreparation.T_J_GROOVE_DOUBLE -> when (process) {
                 "GTAW" -> when {
                     thicknessVal in 13.1..20.0 -> "0.75-1.76"
                     thicknessVal > 20.0 -> "1.25-2.26"
@@ -124,6 +127,7 @@ data class WeldingParams(
             // Bevel и V (все типы соединений, single и double)
             edgePrep == EdgePreparation.GROOVE_BEVEL_SINGLE || 
             edgePrep == EdgePreparation.T_BEVEL_SINGLE || 
+            edgePrep == EdgePreparation.T_BEVEL_SUPPORT || 
             edgePrep == EdgePreparation.LAP_BEVEL || 
             edgePrep == EdgePreparation.CORNER_BEVEL_INSIDE || 
             edgePrep == EdgePreparation.CORNER_BEVEL_OUTSIDE ||
@@ -146,6 +150,8 @@ data class WeldingParams(
             // Все J-Groove
             edgePrep == EdgePreparation.GROOVE_J_SINGLE || 
             edgePrep == EdgePreparation.GROOVE_J_DOUBLE || 
+            edgePrep == EdgePreparation.T_J_GROOVE_SINGLE ||
+            edgePrep == EdgePreparation.T_J_GROOVE_DOUBLE ||
             edgePrep == EdgePreparation.CORNER_J_INSIDE || 
             edgePrep == EdgePreparation.CORNER_J_OUTSIDE -> "30°"
 

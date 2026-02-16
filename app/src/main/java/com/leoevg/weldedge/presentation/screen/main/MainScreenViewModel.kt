@@ -41,8 +41,12 @@ class MainScreenViewModel @Inject constructor(
         val standard = preferencesManager.getStandard() ?: "AWS".also {
             preferencesManager.saveStandard(it)
         }
-        val weldingType = preferencesManager.getWeldingType() ?: "TIG.svg".also {
-            preferencesManager.saveWeldingType(it)
+        val rawWeldingType = preferencesManager.getWeldingType()
+        val weldingType = when (rawWeldingType) {
+            null, "TIG.svg" -> "type_1_TIG.svg"
+            else -> rawWeldingType
+        }.also {
+            if (rawWeldingType == null || rawWeldingType == "TIG.svg") preferencesManager.saveWeldingType(it)
         }
         
         return MainScreenState(

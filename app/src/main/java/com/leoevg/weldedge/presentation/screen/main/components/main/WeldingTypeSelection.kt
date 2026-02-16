@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
@@ -96,7 +97,7 @@ fun WeldingTypeImage(
 ) {
     Box(
         modifier = Modifier
-            .size(80.dp)
+            .size(160.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(if (isSelected) Color(0xFFEFF6FF) else Color.Transparent)
             .then(
@@ -110,6 +111,7 @@ fun WeldingTypeImage(
         AsyncImage(
             model = item.assetPath,
             contentDescription = item.label,
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
         )
     }
