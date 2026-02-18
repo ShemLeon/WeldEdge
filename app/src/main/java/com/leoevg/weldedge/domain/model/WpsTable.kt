@@ -132,12 +132,13 @@ object WpsTable {
                 entry.metal2.equals(metal1Category, ignoreCase = true)
             if (!directCatMatch && !reverseCatMatch) return@filter false
 
-            // If entry requires specific alloys, check alloy names
+            // If entry requires specific alloys, check alloy names (нормализуем AISI 4130 <-> 4130)
             if (entry.alloy1 != null && entry.alloy2 != null) {
-                val directAlloyMatch = metal1Name.equals(entry.alloy1, ignoreCase = true) &&
-                    metal2Name.equals(entry.alloy2, ignoreCase = true)
-                val reverseAlloyMatch = metal1Name.equals(entry.alloy2, ignoreCase = true) &&
-                    metal2Name.equals(entry.alloy1, ignoreCase = true)
+                fun norm(s: String) = s.removePrefix("AISI ").trim()
+                val directAlloyMatch = norm(metal1Name).equals(norm(entry.alloy1!!), ignoreCase = true) &&
+                    norm(metal2Name).equals(norm(entry.alloy2!!), ignoreCase = true)
+                val reverseAlloyMatch = norm(metal1Name).equals(norm(entry.alloy2!!), ignoreCase = true) &&
+                    norm(metal2Name).equals(norm(entry.alloy1!!), ignoreCase = true)
                 if (!directAlloyMatch && !reverseAlloyMatch) return@filter false
             }
 

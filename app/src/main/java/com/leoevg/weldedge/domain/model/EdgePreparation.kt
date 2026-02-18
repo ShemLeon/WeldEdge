@@ -104,6 +104,15 @@ enum class EdgePreparation(
                     }
                 }
 
+                // J и U разделка — только при толщине >= 13 мм
+                if (thicknessVal < 13.0 && prep in listOf(
+                    GROOVE_J_SINGLE, GROOVE_J_DOUBLE, GROOVE_U_SINGLE, GROOVE_U_DOUBLE,
+                    T_J_GROOVE_SINGLE, T_J_GROOVE_DOUBLE,
+                    CORNER_J_INSIDE, CORNER_J_OUTSIDE, CORNER_U
+                )) {
+                    return@filter false
+                }
+
                 true
             }
         }

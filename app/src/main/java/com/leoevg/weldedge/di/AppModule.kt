@@ -2,6 +2,7 @@ package com.leoevg.weldedge.di
 
 import android.content.Context
 import com.leoevg.weldedge.data.local.PreferencesManager
+import com.leoevg.weldedge.data.repository.AlloysDatabaseRepository
 import com.leoevg.weldedge.data.repository.ReportRepositoryImpl
 import com.leoevg.weldedge.domain.repository.ReportRepository
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
@@ -32,5 +33,11 @@ object AppModule {
     @Singleton
     fun providePreferencesManager(@ApplicationContext context: Context): PreferencesManager {
         return PreferencesManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlloysDatabaseRepository(@ApplicationContext context: Context): AlloysDatabaseRepository {
+        return AlloysDatabaseRepository(context)
     }
 }

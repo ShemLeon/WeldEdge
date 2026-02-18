@@ -21,12 +21,22 @@ class MainScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(createInitialState())
 
     private fun createInitialState(): MainScreenState {
-        val metalType = preferencesManager.getMetalType() ?: "AISI316L".also {
-            preferencesManager.saveMetalType(it)
-        }
-        val metalType2 = preferencesManager.getMetalType2() ?: "AISI316L".also {
-            preferencesManager.saveMetalType2(it)
-        }
+        val rawMetal = preferencesManager.getMetalType()
+        val metalType = when (rawMetal) {
+            null -> "AISI 316L"
+            "AISI316L", "316L" -> "AISI 316L"
+            "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
+            "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
+            else -> rawMetal
+        }.also { if (rawMetal == null || rawMetal in listOf("AISI316L", "316L", "15-5 PH", "AISI 15-5 PH", "17-4 PH", "AISI 17-4 PH")) preferencesManager.saveMetalType(it) }
+        val rawMetal2 = preferencesManager.getMetalType2()
+        val metalType2 = when (rawMetal2) {
+            null -> "AISI 316L"
+            "AISI316L", "316L" -> "AISI 316L"
+            "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
+            "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
+            else -> rawMetal2
+        }.also { if (rawMetal2 == null || rawMetal2 in listOf("AISI316L", "316L", "15-5 PH", "AISI 15-5 PH", "17-4 PH", "AISI 17-4 PH")) preferencesManager.saveMetalType2(it) }
         val jointType = preferencesManager.getJointType() ?: "butt".also {
             preferencesManager.saveJointType(it)
         }

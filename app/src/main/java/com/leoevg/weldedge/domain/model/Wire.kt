@@ -33,7 +33,8 @@ object Wires {
      * Подбор проволоки на основе сплава
      */
     fun getRecommendedWire(alloyName: String): Wire? {
-        return when (alloyName.uppercase()) {
+        val norm = alloyName.removePrefix("AISI ").trim().uppercase()
+        return when (norm) {
             "5052", "5086" -> ER5356
             "6061" -> ER4043
             "2014" -> ER4145
@@ -42,9 +43,9 @@ object Wires {
             "304" -> ER308
             "304L", "308L" -> ER308L
             "316", "316L" -> ER316L
-            "15-5 PH", "17-4 PH" -> ER630
+            "15-5 PH", "17-4 PH", "630 / 15-5 PH", "630 / 17-4 PH" -> ER630
             
-            "4130" -> AMS6457 // Можно также добавить ER80S-B2 как альтернативу
+            "4130" -> AMS6457
             "4340" -> ER90S_B3
             "S235JR", "S235J0", "S355JR", "S355J0" -> ER70S_6
             

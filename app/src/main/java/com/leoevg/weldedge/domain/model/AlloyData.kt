@@ -15,11 +15,8 @@ data class Alloy(
     val awsClassification: String? = null
 ) {
     fun getFullName(): String {
-        // Для конструкционных сталей (начинаются на S) префикс не нужен или другой
-        if (category == AlloyCategory.STEEL && name.startsWith("S")) {
-            return name
-        }
-        
+        if (category == AlloyCategory.STEEL && name.startsWith("S")) return name
+        if (name.startsWith("AISI ", ignoreCase = true)) return name
         val prefix = when (category) {
             AlloyCategory.ALUMINIUM -> "AL"
             AlloyCategory.STAINLESS_STEEL -> "SS"
@@ -48,17 +45,17 @@ object Alloys {
         Alloy("1100", AlloyCategory.ALUMINIUM),
         
         // Stainless Steel (Standard A 5.9)
-        Alloy("304", AlloyCategory.STAINLESS_STEEL),
-        Alloy("304L", AlloyCategory.STAINLESS_STEEL),
-        Alloy("308L", AlloyCategory.STAINLESS_STEEL),
-        Alloy("316", AlloyCategory.STAINLESS_STEEL),
-        Alloy("316L", AlloyCategory.STAINLESS_STEEL),
-        Alloy("15-5 PH", AlloyCategory.STAINLESS_STEEL),
-        Alloy("17-4 PH", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 304", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 304L", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 308L", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 316", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 316L", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 630 / 15-5 PH", AlloyCategory.STAINLESS_STEEL),
+        Alloy("AISI 630 / 17-4 PH", AlloyCategory.STAINLESS_STEEL),
 
         // Steel
-        Alloy("4130", AlloyCategory.STEEL, awsClassification = "A 5.9"),
-        Alloy("4340", AlloyCategory.STEEL, awsClassification = "A 5.28"),
+        Alloy("AISI 4130", AlloyCategory.STEEL, awsClassification = "A 5.9"),
+        Alloy("AISI 4340", AlloyCategory.STEEL, awsClassification = "A 5.28"),
         Alloy("S235JR", AlloyCategory.STEEL, awsClassification = "A 5.18"),
         Alloy("S235J0", AlloyCategory.STEEL, awsClassification = "A 5.18"),
         Alloy("S355JR", AlloyCategory.STEEL, awsClassification = "A 5.18"),
@@ -70,6 +67,14 @@ object Alloys {
     }
 
     fun findByName(name: String): Alloy? {
-        return allAlloys.find { it.name.equals(name, ignoreCase = true) }
+        val found = allAlloys.find { it.name.equals(name, ignoreCase = true) }
+        if (found != null) return found
+        // Миграция: "316L" -> "AISI 316L"; "15-5 PH" -> "AISI 630 / 15-5 PH"
+        val alt = when (name.trim()) {
+            "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
+            "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
+            else -> if (name.startsWith("AISI ", ignoreCase = true)) name else "AISI $name"
+        }
+        return allAlloys.find { it.name.equals(alt, ignoreCase = true) }
     }
 }

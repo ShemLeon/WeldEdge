@@ -48,9 +48,9 @@ fun EdgePreparationSelection(
         }
     }
 
-    // Автоматически выбираем первый элемент, если ничего не выбрано
+    // Автоматически выбираем первый элемент, если ничего не выбрано или выбранный больше не в списке
     LaunchedEffect(items) {
-        if (selectedType.isEmpty() && items.isNotEmpty()) {
+        if (items.isNotEmpty() && (selectedType.isEmpty() || items.none { it.id == selectedType })) {
             onTypeSelected(items.first().id)
         }
     }

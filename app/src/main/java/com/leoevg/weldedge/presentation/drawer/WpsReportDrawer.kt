@@ -241,31 +241,49 @@ class WpsReportDrawer(private val context: Context) {
         try {
             if (params.edgePreparation.isNotEmpty()) {
                 val fullPath = params.getEdgePreparationFullPath()
+                if (fullPath.isEmpty()) return
 
-                val inputStream = context.assets.open(fullPath)
-                val svg = SVG.getFromInputStream(inputStream)
-                inputStream.close()
+                val padding = 15f
+                val destWidth = width - 2 * padding
+                val destHeight = totalHeight - rowHeight - 2 * padding
+                val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
 
-                svg?.let {
-                    val padding = 15f
-                    val destWidth = width - 2 * padding
-                    val destHeight = totalHeight - rowHeight - 2 * padding
+                val bitmap = when {
+                    fullPath.endsWith(".webp", ignoreCase = true) || fullPath.endsWith(".png", ignoreCase = true) || fullPath.endsWith(".jpg", ignoreCase = true) -> {
+                        context.assets.open(fullPath).use { BitmapFactory.decodeStream(it) }
+                    }
+                    fullPath.endsWith(".svg", ignoreCase = true) -> {
+                        context.assets.open(fullPath).use { inputStream ->
+                            val svg = SVG.getFromInputStream(inputStream)
+                            svg?.let {
+                                it.setDocumentWidth("100%")
+                                it.setDocumentHeight("100%")
+                                val bmp = Bitmap.createBitmap(destWidth.toInt(), destHeight.toInt(), Bitmap.Config.ARGB_8888)
+                                val svgCanvas = Canvas(bmp)
+                                svgCanvas.drawColor(Color.WHITE)
+                                it.renderToCanvas(svgCanvas)
+                                bmp
+                            }
+                        }
+                    }
+                    else -> null
+                }
 
-                    // Устанавливаем размеры SVG
-                    it.setDocumentWidth("100%")
-                    it.setDocumentHeight("100%")
-
-                    // Создаем Bitmap для рендеринга
-                    val bitmap = Bitmap.createBitmap(destWidth.toInt(), destHeight.toInt(), Bitmap.Config.ARGB_8888)
-                    val svgCanvas = Canvas(bitmap)
-                    svgCanvas.drawColor(Color.WHITE)
-
-                    // Рендерим SVG на Canvas
-                    it.renderToCanvas(svgCanvas)
-
-                    // Рисуем Bitmap на основном Canvas
-                    val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
-                    canvas.drawBitmap(bitmap, null, dest, null)
+                bitmap?.let { bmp ->
+                    val bmpW = bmp.width.toFloat()
+                    val bmpH = bmp.height.toFloat()
+                    val scale = minOf(destWidth / bmpW, destHeight / bmpH)
+                    val drawW = bmpW * scale
+                    val drawH = bmpH * scale
+                    val offsetX = (destWidth - drawW) / 2
+                    val offsetY = (destHeight - drawH) / 2
+                    val drawRect = RectF(
+                        x + padding + offsetX,
+                        y + rowHeight + padding + offsetY,
+                        x + padding + offsetX + drawW,
+                        y + rowHeight + padding + offsetY + drawH
+                    )
+                    canvas.drawBitmap(bmp, null, drawRect, null)
                 }
             }
         } catch (e: Exception) {
