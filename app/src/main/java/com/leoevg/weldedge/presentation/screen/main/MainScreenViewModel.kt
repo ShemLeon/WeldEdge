@@ -3,6 +3,7 @@ package com.leoevg.weldedge.presentation.screen.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.leoevg.weldedge.data.local.PreferencesManager
+import com.leoevg.weldedge.domain.model.EdgePreparation
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,18 @@ class MainScreenViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
     private val _state = MutableStateFlow(createInitialState())
+
+    init {
+        _state.update { state ->
+            val t = state.params.thickness.trim().toDoubleOrNull() ?: 0.0
+            val ep = EdgePreparation.fromId(state.params.edgePreparation)
+            if (ep == EdgePreparation.GROOVE_V_DOUBLE && t < 6.0) {
+                state.copy(params = state.params.copy(edgePreparation = ""))
+            } else {
+                state
+            }
+        }
+    }
 
     private fun createInitialState(): MainScreenState {
         val rawMetal = preferencesManager.getMetalType()
@@ -140,9 +153,25 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun onThicknessChanged(value: String) {
+        val thicknessVal = value.toDoubleOrNull() ?: 0.0
+        val currentEdgePrep = EdgePreparation.fromId(_state.value.params.edgePreparation)
+
+        val shouldClearEdgePrep = when (currentEdgePrep) {
+            EdgePreparation.GROOVE_V_DOUBLE -> thicknessVal < 6.0
+            EdgePreparation.GROOVE_J_SINGLE, EdgePreparation.GROOVE_J_DOUBLE,
+            EdgePreparation.GROOVE_U_SINGLE, EdgePreparation.GROOVE_U_DOUBLE,
+            EdgePreparation.T_J_GROOVE_SINGLE, EdgePreparation.T_J_GROOVE_DOUBLE,
+            EdgePreparation.CORNER_J_INSIDE, EdgePreparation.CORNER_J_OUTSIDE,
+            EdgePreparation.CORNER_U -> thicknessVal < 13.0
+            else -> false
+        }
+
         _state.update {
             it.copy(
-                params = it.params.copy(thickness = value),
+                params = it.params.copy(
+                    thickness = value,
+                    edgePreparation = if (shouldClearEdgePrep) "" else it.params.edgePreparation
+                ),
                 thicknessError = null
             )
         }
@@ -179,7 +208,12 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun onEdgePreparationChanged(value: String) {
-        _state.update { it.copy(params = it.params.copy(edgePreparation = value)) }
+        _state.update { state ->
+            val t = state.params.thickness.trim().toDoubleOrNull() ?: 0.0
+            val ep = EdgePreparation.fromId(value)
+            if (ep == EdgePreparation.GROOVE_V_DOUBLE && t < 6.0) return@update state
+            state.copy(params = state.params.copy(edgePreparation = value))
+        }
     }
 
     private fun onWeldingTypeChanged(value: String) {

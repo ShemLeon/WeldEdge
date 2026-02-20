@@ -88,13 +88,16 @@ enum class EdgePreparation(
             thickness: String = ""
         ): List<EdgePreparation> {
             val typeOfWeldsEnum = TypeOfWelds.fromId(typeOfWeld)
-            val thicknessVal = thickness.toDoubleOrNull() ?: 0.0
+            val thicknessVal = thickness.trim().toDoubleOrNull() ?: 0.0
             val process = WeldingType.fromId(weldingType)?.processName ?: ""
 
             return entries.filter { prep ->
                 if (prep.jointType != jointType || prep.typeOfWelds != typeOfWeldsEnum) {
                     return@filter false
                 }
+
+                // Double V Groove — только при толщине >= 6 мм (проверка первой, чтобы гарантировать исключение)
+                if (prep == GROOVE_V_DOUBLE && thicknessVal < 6.0) return@filter false
 
                 if (prep == GROOVE_BEVEL_SINGLE) {
                     return@filter when (process) {

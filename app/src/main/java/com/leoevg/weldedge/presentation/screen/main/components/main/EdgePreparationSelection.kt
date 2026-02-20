@@ -39,7 +39,10 @@ fun EdgePreparationSelection(
     onTypeSelected: (String) -> Unit
 ) {
     val items = remember(jointType, typeOfWeld, weldingType, thickness) {
-        EdgePreparation.getForSelection(jointType, typeOfWeld, weldingType, thickness).map { prep ->
+        val thicknessVal = thickness.trim().toDoubleOrNull() ?: 0.0
+        EdgePreparation.getForSelection(jointType, typeOfWeld, weldingType, thickness)
+            .filter { prep -> !(prep == EdgePreparation.GROOVE_V_DOUBLE && thicknessVal < 6.0) }
+            .map { prep ->
             EdgePreparationItem(
                 id = prep.id,
                 label = prep.displayName,
@@ -82,7 +85,7 @@ fun EdgePreparationSelection(
                     contentPadding = PaddingValues(horizontal = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(items) { item ->
+                    items(items, key = { it.id }) { item ->
                         Box(
                             modifier = Modifier
                                 .size(width = 210.dp, height = 158.dp)

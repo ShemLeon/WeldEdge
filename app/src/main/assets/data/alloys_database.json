@@ -1,0 +1,238 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "id": "AL",
+      "name": "Aluminium",
+      "subgroups": [
+        {
+          "id": "1xxx",
+          "name": "Pure Aluminium (99%+)",
+          "grades": [
+            {
+              "name": "1100",
+              "chemicalComposition": "Al 99.0 min, Cu 0.05-0.20, Si+Fe 0.95 max",
+              "awsName": "1100",
+              "gostName": "АД0, АД1",
+              "preheating": "-"
+            }
+          ]
+        },
+        {
+          "id": "2xxx",
+          "name": "Al-Cu (Duralumin)",
+          "grades": [
+            {
+              "name": "2014",
+              "chemicalComposition": "Al bal, Cu 3.9-5.0, Si 0.5-1.2, Mn 0.4-1.2, Mg 0.2-0.8",
+              "awsName": "2014",
+              "gostName": "АК8",
+              "preheating": "150-200"
+            }
+          ]
+        },
+        {
+          "id": "5xxx",
+          "name": "Al-Mg (Non-heat-treatable)",
+          "grades": [
+            {
+              "name": "5052",
+              "chemicalComposition": "Al bal, Mg 2.2-2.8, Cr 0.15-0.35",
+              "awsName": "5052",
+              "gostName": "АМг2.5",
+              "preheating": "-"
+            },
+            {
+              "name": "5086",
+              "chemicalComposition": "Al bal, Mg 3.5-4.5, Mn 0.2-0.7, Cr 0.05-0.25",
+              "awsName": "5086",
+              "gostName": "АМг4",
+              "preheating": "-"
+            }
+          ]
+        },
+        {
+          "id": "6xxx",
+          "name": "Al-Mg-Si (Heat-treatable)",
+          "grades": [
+            {
+              "name": "6061",
+              "chemicalComposition": "Al bal, Mg 0.8-1.2, Si 0.4-0.8, Cu 0.15-0.4, Cr 0.04-0.35",
+              "awsName": "6061",
+              "gostName": "АД33",
+              "preheating": "-"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CS",
+      "name": "Carbon Steel",
+      "subgroups": [
+        {
+          "id": "1.1-1.4",
+          "name": "Non-alloy structural steels",
+          "isoGroup": "1.1–1.4",
+          "grades": [
+            {
+              "name": "S235JR",
+              "chemicalComposition": "C max 0.17, Mn max 1.40, Si max 0.035, P max 0.035, S max 0.035",
+              "awsName": "A 5.18 / A36",
+              "gostName": "С235",
+              "preheating": "-"
+            },
+            {
+              "name": "S235J0",
+              "chemicalComposition": "C max 0.17, Mn max 1.40, Si max 0.035, P max 0.030, S max 0.030",
+              "awsName": "A 5.18",
+              "gostName": "С235",
+              "preheating": "-"
+            },
+            {
+              "name": "S355JR",
+              "chemicalComposition": "C max 0.24, Mn max 1.60, Si max 0.55, P max 0.035, S max 0.035",
+              "awsName": "A 5.18 / A572",
+              "gostName": "С345",
+              "preheating": "-"
+            },
+            {
+              "name": "S355J0",
+              "chemicalComposition": "C max 0.24, Mn max 1.60, Si max 0.55, P max 0.030, S max 0.030",
+              "awsName": "A 5.18",
+              "gostName": "С345",
+              "preheating": "-"
+            }
+          ]
+        },
+        {
+          "id": "2.1-2.3",
+          "name": "Fine grain Q&T steels",
+          "isoGroup": "2.1–2.3",
+          "grades": []
+        },
+        {
+          "id": "3.1-3.2",
+          "name": "Low alloy Cr-Mo steels",
+          "isoGroup": "3.1–3.2",
+          "grades": [
+            {
+              "name": "AISI 4130",
+              "chemicalComposition": "C 0.28-0.33, Mn 0.40-0.60, Si 0.15-0.35, Cr 0.80-1.10, Mo 0.15-0.25",
+              "awsName": "A 5.9 / 4130",
+              "gostName": "30ХМА",
+              "preheating": "150-200"
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "name": "High temp Cr-Mo steels",
+          "isoGroup": "4",
+          "grades": []
+        },
+        {
+          "id": "6",
+          "name": "Tool & special steels",
+          "isoGroup": "6",
+          "grades": [
+            {
+              "name": "AISI 4340",
+              "chemicalComposition": "C 0.38-0.43, Mn 0.60-0.80, Si 0.15-0.35, Cr 0.70-0.90, Ni 1.65-2.00, Mo 0.20-0.30",
+              "awsName": "A 5.28 / 4340",
+              "gostName": "40ХН2МА",
+              "preheating": "200-250"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SS",
+      "name": "Stainless Steel",
+      "subgroups": [
+        {
+          "id": "5.1",
+          "name": "Ferritic stainless",
+          "isoGroup": "5.1",
+          "grades": []
+        },
+        {
+          "id": "5.2",
+          "name": "Martensitic stainless",
+          "isoGroup": "5.2",
+          "grades": []
+        },
+        {
+          "id": "5.3",
+          "name": "Austenitic stainless",
+          "isoGroup": "5.3",
+          "grades": [
+            {
+              "name": "AISI 304",
+              "chemicalComposition": "C max 0.08, Cr 18-20, Ni 8-10.5, Mn max 2.0, Si max 1.0",
+              "awsName": "A 5.9 / 304",
+              "gostName": "08Х18Н10",
+              "preheating": "-"
+            },
+            {
+              "name": "AISI 304L",
+              "chemicalComposition": "C max 0.03, Cr 18-20, Ni 8-12, Mn max 2.0, Si max 1.0",
+              "awsName": "A 5.9 / 304L",
+              "gostName": "03Х18Н11",
+              "preheating": "-"
+            },
+            {
+              "name": "AISI 308L",
+              "chemicalComposition": "C max 0.03, Cr 19.5-22, Ni 9-11, Mn max 2.0",
+              "awsName": "A 5.9 / 308L",
+              "gostName": "03Х19Н10",
+              "preheating": "-"
+            },
+            {
+              "name": "AISI 316",
+              "chemicalComposition": "C max 0.08, Cr 16-18, Ni 10-14, Mo 2-3, Mn max 2.0",
+              "awsName": "A 5.9 / 316",
+              "gostName": "08Х17Н13М2",
+              "preheating": "-"
+            },
+            {
+              "name": "AISI 316L",
+              "chemicalComposition": "C max 0.03, Cr 16-18, Ni 10-14, Mo 2-3, Mn max 2.0",
+              "awsName": "A 5.9 / 316L",
+              "gostName": "03Х17Н14М2",
+              "preheating": "-"
+            }
+          ]
+        },
+        {
+          "id": "5.4",
+          "name": "Duplex stainless",
+          "isoGroup": "5.4",
+          "grades": []
+        },
+        {
+          "id": "PH",
+          "name": "Precipitation hardening",
+          "isoGroup": "5.2",
+          "grades": [
+            {
+              "name": "AISI 630 / 15-5 PH",
+              "chemicalComposition": "C max 0.07, Cr 14-15.5, Ni 3.5-5.5, Cu 2.5-4.5, Nb 0.15-0.45",
+              "awsName": "A 5.9 / 15-5 PH",
+              "gostName": "—",
+              "preheating": "-"
+            },
+            {
+              "name": "AISI 630 / 17-4 PH",
+              "chemicalComposition": "C max 0.07, Cr 15.5-17.5, Ni 3-5, Cu 3-5, Nb 0.15-0.45",
+              "awsName": "A 5.9 / 17-4 PH",
+              "gostName": "—",
+              "preheating": "-"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
