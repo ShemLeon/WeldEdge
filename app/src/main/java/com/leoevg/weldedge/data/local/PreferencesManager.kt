@@ -122,7 +122,7 @@ class PreferencesManager @Inject constructor(context: Context) {
     }
 
     companion object {
-        private const val KEY_METAL_TYPE = "metal_type"
+        const val KEY_METAL_TYPE = "metal_type"
         private const val KEY_METAL_TYPE_2 = "metal_type_2"
         private const val KEY_METAL_CATEGORY = "metal_category"
         private const val KEY_LANGUAGE = "language"

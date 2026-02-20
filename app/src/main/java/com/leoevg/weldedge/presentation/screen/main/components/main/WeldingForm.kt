@@ -21,7 +21,7 @@ import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.M
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeldingForm(
-    state: MainScreenState,
+    state: MainScreenState.DataSelector,
     onEvent: (MainScreenEvent) -> Unit
 ) {
     val params = state.params

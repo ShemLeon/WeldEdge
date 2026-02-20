@@ -25,27 +25,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.domain.model.JointType
 import com.leoevg.weldedge.domain.model.TypeOfWelds
-import com.leoevg.weldedge.domain.model.WeldingParams
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.WeldingType
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
+import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 
 @Composable
 fun DocumentPreviewScreen(
-    params: WeldingParams,
-    language: String = "RU",
-    onBack: () -> Unit,
-    onGeneratePdf: () -> Unit
+    state: MainScreenState.DataPreview,
+    onEvent: (MainScreenEvent) -> Unit,
 ) {
-    val jointTypeLocalized = JointType.fromId(params.jointType)?.let {
+    val jointTypeLocalized = JointType.fromId(state.params.jointType)?.let {
         stringResource(it.nameRes)
-    } ?: params.jointType
-    val typeOfWeldLocalized = TypeOfWelds.fromId(params.typeOfWeld)?.let {
+    } ?: state.params.jointType
+    val typeOfWeldLocalized = TypeOfWelds.fromId(state.params.typeOfWeld)?.let {
         stringResource(it.nameRes)
-    } ?: params.typeOfWeld
-    
+    } ?: state.params.typeOfWeld
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -65,8 +64,8 @@ fun DocumentPreviewScreen(
                 )
 
                 // Edge preparation image
-                val imagePath = params.getEdgePreparationFullPath().let { 
-                    if (it.isNotEmpty()) "file:///android_asset/$it" else null 
+                val imagePath = state.params.getEdgePreparationFullPath().let {
+                    if (it.isNotEmpty()) "file:///android_asset/$it" else null
                 }
 
                 if (imagePath != null) {
@@ -90,20 +89,28 @@ fun DocumentPreviewScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                PreviewRow(stringResource(R.string.preview_metal_type), params.metalType)
-                PreviewRow(stringResource(R.string.preview_metal_type_2), params.metalType2)
-                PreviewRow(stringResource(R.string.preview_thickness), "${params.thickness} ${stringResource(R.string.unit_mm)}")
+                PreviewRow(stringResource(R.string.preview_metal_type), state.params.metalType)
+                PreviewRow(stringResource(R.string.preview_metal_type_2), state.params.metalType2)
+                PreviewRow(
+                    stringResource(R.string.preview_thickness),
+                    "${state.params.thickness} ${stringResource(R.string.unit_mm)}"
+                )
                 PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
                 PreviewRow(stringResource(R.string.preview_type_of_welds), typeOfWeldLocalized)
-                if (params.weldingType.isNotEmpty()) {
-                    val weldingTypeDisplayName = WeldingType.fromId(params.weldingType)?.displayName ?: params.weldingType
-                    PreviewRow(stringResource(R.string.preview_welding_type), weldingTypeDisplayName)
+                if (state.params.weldingType.isNotEmpty()) {
+                    val weldingTypeDisplayName =
+                        WeldingType.fromId(state.params.weldingType)?.displayName
+                            ?: state.params.weldingType
+                    PreviewRow(
+                        stringResource(R.string.preview_welding_type),
+                        weldingTypeDisplayName
+                    )
                 }
-                if (params.engineerName.isNotEmpty()) {
-                    PreviewRow(stringResource(R.string.preview_engineer), params.engineerName)
+                if (state.params.engineerName.isNotEmpty()) {
+                    PreviewRow(stringResource(R.string.preview_engineer), state.params.engineerName)
                 }
-                PreviewRow(stringResource(R.string.preview_standard), params.standard)
-                val wpsValue = params.getWPSnumber()
+                PreviewRow(stringResource(R.string.preview_standard), state.params.standard)
+                val wpsValue = state.params.getWPSnumber()
                 PreviewRow(
                     stringResource(R.string.preview_wps),
                     if (wpsValue == "_________") "—" else wpsValue
@@ -118,14 +125,14 @@ fun DocumentPreviewScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedButton(
-                onClick = onBack,
+                onClick = { onEvent(MainScreenEvent.BackClicked) },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(stringResource(R.string.preview_back))
             }
             Button(
-                onClick = onGeneratePdf,
+                onClick = { onEvent(MainScreenEvent.GeneratePdfClicked) },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))

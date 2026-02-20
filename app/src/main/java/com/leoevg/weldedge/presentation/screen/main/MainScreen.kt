@@ -85,24 +85,19 @@ fun MainScreenContent(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Header(
-                language = state.language,
-                onLanguageChange = { onEvent(MainScreenEvent.LanguageChanged(it)) }
-            )
 
-            if (!state.showPreview) {
-                WeldingForm(
-                    state = state,
-                    onEvent = onEvent
-                )
-            } else {
-                DocumentPreviewScreen(
-                    params = state.params,
-                    language = state.language,
-                    onBack = { onEvent(MainScreenEvent.BackClicked) },
-                    onGeneratePdf = { onEvent(MainScreenEvent.GeneratePdfClicked) }
-                )
+
+            when (state) {
+                is MainScreenState.DataPreview -> DocumentPreviewScreen(state, onEvent)
+                is MainScreenState.DataSelector -> {
+                    Header(
+                        language = state.language,
+                        onLanguageChange = { onEvent(MainScreenEvent.LanguageChanged(it)) }
+                    )
+                    WeldingForm(state, onEvent)
+                }
             }
+
         }
     }
 }}

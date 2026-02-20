@@ -1,8 +1,10 @@
 package com.leoevg.weldedge.presentation.screen.main
 
+import android.R.attr.value
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.leoevg.weldedge.data.local.PreferencesManager
+import com.leoevg.weldedge.data.local.ResourceManager
 import com.leoevg.weldedge.domain.model.EdgePreparation
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
@@ -13,13 +15,36 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePreparationChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EngineerNameChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.JointTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalAlloyConfirmed
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalCategoryChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalType2Changed
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.StandardChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.ThicknessChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.TypeOfWeldChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.WeldingTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.DismissAlloyDialog
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.LanguageChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleJointTypeExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleTypeOfWeldExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleEdgePreparationExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleWeldingTypeExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.SubmitClicked
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.BackClicked
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.GeneratePdfClicked
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val generateReportUseCase: GenerateReportUseCase,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val resourceManager: ResourceManager
 ) : ViewModel() {
     private val _state = MutableStateFlow(createInitialState())
+    val state: StateFlow<MainScreenState> = _state.asStateFlow()
 
     init {
         _state.update { state ->
@@ -33,6 +58,39 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: MainScreenEvent) {
+        when (event) {
+            DismissAlloyDialog -> onDismissAlloyDialog()
+            is LanguageChanged -> onLanguageChanged(event.language)
+            ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
+            ToggleTypeOfWeldExpanded -> onToggleTypeOfWeldExpanded()
+            ToggleEdgePreparationExpanded -> onToggleEdgePreparationExpanded()
+            ToggleWeldingTypeExpanded -> onToggleWeldingTypeExpanded()
+            SubmitClicked -> onSubmitClicked()
+            BackClicked -> onBackClicked()
+            GeneratePdfClicked -> onGeneratePdfClicked()
+            is OnFieldChanged -> onFieldChangedEvent(event)
+
+        }
+    }
+
+    private fun onFieldChangedEvent(event: OnFieldChanged) {
+        when (event) {
+            is EdgePreparationChanged -> onEdgePreparationChanged(event.value)
+            is EngineerNameChanged -> onEngineerNameChanged(event.value)
+            is JointTypeChanged -> onJointTypeChanged(event.value)
+            is MetalAlloyConfirmed -> onMetalAlloyConfirmed(event.alloy)
+            is MetalCategoryChanged -> onMetalCategoryChanged(event.category)
+            is MetalTypeChanged -> onMetalTypeChanged(event.value)
+            is MetalType2Changed -> onMetalType2Changed(event.value)
+            is StandardChanged -> onStandardChanged(event.value)
+            is ThicknessChanged -> onThicknessChanged(event.value)
+            is TypeOfWeldChanged -> onTypeOfWeldChanged(event.value)
+            is WeldingTypeChanged -> onWeldingTypeChanged(event.value)
+        }
+    }
+
+
     private fun createInitialState(): MainScreenState {
         val rawMetal = preferencesManager.getMetalType()
         val metalType = when (rawMetal) {
@@ -41,7 +99,17 @@ class MainScreenViewModel @Inject constructor(
             "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
             "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
             else -> rawMetal
-        }.also { if (rawMetal == null || rawMetal in listOf("AISI316L", "316L", "15-5 PH", "AISI 15-5 PH", "17-4 PH", "AISI 17-4 PH")) preferencesManager.saveMetalType(it) }
+        }.also {
+            if (rawMetal == null || rawMetal in listOf(
+                    "AISI316L",
+                    "316L",
+                    "15-5 PH",
+                    "AISI 15-5 PH",
+                    "17-4 PH",
+                    "AISI 17-4 PH"
+                )
+            ) preferencesManager.saveMetalType(it)
+        }
         val rawMetal2 = preferencesManager.getMetalType2()
         val metalType2 = when (rawMetal2) {
             null -> "AISI 316L"
@@ -49,18 +117,27 @@ class MainScreenViewModel @Inject constructor(
             "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
             "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
             else -> rawMetal2
-        }.also { if (rawMetal2 == null || rawMetal2 in listOf("AISI316L", "316L", "15-5 PH", "AISI 15-5 PH", "17-4 PH", "AISI 17-4 PH")) preferencesManager.saveMetalType2(it) }
+        }.also {
+            if (rawMetal2 == null || rawMetal2 in listOf(
+                    "AISI316L",
+                    "316L",
+                    "15-5 PH",
+                    "AISI 15-5 PH",
+                    "17-4 PH",
+                    "AISI 17-4 PH"
+                )
+            ) preferencesManager.saveMetalType2(it)
+        }
         val jointType = preferencesManager.getJointType() ?: "butt".also {
             preferencesManager.saveJointType(it)
         }
         // Map old stress/simple to BW/FW if necessary, or just use new defaults
-        val rawResponsibility = preferencesManager.getTypeOfWeld()
-        val typeOfWeld = when (rawResponsibility) {
+        val typeOfWeld = when (val rawResponsibility = preferencesManager.getTypeOfWeld()) {
             "stress" -> "BW"
             "simple" -> "FW"
             else -> rawResponsibility ?: "BW"
         }
-        
+
         val standard = preferencesManager.getStandard() ?: "AWS".also {
             preferencesManager.saveStandard(it)
         }
@@ -69,9 +146,11 @@ class MainScreenViewModel @Inject constructor(
             null, "TIG.svg" -> "type_1_TIG.svg"
             else -> rawWeldingType
         }.also {
-            if (rawWeldingType == null || rawWeldingType == "TIG.svg") preferencesManager.saveWeldingType(it)
+            if (rawWeldingType == null || rawWeldingType == "TIG.svg") preferencesManager.saveWeldingType(
+                it
+            )
         }
-        
+
         return MainScreenState(
             params = WeldingParams(
                 metalType = metalType,
@@ -92,32 +171,7 @@ class MainScreenViewModel @Inject constructor(
             metalAlloyHistory = preferencesManager.getMetalAlloyHistory("CS")
         )
     }
-    val state: StateFlow<MainScreenState> = _state.asStateFlow()
 
-    fun onEvent(event: MainScreenEvent) {
-        when (event) {
-            is MainScreenEvent.MetalTypeChanged -> onMetalTypeChanged(event.value)
-            is MainScreenEvent.MetalType2Changed -> onMetalType2Changed(event.value)
-            is MainScreenEvent.MetalCategoryChanged -> onMetalCategoryChanged(event.category)
-            is MainScreenEvent.MetalAlloyConfirmed -> onMetalAlloyConfirmed(event.alloy)
-            MainScreenEvent.DismissAlloyDialog -> onDismissAlloyDialog()
-            is MainScreenEvent.ThicknessChanged -> onThicknessChanged(event.value)
-            is MainScreenEvent.JointTypeChanged -> onJointTypeChanged(event.value)
-            is MainScreenEvent.TypeOfWeldChanged -> onTypeOfWeldChanged(event.value)
-            is MainScreenEvent.EdgePreparationChanged -> onEdgePreparationChanged(event.value)
-            is MainScreenEvent.WeldingTypeChanged -> onWeldingTypeChanged(event.value)
-            is MainScreenEvent.EngineerNameChanged -> onEngineerNameChanged(event.value)
-            is MainScreenEvent.StandardChanged -> onStandardChanged(event.value)
-            is MainScreenEvent.LanguageChanged -> onLanguageChanged(event.language)
-            MainScreenEvent.ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
-            MainScreenEvent.ToggleTypeOfWeldExpanded -> onToggleTypeOfWeldExpanded()
-            MainScreenEvent.ToggleEdgePreparationExpanded -> onToggleEdgePreparationExpanded()
-            MainScreenEvent.ToggleWeldingTypeExpanded -> onToggleWeldingTypeExpanded()
-            MainScreenEvent.SubmitClicked -> onSubmitClicked()
-            MainScreenEvent.BackClicked -> onBackClicked()
-            MainScreenEvent.GeneratePdfClicked -> onGeneratePdfClicked()
-        }
-    }
 
     private fun onMetalTypeChanged(value: String) {
         preferencesManager.saveMetalType(value)
@@ -131,11 +185,11 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onMetalCategoryChanged(category: String) {
         val history = preferencesManager.getMetalAlloyHistory(category)
-        _state.update { 
+        _state.update {
             it.copy(
                 selectedMetalCategory = category,
                 metalAlloyHistory = history
-            ) 
+            )
         }
     }
 
@@ -143,7 +197,8 @@ class MainScreenViewModel @Inject constructor(
         if (alloy.isNotBlank()) {
             preferencesManager.saveMetalAlloyHistory(_state.value.selectedMetalCategory, alloy)
             onMetalTypeChanged(alloy)
-            val history = preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
+            val history =
+                preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
             _state.update { it.copy(metalAlloyHistory = history) }
         }
     }
@@ -163,6 +218,7 @@ class MainScreenViewModel @Inject constructor(
             EdgePreparation.T_J_GROOVE_SINGLE, EdgePreparation.T_J_GROOVE_DOUBLE,
             EdgePreparation.CORNER_J_INSIDE, EdgePreparation.CORNER_J_OUTSIDE,
             EdgePreparation.CORNER_U -> thicknessVal < 13.0
+
             else -> false
         }
 
@@ -179,11 +235,11 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onJointTypeChanged(value: String) {
         preferencesManager.saveJointType(value)
-        _state.update { 
+        _state.update {
             it.copy(
                 params = it.params.copy(
                     jointType = value,
-                    edgePreparation = "" 
+                    edgePreparation = ""
                 )
             )
         }
@@ -191,17 +247,17 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onTypeOfWeldChanged(value: String) {
         // Map BW/FW back to stress/simple for storage if needed, or update PreferencesManager
-        val storedValue = when(value) {
+        val storedValue = when (value) {
             "BW" -> "stress"
             "FW" -> "simple"
             else -> value
         }
         preferencesManager.saveTypeOfWeld(storedValue)
-        _state.update { 
+        _state.update {
             it.copy(
                 params = it.params.copy(
                     typeOfWeld = value,
-                    edgePreparation = "" 
+                    edgePreparation = ""
                 )
             )
         }
