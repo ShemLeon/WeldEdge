@@ -11,7 +11,7 @@ data class AlloysDatabase(
     val groups: List<AlloyGroup> = emptyList()
 ) {
     companion object {
-        const val ASSET_PATH = "data/alloys_database.json"
+        const val ASSET_PATH = "data/all_params.json"
     }
 
     fun getAllGrades(): List<Triple<AlloyGroup, AlloySubgroup, AlloyGrade>> =
