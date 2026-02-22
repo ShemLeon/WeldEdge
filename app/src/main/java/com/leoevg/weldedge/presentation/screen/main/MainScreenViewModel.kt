@@ -41,7 +41,8 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChang
 class MainScreenViewModel @Inject constructor(
     private val generateReportUseCase: GenerateReportUseCase,
     private val preferencesManager: PreferencesManager,
-    private val resourceManager: ResourceManager
+    private val resourceManager: ResourceManager,
+    private val createInitialStateUseCase: CreateInitialStateUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(createInitialState())
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
