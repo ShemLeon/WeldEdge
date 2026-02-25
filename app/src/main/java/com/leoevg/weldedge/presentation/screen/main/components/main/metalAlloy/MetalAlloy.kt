@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.Alloy
+import com.leoevg.weldedge.domain.model.AlloyCategory
 import com.leoevg.weldedge.domain.model.Alloys
 import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 
@@ -19,7 +21,7 @@ import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 fun MetalAlloy(
     selectedAlloy: String,
     onAlloySelected: (String) -> Unit,
-    label: String? = null
+    label: String? = null // это служебная строка которая не отображается
 ) {
     var selectedCategory by remember { 
         mutableStateOf(
@@ -30,37 +32,44 @@ fun MetalAlloy(
     val alloysInCategory = remember(selectedCategory) {
         selectedCategory?.let { Alloys.getAlloysByCategory(it) } ?: emptyList()
     }
-
-    val content: @Composable () -> Unit = {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            AlloyCategorySelector(
-                selectedCategory = selectedCategory,
-                onCategorySelected = { category ->
-                    selectedCategory = category
-                    if (alloysInCategory.none { it.name == selectedAlloy }) {
-                        // onAlloySelected("")
-                    }
-                }
-            )
-
-            if (selectedCategory != null) {
-                AlloyHistoryChips(
-                    history = alloysInCategory.map { it.name },
-                    selectedAlloy = selectedAlloy,
-                    onAlloySelected = onAlloySelected
-                )
-            }
-        }
-    }
-
     if (label != null) {
         FormField(label = label, required = true) {
-            content()
+            Сategory(selectedCategory, alloysInCategory, selectedAlloy, onAlloySelected)
         }
     } else {
-        content()
+        Сategory(selectedCategory, alloysInCategory, selectedAlloy, onAlloySelected)
     }
+}
+
+@Composable
+private fun Сategory(
+    selectedCategory: AlloyCategory?,
+    alloysInCategory: List<Alloy>,
+    selectedAlloy: String,
+    onAlloySelected: (String) -> Unit
+): AlloyCategory? {
+    var selectedCategory1 = selectedCategory
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        AlloyCategorySelector(
+            selectedCategory = selectedCategory1,
+            onCategorySelected = { category ->
+                selectedCategory1 = category
+                if (alloysInCategory.none { it.name == selectedAlloy }) {
+                    // onAlloySelected("")
+                }
+            }
+        )
+
+        if (selectedCategory1 != null) {
+            AlloyHistoryChips(
+                history = alloysInCategory.map { it.name },
+                selectedAlloy = selectedAlloy,
+                onAlloySelected = onAlloySelected
+            )
+        }
+    }
+    return selectedCategory1
 }

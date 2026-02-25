@@ -7,6 +7,7 @@ import com.leoevg.weldedge.data.local.PreferencesManager
 import com.leoevg.weldedge.data.local.ResourceManager
 import com.leoevg.weldedge.domain.model.EdgePreparation
 import com.leoevg.weldedge.domain.model.WeldingParams
+import com.leoevg.weldedge.domain.usecase.CreateInitialStateUseCase
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
