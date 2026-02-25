@@ -3,11 +3,11 @@ package com.leoevg.weldedge.domain.model
 import kotlinx.serialization.Serializable
 
 /**
- * Главная группа сплавов: AL, CS, SS.
+ * Группа металлов из all_params / alloys_database (metals1).
  */
 @Serializable
-data class AlloyGroup(
+data class MetalGroup(
     val id: String,
     val name: String,
-    val subgroups: List<AlloySubgroup> = emptyList()
+    val mark_metal: List<String> = emptyList()
 )
