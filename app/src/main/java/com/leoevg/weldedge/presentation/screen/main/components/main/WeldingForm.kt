@@ -17,6 +17,18 @@ import com.leoevg.weldedge.R
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.MetalAlloy
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePreparationChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.JointTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalType2Changed
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.ThicknessChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.TypeOfWeldChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.WeldingTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleJointTypeExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleTypeOfWeldExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleEdgePreparationExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleWeldingTypeExpanded
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.SubmitClicked
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +39,7 @@ fun WeldingForm(
     val params = state.params
     val thicknessValue = params.thickness.toDoubleOrNull() ?: 0.0
     val isBWAllowed = thicknessValue >= 1.5
-    
+
     Card(
         modifier = Modifier.fillMaxWidth(1f),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -43,11 +55,11 @@ fun WeldingForm(
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     MetalAlloy(
                         selectedAlloy = params.metalType,
-                        onAlloySelected = { onEvent(MainScreenEvent.MetalTypeChanged(it)) }
+                        onAlloySelected = { onEvent(MetalTypeChanged(it)) }
                     )
                     MetalAlloy(
                         selectedAlloy = params.metalType2,
-                        onAlloySelected = { onEvent(MainScreenEvent.MetalType2Changed(it)) }
+                        onAlloySelected = { onEvent(MetalType2Changed(it)) }
                     )
                 }
             }
@@ -58,7 +70,7 @@ fun WeldingForm(
             Thickness(
                 selectedType = params.thickness,
                 error = state.thicknessError,
-                onTypeSelected = { onEvent(MainScreenEvent.ThicknessChanged(it)) }
+                onTypeSelected = { onEvent(ThicknessChanged(it)) }
             )
 
             DashedDivider()
@@ -67,8 +79,8 @@ fun WeldingForm(
             JointTypeSelection(
                 selectedType = params.jointType,
                 isExpanded = state.isJointTypeExpanded,
-                onToggleExpand = { onEvent(MainScreenEvent.ToggleJointTypeExpanded) },
-                onTypeSelected = { onEvent(MainScreenEvent.JointTypeChanged(it)) }
+                onToggleExpand = { onEvent(ToggleJointTypeExpanded) },
+                onTypeSelected = { onEvent(JointTypeChanged(it)) }
             )
 
             DashedDivider()
@@ -77,11 +89,11 @@ fun WeldingForm(
             TypeOfWeldsSelection(
                 selectedType = params.typeOfWeld,
                 isExpanded = state.isTypeOfWeldExpanded,
-                onToggleExpand = { onEvent(MainScreenEvent.ToggleTypeOfWeldExpanded) },
-                onTypeSelected = { 
+                onToggleExpand = { onEvent(ToggleTypeOfWeldExpanded) },
+                onTypeSelected = {
                     // Блокируем выбор "BW" на программном уровне, если толщина мала
                     if (it == "BW" && !isBWAllowed) return@TypeOfWeldsSelection
-                    onEvent(MainScreenEvent.TypeOfWeldChanged(it)) 
+                    onEvent(TypeOfWeldChanged(it))
                 }
             )
 
@@ -95,8 +107,8 @@ fun WeldingForm(
                 thickness = params.thickness,
                 selectedType = params.edgePreparation,
                 isExpanded = state.isEdgePreparationExpanded,
-                onToggleExpand = { onEvent(MainScreenEvent.ToggleEdgePreparationExpanded) },
-                onTypeSelected = { onEvent(MainScreenEvent.EdgePreparationChanged(it)) }
+                onToggleExpand = { onEvent(ToggleEdgePreparationExpanded) },
+                onTypeSelected = { onEvent(EdgePreparationChanged(it)) }
             )
 
             DashedDivider()
@@ -105,15 +117,15 @@ fun WeldingForm(
             WeldingTypeSelection(
                 selectedType = params.weldingType,
                 isExpanded = state.isWeldingTypeExpanded,
-                onToggleExpand = { onEvent(MainScreenEvent.ToggleWeldingTypeExpanded) },
-                onTypeSelected = { onEvent(MainScreenEvent.WeldingTypeChanged(it)) }
+                onToggleExpand = { onEvent(ToggleWeldingTypeExpanded) },
+                onTypeSelected = { onEvent(WeldingTypeChanged(it)) }
             )
 
             DashedDivider()
 
 
             SubmitButton(
-                onClick = { onEvent(MainScreenEvent.SubmitClicked) }
+                onClick = { onEvent(SubmitClicked) }
             )
         }
     }

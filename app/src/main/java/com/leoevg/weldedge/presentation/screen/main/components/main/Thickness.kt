@@ -26,13 +26,9 @@ import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 fun Thickness(
     selectedType: String,
     error: String? = null,
+    data: List<String>,
     onTypeSelected: (String) -> Unit
 ) {
-    val types = listOf(
-        "1", "1.5", "2", "2.5", "3", "3.5", "4",
-        "4.5", "5", "6", "7", "8", "9", "10", "12",
-        "15", "18", "20", "25", "30", "40"
-    )
 
     val focusManager = LocalFocusManager.current
     var isFocused by remember { mutableStateOf(false) }
@@ -46,7 +42,7 @@ fun Thickness(
                 contentPadding = PaddingValues(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items(types) { type ->
+                items(data) { type ->
                     SelectableButton(
                         text = type,
                         isSelected = selectedType == type,
