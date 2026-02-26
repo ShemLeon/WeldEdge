@@ -70,7 +70,8 @@ fun WeldingForm(
             Thickness(
                 selectedType = params.thickness,
                 error = state.thicknessError,
-                onTypeSelected = { onEvent(ThicknessChanged(it)) }
+                onTypeSelected = { onEvent(ThicknessChanged(it)) },
+                data = listOf() // TODO: Add thickness options
             )
 
             DashedDivider()

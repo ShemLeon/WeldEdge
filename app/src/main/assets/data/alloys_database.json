@@ -62,10 +62,25 @@
     50.0
   ],
   "joint_type": [
-    "butt",
-    "t_joint",
-    "corner",
-    "lap"
+    {
+      "id": "butt",
+      "name_res": "R.string.joint_butt",
+      "icon_res": "R.drawable.joint_butt"
+  },
+    {
+      "id": "t_joint",
+      "name_res": "R.string.joint_t",
+      "icon_res": "R.drawable.joint_t"
+    },
+    {
+      "id": "corner",
+      "name_res": "R.string.joint_corner",
+      "icon_res": "R.drawable.joint_corner"
+    },{
+      "id": "lap",
+      "name_res": "R.string.joint_lap",
+      "icon_res": "R.drawable.joint_lap"
+    }
   ],
   "edge_preparation": {
     "bw_preparation": [
