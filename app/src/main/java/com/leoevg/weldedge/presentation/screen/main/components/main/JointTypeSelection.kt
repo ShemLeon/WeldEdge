@@ -25,20 +25,9 @@ fun JointTypeSelection(
     selectedType: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    onTypeSelected: (String) -> Unit
+    onTypeSelected: (String) -> Unit,
+    data: List<JointType>
 ) {
-    val jointTypes = JointType.entries.map { jointType ->
-        JointTypeItem(jointType.id, stringResource(jointType.nameRes), jointType.iconRes)
-    }
-
-    LaunchedEffect(jointTypes) {
-        if (selectedType.isEmpty() && jointTypes.isNotEmpty()) {
-            onTypeSelected(jointTypes.first().id)
-        }
-    }
-
-    val selectedJointType = JointType.fromId(selectedType)
-    val selectedLabel = selectedJointType?.let { stringResource(it.nameRes) } ?: selectedType
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
@@ -56,7 +45,7 @@ fun JointTypeSelection(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
-                items(jointTypes) { item ->
+                items(data) { item ->
                     JointTypeCard(
                         item = item,
                         isSelected = selectedType == item.id,
@@ -66,7 +55,7 @@ fun JointTypeSelection(
             }
         } else {
             SelectableButton(
-                text = stringResource(R.string.selected_format, selectedLabel),
+                text = "TODO",
                 isSelected = true,
                 onClick = onToggleExpand,
                 modifier = Modifier.fillMaxWidth()
@@ -75,19 +64,14 @@ fun JointTypeSelection(
     }
 }
 
-data class JointTypeItem(
-    val id: String,
-    val label: String,
-    val iconRes: Int
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JointTypeCard(
-    item: JointTypeItem,
+    item: JointType,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val name = stringResource(id = item.nameRes)
     OutlinedCard(
         onClick = onClick,
         modifier = Modifier.size(width = 140.dp, height = 120.dp),
@@ -105,7 +89,7 @@ fun JointTypeCard(
         ) {
             Image(
                 painter = painterResource(id = item.iconRes),
-                contentDescription = item.label,
+                contentDescription = item.name,
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp)
@@ -115,7 +99,7 @@ fun JointTypeCard(
                 color = if (isSelected) Color(0xFFDBEAFE) else Color(0xFFF8FAFC)
             ) {
                 Text(
-                    text = item.label,
+                    text = item.name,
                     modifier = Modifier.padding(vertical = 4.dp),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,

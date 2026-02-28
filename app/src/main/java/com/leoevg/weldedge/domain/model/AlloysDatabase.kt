@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class AlloysDatabase(
     val metals1: List<MetalGroup> = emptyList(),
     val thickness: List<Double> = emptyList(),
-    @SerialName("joint_type") val jointType: List<String> = emptyList(),
+    @SerialName("joint_type") val jointType: List<JointType> = emptyList(),
     @SerialName("edge_preparation") val edgePreparation: EdgePreparationData = EdgePreparationData(),
     @SerialName("welding_type") val weldingType: List<WeldingTypeItem> = emptyList()
 ) {
