@@ -66,7 +66,7 @@
       "id": "butt",
       "name_res": "R.string.joint_butt",
       "icon_res": "R.drawable.joint_butt"
-  },
+    },
     {
       "id": "t_joint",
       "name_res": "R.string.joint_t",
@@ -76,203 +76,212 @@
       "id": "corner",
       "name_res": "R.string.joint_corner",
       "icon_res": "R.drawable.joint_corner"
-    },{
+    },
+    {
       "id": "lap",
       "name_res": "R.string.joint_lap",
       "icon_res": "R.drawable.joint_lap"
     }
   ],
-  "edge_preparation": {
-    "bw_preparation": [
-      {
-        "id": "groove_v_single.webp",
-        "image_path": "edge_preparation/groove/stress/groove_v_single.webp",
-        "name": "V single"
-      },
-      {
-        "id": "groove_v_double.webp",
-        "image_path": "edge_preparation/groove/stress/groove_v_double.webp",
-        "name": "V double"
-      },
-      {
-        "id": "groove_bevel.webp",
-        "image_path": "edge_preparation/groove/stress/groove_bevel.webp",
-        "name": "Bevel single"
-      },
-      {
-        "id": "groove_bevel_double.webp",
-        "image_path": "edge_preparation/groove/stress/groove_bevel_double.webp",
-        "name": "Bevel double"
-      },
-      {
-        "id": "groove_u.webp",
-        "image_path": "edge_preparation/groove/stress/groove_u.webp",
-        "name": "U single"
-      },
-      {
-        "id": "groove_u_double.webp",
-        "image_path": "edge_preparation/groove/stress/groove_u_double.webp",
-        "name": "U double"
-      },
-      {
-        "id": "groove_j.webp",
-        "image_path": "edge_preparation/groove/stress/groove_j.webp",
-        "name": "J single"
-      },
-      {
-        "id": "groove_j_double.webp",
-        "image_path": "edge_preparation/groove/stress/groove_j_double.webp",
-        "name": "J double"
-      },
-      {
-        "id": "t_joint_bevel.webp",
-        "image_path": "edge_preparation/t/stress/t_joint_bevel.webp",
-        "name": "Bevel single"
-      },
-      {
-        "id": "t_joint_bevel_support.webp",
-        "image_path": "edge_preparation/t/stress/t_joint_bevel_support.webp",
-        "name": "Bevel with support"
-      },
-      {
-        "id": "t_joint_bevel_double.webp",
-        "image_path": "edge_preparation/t/stress/t_joint_bevel_double.webp",
-        "name": "Bevel double"
-      },
-      {
-        "id": "t_joint_j_groove.webp",
-        "image_path": "edge_preparation/t/stress/t_joint_j_groove.webp",
-        "name": "J-groove single"
-      },
-      {
-        "id": "t_joint_j_groove_double.webp",
-        "image_path": "edge_preparation/t/stress/t_joint_j_groove_double.webp",
-        "name": "J-groove double"
-      },
-      {
-        "id": "lap_joint_bevel.webp",
-        "image_path": "edge_preparation/lap/stress/lap_joint_bevel.webp",
-        "name": "Bevel lap"
-      },
-      {
-        "id": "corner_v_groove.webp",
-        "image_path": "edge_preparation/corner/stress/corner_v_groove.webp",
-        "name": "V-groove corner"
-      },
-      {
-        "id": "corner_bevel_inside.webp",
-        "image_path": "edge_preparation/corner/stress/corner_bevel_inside.webp",
-        "name": "Bevel inside corner"
-      },
-      {
-        "id": "corner_bevel_outside.webp",
-        "image_path": "edge_preparation/corner/stress/corner_bevel_outside.webp",
-        "name": "Bevel outside corner"
-      },
-      {
-        "id": "corner_j_inside.webp",
-        "image_path": "edge_preparation/corner/stress/corner_j_inside.webp",
-        "name": "J-inside corner"
-      },
-      {
-        "id": "corner_j_outside.webp",
-        "image_path": "edge_preparation/corner/stress/corner_j_outside.webp",
-        "name": "J-outside corner"
-      },
-      {
-        "id": "corner_u.webp",
-        "image_path": "edge_preparation/corner/stress/corner_u.webp",
-        "name": "U corner"
-      },
-      {
-        "id": "corner_full_open.webp",
-        "image_path": "edge_preparation/corner/stress/corner_full_open.webp",
-        "name": "Full open corner"
-      },
-      {
-        "id": "corner_half_open.webp",
-        "image_path": "edge_preparation/corner/stress/corner_half_open.webp",
-        "name": "Half open corner"
-      }
-    ],
-    "fw_preparation": [
-      {
-        "id": "groove_1_square_single.webp",
-        "image_path": "edge_preparation/groove/simple/groove_1_square_single.webp",
-        "name": "Square single"
-      },
-      {
-        "id": "groove_2_square_double.webp",
-        "image_path": "edge_preparation/groove/simple/groove_2_square_double.webp",
-        "name": "Square double"
-      },
-      {
-        "id": "groove_3_flare_v.webp",
-        "image_path": "edge_preparation/groove/simple/groove_3_flare_v.webp",
-        "name": "Flare-V single"
-      },
-      {
-        "id": "groove_4_flare_v_double.webp",
-        "image_path": "edge_preparation/groove/simple/groove_4_flare_v_double.webp",
-        "name": "Flare-V double"
-      },
-      {
-        "id": "t_joint_fillet.webp",
-        "image_path": "edge_preparation/t/simple/t_joint_fillet.webp",
-        "name": "Fillet single"
-      },
-      {
-        "id": "t_joint_fillet_double.webp",
-        "image_path": "edge_preparation/t/simple/t_joint_fillet_double.webp",
-        "name": "Fillet double"
-      },
-      {
-        "id": "t_joint_flare_bevel_groove.webp",
-        "image_path": "edge_preparation/t/simple/t_joint_flare_bevel_groove.webp",
-        "name": "Flare bevel single"
-      },
-      {
-        "id": "t_joint_flare_bevel_double_groove.webp",
-        "image_path": "edge_preparation/t/simple/t_joint_flare_bevel_double_groove.webp",
-        "name": "Flare bevel double"
-      },
-      {
-        "id": "lap_joint_fillet.webp",
-        "image_path": "edge_preparation/lap/simple/lap_joint_fillet.webp",
-        "name": "Fillet lap"
-      },
-      {
-        "id": "lap_joint_spot.webp",
-        "image_path": "edge_preparation/lap/simple/lap_joint_spot.webp",
-        "name": "Spot lap"
-      },
-      {
-        "id": "lap_joint_plug_slot.webp",
-        "image_path": "edge_preparation/lap/simple/lap_joint_plug_slot.webp",
-        "name": "Plug/Slot lap"
-      },
-      {
-        "id": "corner_flush.webp",
-        "image_path": "edge_preparation/corner/simple/corner_flush.webp",
-        "name": "Flush corner"
-      },
-      {
-        "id": "corner_flange.webp",
-        "image_path": "edge_preparation/corner/simple/corner_flange.webp",
-        "name": "Flange corner"
-      },
-      {
-        "id": "edge.webp",
-        "image_path": "edge_preparation/corner/simple/edge.webp",
-        "name": "Edge corner"
-      },
-      {
-        "id": "flare_v.webp",
-        "image_path": "edge_preparation/corner/simple/flare_v.webp",
-        "name": "Flare-V corner"
-      }
-    ]
-  },
+  "edge_preparation": [
+    {
+      "id": "bw_preparation",
+      "name_res": "R.string.type_of_welds_bw",
+      "array": [
+        {
+          "id": "groove_v_single.webp",
+          "image_path": "edge_preparation/groove/stress/groove_v_single.webp",
+          "name": "V single"
+        },
+        {
+          "id": "groove_v_double.webp",
+          "image_path": "edge_preparation/groove/stress/groove_v_double.webp",
+          "name": "V double"
+        },
+        {
+          "id": "groove_bevel.webp",
+          "image_path": "edge_preparation/groove/stress/groove_bevel.webp",
+          "name": "Bevel single"
+        },
+        {
+          "id": "groove_bevel_double.webp",
+          "image_path": "edge_preparation/groove/stress/groove_bevel_double.webp",
+          "name": "Bevel double"
+        },
+        {
+          "id": "groove_u.webp",
+          "image_path": "edge_preparation/groove/stress/groove_u.webp",
+          "name": "U single"
+        },
+        {
+          "id": "groove_u_double.webp",
+          "image_path": "edge_preparation/groove/stress/groove_u_double.webp",
+          "name": "U double"
+        },
+        {
+          "id": "groove_j.webp",
+          "image_path": "edge_preparation/groove/stress/groove_j.webp",
+          "name": "J single"
+        },
+        {
+          "id": "groove_j_double.webp",
+          "image_path": "edge_preparation/groove/stress/groove_j_double.webp",
+          "name": "J double"
+        },
+        {
+          "id": "t_joint_bevel.webp",
+          "image_path": "edge_preparation/t/stress/t_joint_bevel.webp",
+          "name": "Bevel single"
+        },
+        {
+          "id": "t_joint_bevel_support.webp",
+          "image_path": "edge_preparation/t/stress/t_joint_bevel_support.webp",
+          "name": "Bevel with support"
+        },
+        {
+          "id": "t_joint_bevel_double.webp",
+          "image_path": "edge_preparation/t/stress/t_joint_bevel_double.webp",
+          "name": "Bevel double"
+        },
+        {
+          "id": "t_joint_j_groove.webp",
+          "image_path": "edge_preparation/t/stress/t_joint_j_groove.webp",
+          "name": "J-groove single"
+        },
+        {
+          "id": "t_joint_j_groove_double.webp",
+          "image_path": "edge_preparation/t/stress/t_joint_j_groove_double.webp",
+          "name": "J-groove double"
+        },
+        {
+          "id": "lap_joint_bevel.webp",
+          "image_path": "edge_preparation/lap/stress/lap_joint_bevel.webp",
+          "name": "Bevel lap"
+        },
+        {
+          "id": "corner_v_groove.webp",
+          "image_path": "edge_preparation/corner/stress/corner_v_groove.webp",
+          "name": "V-groove corner"
+        },
+        {
+          "id": "corner_bevel_inside.webp",
+          "image_path": "edge_preparation/corner/stress/corner_bevel_inside.webp",
+          "name": "Bevel inside corner"
+        },
+        {
+          "id": "corner_bevel_outside.webp",
+          "image_path": "edge_preparation/corner/stress/corner_bevel_outside.webp",
+          "name": "Bevel outside corner"
+        },
+        {
+          "id": "corner_j_inside.webp",
+          "image_path": "edge_preparation/corner/stress/corner_j_inside.webp",
+          "name": "J-inside corner"
+        },
+        {
+          "id": "corner_j_outside.webp",
+          "image_path": "edge_preparation/corner/stress/corner_j_outside.webp",
+          "name": "J-outside corner"
+        },
+        {
+          "id": "corner_u.webp",
+          "image_path": "edge_preparation/corner/stress/corner_u.webp",
+          "name": "U corner"
+        },
+        {
+          "id": "corner_full_open.webp",
+          "image_path": "edge_preparation/corner/stress/corner_full_open.webp",
+          "name": "Full open corner"
+        },
+        {
+          "id": "corner_half_open.webp",
+          "image_path": "edge_preparation/corner/stress/corner_half_open.webp",
+          "name": "Half open corner"
+        }
+      ]
+    },
+    {
+      "id": "fw_preparation",
+      "name_res": "R.string.type_of_welds_fw",
+      "array": [
+        {
+          "id": "groove_1_square_single.webp",
+          "image_path": "edge_preparation/groove/simple/groove_1_square_single.webp",
+          "name": "Square single"
+        },
+        {
+          "id": "groove_2_square_double.webp",
+          "image_path": "edge_preparation/groove/simple/groove_2_square_double.webp",
+          "name": "Square double"
+        },
+        {
+          "id": "groove_3_flare_v.webp",
+          "image_path": "edge_preparation/groove/simple/groove_3_flare_v.webp",
+          "name": "Flare-V single"
+        },
+        {
+          "id": "groove_4_flare_v_double.webp",
+          "image_path": "edge_preparation/groove/simple/groove_4_flare_v_double.webp",
+          "name": "Flare-V double"
+        },
+        {
+          "id": "t_joint_fillet.webp",
+          "image_path": "edge_preparation/t/simple/t_joint_fillet.webp",
+          "name": "Fillet single"
+        },
+        {
+          "id": "t_joint_fillet_double.webp",
+          "image_path": "edge_preparation/t/simple/t_joint_fillet_double.webp",
+          "name": "Fillet double"
+        },
+        {
+          "id": "t_joint_flare_bevel_groove.webp",
+          "image_path": "edge_preparation/t/simple/t_joint_flare_bevel_groove.webp",
+          "name": "Flare bevel single"
+        },
+        {
+          "id": "t_joint_flare_bevel_double_groove.webp",
+          "image_path": "edge_preparation/t/simple/t_joint_flare_bevel_double_groove.webp",
+          "name": "Flare bevel double"
+        },
+        {
+          "id": "lap_joint_fillet.webp",
+          "image_path": "edge_preparation/lap/simple/lap_joint_fillet.webp",
+          "name": "Fillet lap"
+        },
+        {
+          "id": "lap_joint_spot.webp",
+          "image_path": "edge_preparation/lap/simple/lap_joint_spot.webp",
+          "name": "Spot lap"
+        },
+        {
+          "id": "lap_joint_plug_slot.webp",
+          "image_path": "edge_preparation/lap/simple/lap_joint_plug_slot.webp",
+          "name": "Plug/Slot lap"
+        },
+        {
+          "id": "corner_flush.webp",
+          "image_path": "edge_preparation/corner/simple/corner_flush.webp",
+          "name": "Flush corner"
+        },
+        {
+          "id": "corner_flange.webp",
+          "image_path": "edge_preparation/corner/simple/corner_flange.webp",
+          "name": "Flange corner"
+        },
+        {
+          "id": "edge.webp",
+          "image_path": "edge_preparation/corner/simple/edge.webp",
+          "name": "Edge corner"
+        },
+        {
+          "id": "flare_v.webp",
+          "image_path": "edge_preparation/corner/simple/flare_v.webp",
+          "name": "Flare-V corner"
+        }
+      ]
+    }
+  ],
   "welding_type": [
     {
       "id": "type_1_TIG.svg",

@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,7 +63,6 @@ fun JointTypeSelection(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JointTypeCard(
     item: JointType,
@@ -74,7 +72,7 @@ fun JointTypeCard(
     val name = stringResource(id = item.nameRes)
     OutlinedCard(
         onClick = onClick,
-        modifier = Modifier.size(width = 140.dp, height = 120.dp),
+        modifier = Modifier.size(width = 140.dp, height = 120.dp), // todo: нежелательный хардкод размеров
         border = CardDefaults.outlinedCardBorder(isSelected).copy(
             width = if (isSelected) 2.dp else 1.dp
         ),
@@ -89,7 +87,7 @@ fun JointTypeCard(
         ) {
             Image(
                 painter = painterResource(id = item.iconRes),
-                contentDescription = item.name,
+                contentDescription = name,
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp)
@@ -99,7 +97,7 @@ fun JointTypeCard(
                 color = if (isSelected) Color(0xFFDBEAFE) else Color(0xFFF8FAFC)
             ) {
                 Text(
-                    text = item.name,
+                    text = name,
                     modifier = Modifier.padding(vertical = 4.dp),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,

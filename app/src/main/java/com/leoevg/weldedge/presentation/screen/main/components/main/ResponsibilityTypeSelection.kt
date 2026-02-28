@@ -12,7 +12,7 @@ import com.leoevg.weldedge.domain.model.TypeOfWelds
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 @Composable
-fun TypeOfWeldsSelection(
+fun ResponsibilityTypeSelection(
     selectedType: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,

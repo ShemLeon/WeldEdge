@@ -81,19 +81,21 @@ fun WeldingForm(
                 selectedType = params.jointType,
                 isExpanded = state.isJointTypeExpanded,
                 onToggleExpand = { onEvent(ToggleJointTypeExpanded) },
-                onTypeSelected = { onEvent(JointTypeChanged(it)) }
+                onTypeSelected = { onEvent(JointTypeChanged(it)) },
+                data = listOf() // TODO: Add joint types
             )
 
             DashedDivider()
 
             // Type of Weld (formerly Responsibility)
-            TypeOfWeldsSelection(
+            ResponsibilityTypeSelection(
                 selectedType = params.typeOfWeld,
                 isExpanded = state.isTypeOfWeldExpanded,
                 onToggleExpand = { onEvent(ToggleTypeOfWeldExpanded) },
                 onTypeSelected = {
                     // Блокируем выбор "BW" на программном уровне, если толщина мала
-                    if (it == "BW" && !isBWAllowed) return@TypeOfWeldsSelection
+                    // TODO: вынести логику блокировки в viewModel. если толщина < 3мм - только FW
+                    if (it == "BW" && !isBWAllowed) return@ResponsibilityTypeSelection
                     onEvent(TypeOfWeldChanged(it))
                 }
             )

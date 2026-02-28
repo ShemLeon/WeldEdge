@@ -29,10 +29,6 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChang
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.WeldingTypeChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.DismissAlloyDialog
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.LanguageChanged
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleJointTypeExpanded
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleTypeOfWeldExpanded
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleEdgePreparationExpanded
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleWeldingTypeExpanded
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.SubmitClicked
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.BackClicked
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.GeneratePdfClicked
@@ -64,10 +60,6 @@ class MainScreenViewModel @Inject constructor(
         when (event) {
             DismissAlloyDialog -> onDismissAlloyDialog()
             is LanguageChanged -> onLanguageChanged(event.language)
-            ToggleJointTypeExpanded -> onToggleJointTypeExpanded()
-            ToggleTypeOfWeldExpanded -> onToggleTypeOfWeldExpanded()
-            ToggleEdgePreparationExpanded -> onToggleEdgePreparationExpanded()
-            ToggleWeldingTypeExpanded -> onToggleWeldingTypeExpanded()
             SubmitClicked -> onSubmitClicked()
             BackClicked -> onBackClicked()
             GeneratePdfClicked -> onGeneratePdfClicked()
@@ -164,10 +156,6 @@ class MainScreenViewModel @Inject constructor(
                 engineerName = preferencesManager.getEngineerName(),
                 weldingType = weldingType
             ),
-            isJointTypeExpanded = preferencesManager.isJointTypeExpanded(),
-            isTypeOfWeldExpanded = preferencesManager.isTypeOfWeldExpanded(),
-            isEdgePreparationExpanded = true,
-            isWeldingTypeExpanded = preferencesManager.isWeldingTypeExpanded(),
             language = preferencesManager.getLanguage(),
             selectedMetalCategory = "CS",
             metalAlloyHistory = preferencesManager.getMetalAlloyHistory("CS")
@@ -292,28 +280,6 @@ class MainScreenViewModel @Inject constructor(
     private fun onLanguageChanged(language: String) {
         preferencesManager.saveLanguage(language)
         _state.update { it.copy(language = language) }
-    }
-
-    private fun onToggleJointTypeExpanded() {
-        val newState = !_state.value.isJointTypeExpanded
-        preferencesManager.saveJointTypeExpanded(newState)
-        _state.update { it.copy(isJointTypeExpanded = newState) }
-    }
-
-    private fun onToggleTypeOfWeldExpanded() {
-        val newState = !_state.value.isTypeOfWeldExpanded
-        preferencesManager.saveTypeOfWeldExpanded(newState)
-        _state.update { it.copy(isTypeOfWeldExpanded = newState) }
-    }
-
-    private fun onToggleEdgePreparationExpanded() {
-        _state.update { it.copy(isEdgePreparationExpanded = !it.isEdgePreparationExpanded) }
-    }
-
-    private fun onToggleWeldingTypeExpanded() {
-        val newState = !_state.value.isWeldingTypeExpanded
-        preferencesManager.saveWeldingTypeExpanded(newState)
-        _state.update { it.copy(isWeldingTypeExpanded = newState) }
     }
 
     private fun onSubmitClicked() {
