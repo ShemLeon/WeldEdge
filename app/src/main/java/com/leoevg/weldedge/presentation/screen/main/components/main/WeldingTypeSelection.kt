@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.WeldingType
-import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 data class WeldingTypeItem(
     val id: String,
@@ -30,8 +29,6 @@ data class WeldingTypeItem(
 @Composable
 fun WeldingTypeSelection(
     selectedType: String,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
     val items = remember {
@@ -51,40 +48,27 @@ fun WeldingTypeSelection(
         }
     }
 
-    val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) stringResource(R.string.not_selected) else selectedType
-
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.welding_type_label),
-            isRequired = true,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            isRequired = true
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (isExpanded) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                items(items) { item ->
-                    WeldingTypeImage(
-                        item = item,
-                        isSelected = selectedType == item.id,
-                        onClick = { onTypeSelected(item.id) }
-                    )
-                }
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(items) { item ->
+                WeldingTypeImage(
+                    item = item,
+                    isSelected = selectedType == item.id,
+                    onClick = { onTypeSelected(item.id) }
+                )
             }
-        } else {
-            SelectableButton(
-                text = stringResource(R.string.selected_format, selectedLabel),
-                isSelected = selectedType.isNotEmpty(),
-                onClick = onToggleExpand,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }

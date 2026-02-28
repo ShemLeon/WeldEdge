@@ -19,9 +19,5 @@ sealed interface MainScreenEvent {
     data class LanguageChanged(val language: String) : MainScreenEvent
     object SubmitClicked : MainScreenEvent
     object BackClicked : MainScreenEvent
-    object ToggleJointTypeExpanded : MainScreenEvent
-    object ToggleTypeOfWeldExpanded : MainScreenEvent
-    object ToggleEdgePreparationExpanded : MainScreenEvent
-    object ToggleWeldingTypeExpanded : MainScreenEvent
     object GeneratePdfClicked : MainScreenEvent
 }

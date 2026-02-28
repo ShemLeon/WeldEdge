@@ -14,8 +14,6 @@ import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 @Composable
 fun ResponsibilityTypeSelection(
     selectedType: String,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
     val options = TypeOfWelds.entries.map {
@@ -28,43 +26,27 @@ fun ResponsibilityTypeSelection(
         }
     }
 
-    val selectedLabel = TypeOfWelds.fromId(selectedType)?.let {
-        stringResource(it.nameRes)
-    } ?: selectedType
-
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.type_of_welds_label),
-            isRequired = true,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            isRequired = true
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (isExpanded) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                options.forEach { (value, label) ->
-                    SelectableButton(
-                        text = label,
-                        isSelected = selectedType == value,
-                        onClick = { onTypeSelected(value) },
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            options.forEach { (value, label) ->
+                SelectableButton(
+                    text = label,
+                    isSelected = selectedType == value,
+                    onClick = { onTypeSelected(value) },
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
             }
-        } else {
-            SelectableButton(
-                text = stringResource(R.string.selected_format, selectedLabel),
-                isSelected = true,
-                onClick = onToggleExpand,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
         }
     }
 }

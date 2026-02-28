@@ -17,48 +17,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.JointType
-import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 
 @Composable
 fun JointTypeSelection(
     selectedType: String,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit,
     data: List<JointType>
 ) {
-
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.joint_type_label),
-            isRequired = true,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            isRequired = true
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (isExpanded) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp)
-            ) {
-                items(data) { item ->
-                    JointTypeCard(
-                        item = item,
-                        isSelected = selectedType == item.id,
-                        onClick = { onTypeSelected(item.id) }
-                    )
-                }
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp)
+        ) {
+            items(data) { item ->
+                JointTypeCard(
+                    item = item,
+                    isSelected = selectedType == item.id,
+                    onClick = { onTypeSelected(item.id) }
+                )
             }
-        } else {
-            SelectableButton(
-                text = "TODO",
-                isSelected = true,
-                onClick = onToggleExpand,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }

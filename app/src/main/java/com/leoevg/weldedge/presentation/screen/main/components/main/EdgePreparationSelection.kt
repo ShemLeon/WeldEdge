@@ -19,8 +19,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.EdgePreparation
-import com.leoevg.weldedge.presentation.screen.main.SelectableButton
-
 data class EdgePreparationItem(
     val id: String,
     val label: String,
@@ -34,8 +32,6 @@ fun EdgePreparationSelection(
     weldingType: String,
     thickness: String,
     selectedType: String,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
     onTypeSelected: (String) -> Unit
 ) {
     val items = remember(jointType, typeOfWeld, weldingType, thickness) {
@@ -58,63 +54,50 @@ fun EdgePreparationSelection(
         }
     }
 
-    val selectedLabel = items.find { it.id == selectedType }?.label ?: if (selectedType.isEmpty()) stringResource(R.string.not_selected) else selectedType
-
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.edge_preparation_label),
-            isRequired = false,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            isRequired = false
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (isExpanded) {
-            if (items.isEmpty()) {
-                Text(
-                    text = stringResource(R.string.edge_preparation_none),
-                    modifier = Modifier.padding(16.dp),
-                    color = Color.Gray,
-                    fontSize = 14.sp
-                )
-            } else {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items(items, key = { it.id }) { item ->
-                        Box(
-                            modifier = Modifier
-                                .size(width = 210.dp, height = 158.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(if (selectedType == item.id) Color(0xFFEFF6FF) else Color.Transparent)
-                                .then(
-                                    if (selectedType == item.id) Modifier.border(2.dp, Color(0xFF3B82F6), RoundedCornerShape(8.dp))
-                                    else Modifier
-                                )
-                                .clickable { onTypeSelected(item.id) }
-                                .padding(4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            AsyncImage(
-                                model = item.assetPath,
-                                contentDescription = item.label,
-                                modifier = Modifier.fillMaxSize()
+        if (items.isEmpty()) {
+            Text(
+                text = stringResource(R.string.edge_preparation_none),
+                modifier = Modifier.padding(16.dp),
+                color = Color.Gray,
+                fontSize = 14.sp
+            )
+        } else {
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(items, key = { it.id }) { item ->
+                    Box(
+                        modifier = Modifier
+                            .size(width = 210.dp, height = 158.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (selectedType == item.id) Color(0xFFEFF6FF) else Color.Transparent)
+                            .then(
+                                if (selectedType == item.id) Modifier.border(2.dp, Color(0xFF3B82F6), RoundedCornerShape(8.dp))
+                                else Modifier
                             )
-                        }
+                            .clickable { onTypeSelected(item.id) }
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AsyncImage(
+                            model = item.assetPath,
+                            contentDescription = item.label,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
                 }
             }
-        } else {
-            SelectableButton(
-                text = stringResource(R.string.selected_format, selectedLabel),
-                isSelected = selectedType.isNotEmpty(),
-                onClick = onToggleExpand,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }

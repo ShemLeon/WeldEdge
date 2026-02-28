@@ -24,10 +24,6 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChang
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.ThicknessChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.TypeOfWeldChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.WeldingTypeChanged
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleJointTypeExpanded
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleTypeOfWeldExpanded
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleEdgePreparationExpanded
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.ToggleWeldingTypeExpanded
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.SubmitClicked
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,8 +75,6 @@ fun WeldingForm(
             // Joint Type
             JointTypeSelection(
                 selectedType = params.jointType,
-                isExpanded = state.isJointTypeExpanded,
-                onToggleExpand = { onEvent(ToggleJointTypeExpanded) },
                 onTypeSelected = { onEvent(JointTypeChanged(it)) },
                 data = listOf() // TODO: Add joint types
             )
@@ -90,8 +84,6 @@ fun WeldingForm(
             // Type of Weld (formerly Responsibility)
             ResponsibilityTypeSelection(
                 selectedType = params.typeOfWeld,
-                isExpanded = state.isTypeOfWeldExpanded,
-                onToggleExpand = { onEvent(ToggleTypeOfWeldExpanded) },
                 onTypeSelected = {
                     // Блокируем выбор "BW" на программном уровне, если толщина мала
                     // TODO: вынести логику блокировки в viewModel. если толщина < 3мм - только FW
@@ -109,8 +101,6 @@ fun WeldingForm(
                 weldingType = params.weldingType,
                 thickness = params.thickness,
                 selectedType = params.edgePreparation,
-                isExpanded = state.isEdgePreparationExpanded,
-                onToggleExpand = { onEvent(ToggleEdgePreparationExpanded) },
                 onTypeSelected = { onEvent(EdgePreparationChanged(it)) }
             )
 
@@ -119,8 +109,6 @@ fun WeldingForm(
             // Welding Type
             WeldingTypeSelection(
                 selectedType = params.weldingType,
-                isExpanded = state.isWeldingTypeExpanded,
-                onToggleExpand = { onEvent(ToggleWeldingTypeExpanded) },
                 onTypeSelected = { onEvent(WeldingTypeChanged(it)) }
             )
 
