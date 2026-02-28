@@ -9,6 +9,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class JointType(
     @SerialName("id") val id: String,
-    @SerialName("name_res") @StringRes val nameRes: Int,
-    @SerialName("icon_res") @DrawableRes val iconRes: Int
+    @SerialName("name_res") val nameRes: String,
+    @SerialName("icon_res") val iconRes: String
 )

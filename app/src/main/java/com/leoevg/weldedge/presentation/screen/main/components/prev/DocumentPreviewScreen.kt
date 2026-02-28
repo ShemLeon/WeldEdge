@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoevg.weldedge.domain.model.JointType
-import com.leoevg.weldedge.domain.model.TypeOfWelds
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage

@@ -8,15 +8,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.model.TypeOfWelds
+import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
+import java.lang.ProcessBuilder.Redirect.to
 
 @Composable
 fun ResponsibilityTypeSelection(
     selectedType: String,
-    onTypeSelected: (String) -> Unit
+    onTypeSelected: (String) -> Unit,
+    data: List<EdgePreparationGroup>
 ) {
-    val options = TypeOfWelds.entries.map {
+    val options = data.map {
         it.id to stringResource(it.nameRes) 
     }
 
