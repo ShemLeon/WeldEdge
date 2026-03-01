@@ -13,7 +13,7 @@ private fun Context.getStringResourceById(id: String?): String {
     return getString(resId)
 }
 
-private fun Context.getDrawableResourceById(id: String?): Drawable {
+private fun Context.getDrawableResourceById(id: String?): Drawable? {
     val packageName: String? = getPackageName()
     val resId: Int = resources.getIdentifier(id, "drawable", packageName)
     return getDrawable(resId)
