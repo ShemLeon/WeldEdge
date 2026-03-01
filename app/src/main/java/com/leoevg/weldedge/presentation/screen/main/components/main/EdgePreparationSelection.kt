@@ -27,16 +27,12 @@ data class EdgePreparationItem(
 
 @Composable
 fun EdgePreparationSelection(
-    jointType: String,
-    typeOfWeld: String,
-    weldingType: String,
-    thickness: String,
-    selectedType: String,
-    onTypeSelected: (String) -> Unit
+    onTypeSelected: (String) -> Unit,
+    data: List<EdgePreparation>
 ) {
-    val items = remember(jointType, typeOfWeld, weldingType, thickness) {
+    val items = remember(jointType, weldingType, thickness) {
         val thicknessVal = thickness.trim().toDoubleOrNull() ?: 0.0
-        EdgePreparation.getForSelection(jointType, typeOfWeld, weldingType, thickness)
+        EdgePreparation.getForSelection(jointType, weldingType, thickness)
             .filter { prep -> !(prep == EdgePreparation.GROOVE_V_DOUBLE && thicknessVal < 6.0) }
             .map { prep ->
             EdgePreparationItem(

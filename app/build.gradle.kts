@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.coil.svg)
 
     implementation(libs.androidx.hilt.navigation.compose.v120)
+    implementation(libs.accompanist.drawablepainter)
 
     implementation(libs.kotlinx.datetime)
     implementation("com.caverock:androidsvg-aar:1.4")

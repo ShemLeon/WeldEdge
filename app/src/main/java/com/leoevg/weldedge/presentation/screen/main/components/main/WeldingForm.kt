@@ -89,7 +89,8 @@ fun WeldingForm(
                     // TODO: вынести логику блокировки в viewModel. если толщина < 3мм - только FW
                     if (it == "BW" && !isBWAllowed) return@ResponsibilityTypeSelection
                     onEvent(TypeOfWeldChanged(it))
-                }
+                },
+                data = listOf() // TODO: Add types of weld
             )
 
             DashedDivider()

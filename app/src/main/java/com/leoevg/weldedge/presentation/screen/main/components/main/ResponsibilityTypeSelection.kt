@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
+import com.leoevg.weldedge.presentation.utils.getStringResourceById
 import java.lang.ProcessBuilder.Redirect.to
 
 @Composable
@@ -19,7 +21,7 @@ fun ResponsibilityTypeSelection(
     data: List<EdgePreparationGroup>
 ) {
     val options = data.map {
-        it.id to stringResource(it.nameRes) 
+        it.id to LocalContext.current.getStringResourceById(it.nameRes)
     }
 
     LaunchedEffect(options) {
