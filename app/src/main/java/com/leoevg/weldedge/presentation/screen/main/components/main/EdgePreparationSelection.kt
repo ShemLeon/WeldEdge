@@ -25,8 +25,7 @@ const val baseAssetPath = "file:///android_asset/"
 @Composable
 fun EdgePreparationSelection(
     onTypeSelected: (String) -> Unit,
-    data: List<EdgePreparationItem>,
-    fuu: () -> Unit
+    data: List<EdgePreparationItem>
 ) {
     val selectedTypeId = remember { mutableStateOf("") }
 
