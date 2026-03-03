@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.model.WeldingType
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 

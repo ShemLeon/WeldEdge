@@ -18,3 +18,5 @@ internal fun Context.getDrawableResourceById(id: String?): Drawable? {
     return getDrawable(resId)
 }
 
+internal const val baseAssetPath = "file:///android_asset/"
+

@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WeldingTypeItem(
     val id: String,
-    val image_path: String,
+    val imagePath: String,
     val name: String
 )

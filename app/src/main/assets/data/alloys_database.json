@@ -284,22 +284,22 @@
   ],
   "welding_type": [
     {
-      "id": "type_1_TIG.svg",
+      "id": "type_1_TIG",
       "image_path": "type_of_welding/type_1_TIG.svg",
       "name": "TIG"
     },
     {
-      "id": "type_2_MAG-MIG.svg",
+      "id": "type_2_MAG-MIG",
       "image_path": "type_of_welding/type_2_MAG-MIG.svg",
       "name": "MIG / MAG"
     },
     {
-      "id": "type_3_MMA.svg",
+      "id": "type_3_MMA",
       "image_path": "type_of_welding/type_3_MMA.svg",
       "name": "MMA / Stick"
     },
     {
-      "id": "type_4_FCAW.svg",
+      "id": "type_4_FCAW",
       "image_path": "type_of_welding/type_4_FCAW.svg",
       "name": "FCAW"
     }

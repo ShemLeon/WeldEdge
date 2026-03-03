@@ -18,36 +18,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.model.WeldingType
-
-data class WeldingTypeItem(
-    val id: String,
-    val label: String,
-    val assetPath: String
-)
+import com.leoevg.weldedge.domain.model.WeldingTypeItem
 
 @Composable
 fun WeldingTypeSelection(
-    selectedType: String,
-    onTypeSelected: (String) -> Unit
+    onTypeSelected: (String) -> Unit,
+    data: List<WeldingTypeItem>
 ) {
-    val items = remember {
-        WeldingType.entries.map { type ->
-            WeldingTypeItem(
-                id = type.id,
-                label = type.displayName,
-                assetPath = "file:///android_asset/type_of_welding/${type.assetName}"
-            )
-        }
-    }
-
-    // Автоматически выбираем первый элемент, если ничего не выбрано
-    LaunchedEffect(items) {
-        if (selectedType.isEmpty() && items.isNotEmpty()) {
-            onTypeSelected(items.first().id)
-        }
-    }
-
+    val selectedTypeId = remember { mutableStateOf("") }
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.welding_type_label),
@@ -62,11 +40,14 @@ fun WeldingTypeSelection(
             contentPadding = PaddingValues(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(items) { item ->
+            items(data) { item ->
                 WeldingTypeImage(
                     item = item,
-                    isSelected = selectedType == item.id,
-                    onClick = { onTypeSelected(item.id) }
+                    isSelected = selectedTypeId.value == item.id,
+                    onClick = {
+                        selectedTypeId.value = item.id
+                        onTypeSelected(item.id)
+                    }
                 )
             }
         }
@@ -93,8 +74,8 @@ fun WeldingTypeImage(
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
-            model = item.assetPath,
-            contentDescription = item.label,
+            model = item.imagePath,
+            contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
         )

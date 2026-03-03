@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
+import com.leoevg.weldedge.presentation.utils.baseAssetPath
 
-const val baseAssetPath = "file:///android_asset/"
 
 @Composable
 fun EdgePreparationSelection(
