@@ -18,37 +18,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.model.EdgePreparation
-data class EdgePreparationItem(
-    val id: String,
-    val label: String,
-    val assetPath: String
-)
+import com.leoevg.weldedge.domain.model.EdgePreparationItem
+
+const val baseAssetPath = "file:///android_asset/"
 
 @Composable
 fun EdgePreparationSelection(
     onTypeSelected: (String) -> Unit,
-    data: List<EdgePreparation>
+    data: List<EdgePreparationItem>,
+    fuu: () -> Unit
 ) {
-    val items = remember(jointType, weldingType, thickness) {
-        val thicknessVal = thickness.trim().toDoubleOrNull() ?: 0.0
-        EdgePreparation.getForSelection(jointType, weldingType, thickness)
-            .filter { prep -> !(prep == EdgePreparation.GROOVE_V_DOUBLE && thicknessVal < 6.0) }
-            .map { prep ->
-            EdgePreparationItem(
-                id = prep.id,
-                label = prep.displayName,
-                assetPath = "file:///android_asset/${prep.getAssetPath()}"
-            )
-        }
-    }
-
-    // Автоматически выбираем первый элемент, если ничего не выбрано или выбранный больше не в списке
-    LaunchedEffect(items) {
-        if (items.isNotEmpty() && (selectedType.isEmpty() || items.none { it.id == selectedType })) {
-            onTypeSelected(items.first().id)
-        }
-    }
+    val selectedTypeId = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
@@ -58,7 +38,7 @@ fun EdgePreparationSelection(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (items.isEmpty()) {
+        if (data.isEmpty()) {
             Text(
                 text = stringResource(R.string.edge_preparation_none),
                 modifier = Modifier.padding(16.dp),
@@ -72,28 +52,48 @@ fun EdgePreparationSelection(
                 contentPadding = PaddingValues(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items(items, key = { it.id }) { item ->
-                    Box(
-                        modifier = Modifier
-                            .size(width = 210.dp, height = 158.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (selectedType == item.id) Color(0xFFEFF6FF) else Color.Transparent)
-                            .then(
-                                if (selectedType == item.id) Modifier.border(2.dp, Color(0xFF3B82F6), RoundedCornerShape(8.dp))
-                                else Modifier
-                            )
-                            .clickable { onTypeSelected(item.id) }
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AsyncImage(
-                            model = item.assetPath,
-                            contentDescription = item.label,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                items(data, key = { it.id }) { item ->
+                    EachPreparationContent(
+                        item = item,
+                        onTypeSelected = {
+                            selectedTypeId.value = it
+                            onTypeSelected.invoke(it)
+                        },
+                        isSelected = item.id == selectedTypeId.value
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun EachPreparationContent(
+    item: EdgePreparationItem,
+    onTypeSelected: (String) -> Unit,
+    isSelected: Boolean
+) {
+    Box(
+        modifier = Modifier
+            .size(width = 210.dp, height = 158.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(if (isSelected) Color(0xFFEFF6FF) else Color.Transparent)
+            .then(
+                if (isSelected) Modifier.border(
+                    2.dp,
+                    Color(0xFF3B82F6),
+                    RoundedCornerShape(8.dp)
+                )
+                else Modifier
+            )
+            .clickable { onTypeSelected(item.id) }
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = baseAssetPath + item.imagePath,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.leoevg.weldedge.data.local.PreferencesManager
 import com.leoevg.weldedge.data.local.ResourceManager
-import com.leoevg.weldedge.domain.model.EdgePreparation
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.domain.usecase.CreateInitialStateUseCase
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase

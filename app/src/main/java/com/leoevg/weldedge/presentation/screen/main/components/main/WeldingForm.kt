@@ -97,12 +97,8 @@ fun WeldingForm(
 
             // Edge Preparation
             EdgePreparationSelection(
-                jointType = params.jointType,
-                typeOfWeld = params.typeOfWeld,
-                weldingType = params.weldingType,
-                thickness = params.thickness,
-                selectedType = params.edgePreparation,
-                onTypeSelected = { onEvent(EdgePreparationChanged(it)) }
+                onTypeSelected = { onEvent(EdgePreparationChanged(it)) },
+                data = listOf(),
             )
 
             DashedDivider()
