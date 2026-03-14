@@ -1,5 +1,16 @@
 package com.leoevg.weldedge.domain.model
 
+data class BeAvailableWeldingParams(
+    val metalType: List<String> = listOf(),
+    val metalType2: List<String> = listOf(),
+    val thickness: List<String> = listOf(),
+    val jointType: List<String> = listOf(),
+    val typeOfWeld: List<String> = listOf(),
+    val edgePreparation: List<String> = listOf(),
+    val weldingType: List<String> = listOf(),
+    val engineerName: List<String> = listOf(), // пока не актуально
+    val standard: List<String> = listOf()
+)
 data class WeldingParams(
     val metalType: String = "",
     val metalType2: String = "",
@@ -8,7 +19,7 @@ data class WeldingParams(
     val typeOfWeld: String = "",
     val edgePreparation: String = "",
     val weldingType: String = "",
-    val engineerName: String = "",
+    val engineerName: String = "", // пока не актуально
     val standard: String = ""
 ) {
     // Функция для расчета номера WPS по таблице

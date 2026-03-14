@@ -32,10 +32,7 @@ fun WeldingForm(
     state: MainScreenState.DataSelector,
     onEvent: (MainScreenEvent) -> Unit
 ) {
-    val params = state.params
-    val thicknessValue = params.thickness.toDoubleOrNull() ?: 0.0
-    val isBWAllowed = thicknessValue >= 1.5
-
+    val params = state.weldingFormParams
     Card(
         modifier = Modifier.fillMaxWidth(1f),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -67,7 +64,7 @@ fun WeldingForm(
                 selectedType = params.thickness,
                 error = state.thicknessError,
                 onTypeSelected = { onEvent(ThicknessChanged(it)) },
-                data = listOf() // TODO: Add thickness options
+                data = params.thickness // TODO: Add thickness options
             )
 
             DashedDivider()

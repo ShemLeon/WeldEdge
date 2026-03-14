@@ -1,5 +1,6 @@
 package com.leoevg.weldedge.domain.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,5 +10,7 @@ import kotlinx.serialization.Serializable
 data class MetalGroup(
     val id: String,
     val name: String,
-    val mark_metal: List<String> = emptyList()
+    @SerialName("mark_metal")
+    val markMetal: List<String> = emptyList(),
+    val color: String
 )

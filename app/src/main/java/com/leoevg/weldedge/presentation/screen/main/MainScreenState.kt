@@ -1,5 +1,6 @@
 package com.leoevg.weldedge.presentation.screen.main
 
+import com.leoevg.weldedge.domain.model.BeAvailableWeldingParams
 import com.leoevg.weldedge.domain.model.WeldingParams
 
 sealed class MainScreenState {
@@ -10,7 +11,8 @@ sealed class MainScreenState {
         val thicknessError: String? = null,
         val selectedMetalCategory: String = "CS",
         val metalAlloyHistory: List<String> = emptyList(),
-        val showAlloyDialog: Boolean = false
+        val showAlloyDialog: Boolean = false,
+        val weldingFormParams: BeAvailableWeldingParams
     ) : MainScreenState()
 
     data class DataPreview(

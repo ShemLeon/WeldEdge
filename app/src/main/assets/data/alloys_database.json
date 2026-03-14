@@ -9,7 +9,8 @@
         "5052",
         "5086",
         "6061"
-      ]
+      ],
+      "color": "0xFF66BB6A"
     },
     {
       "name": "Carbon Steel",
@@ -21,7 +22,8 @@
         "S355J0",
         "AISI 4130",
         "AISI 4340"
-      ]
+      ],
+      "color" : "0xFFFFA726"
     },
     {
       "name": "Stainless Steel",
@@ -34,7 +36,8 @@
         "AISI 316L",
         "AISI 630 / 15-5 PH",
         "AISI 630 / 17-4 PH"
-      ]
+      ],
+      "color": "0xFF42A5F5"
     }
   ],
   "thickness": [

@@ -19,19 +19,12 @@ import com.leoevg.weldedge.presentation.screen.main.components.main.FormField
 
 @Composable
 fun MetalAlloy(
-    selectedAlloy: String,
     onAlloySelected: (String) -> Unit,
+    dataMetalType: List<String>,
+    dataMetalSubType: List<String>,
     label: String? = null // это служебная строка которая не отображается
 ) {
-    var selectedCategory by remember { 
-        mutableStateOf(
-            Alloys.allAlloys.find { it.name == selectedAlloy }?.category
-        ) 
-    }
-
-    val alloysInCategory = remember(selectedCategory) {
-        selectedCategory?.let { Alloys.getAlloysByCategory(it) } ?: emptyList()
-    }
+   val selectedAlloy = remember { mutableStateOf(dataMetalType.first()) }
     if (label != null) {
         FormField(label = label, required = true) {
             Сategory(selectedCategory, alloysInCategory, selectedAlloy, onAlloySelected)
@@ -43,12 +36,10 @@ fun MetalAlloy(
 
 @Composable
 private fun Сategory(
-    selectedCategory: AlloyCategory?,
-    alloysInCategory: List<Alloy>,
+    dataMetalSubType: List<String>,
     selectedAlloy: String,
     onAlloySelected: (String) -> Unit
-): AlloyCategory? {
-    var selectedCategory1 = selectedCategory
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
