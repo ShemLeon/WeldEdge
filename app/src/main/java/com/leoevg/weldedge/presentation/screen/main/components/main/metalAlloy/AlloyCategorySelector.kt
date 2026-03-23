@@ -26,13 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
-import com.leoevg.weldedge.domain.model.AlloyCategory
 import com.leoevg.weldedge.domain.model.MetalGroup
 
 @Composable
 fun AlloyCategorySelector(
     data: List<MetalGroup>,
-    onCategorySelected: (AlloyCategory) -> Unit,
+    onCategorySelected: (MetalGroup) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectedCategory by remember { mutableStateOf(data.first()) }
@@ -61,7 +60,7 @@ fun AlloyCategorySelector(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = category.markMetal.index,
+                        text = category.markMetal[index],
                         textAlign = TextAlign.Center,
                         color = if (isSelected) Color(0xFF1B1B1F) else Color(0xFF334155),
                         fontSize = 14.sp,
@@ -77,6 +76,7 @@ fun AlloyCategorySelector(
 @Composable
 fun AlloyCategorySelectorPreview() {
     AlloyCategorySelector(
-        onCategorySelected = {}
+        onCategorySelected = {},
+        data = TODO()
     )
 }

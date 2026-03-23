@@ -1,5 +1,6 @@
 package com.leoevg.weldedge.domain.model
 
+@Deprecated("UseMetalGroup")
 enum class AlloyCategory(
     val displayName: String,
     val colorValue: Long

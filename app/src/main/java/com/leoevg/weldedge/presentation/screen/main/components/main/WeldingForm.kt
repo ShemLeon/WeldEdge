@@ -48,7 +48,7 @@ fun WeldingForm(
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     MetalAlloy(
                         selectedAlloy = params.metalType,
-                        onAlloySelected = { onEvent(MetalTypeChanged(it)) }
+                        onEvent = onEvent
                     )
                     MetalAlloy(
                         selectedAlloy = params.metalType2,

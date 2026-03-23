@@ -9,28 +9,31 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 @Composable
-fun AlloyHistoryChips(
-    history: List<String>,
-    selectedAlloy: String,
-    onAlloySelected: (String) -> Unit,
+fun MarkMetalSelector(
+    data: List<String>,
+    onMarkMetalSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (history.isNotEmpty()) {
+    val selectedMarkMetal by remember { mutableStateOf(data.first()) }
+    if (data.isNotEmpty()) {
         LazyRow(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 4.dp)
         ) {
-            items(history) { alloyName ->
+            items(data) { alloyName ->
                 FilterChip(
-                    selected = selectedAlloy == alloyName,
-                    onClick = { onAlloySelected(alloyName) },
+                    selected = selectedMarkMetal == alloyName,
+                    onClick = { onMarkMetalSelected(alloyName) },
                     label = { Text(alloyName, fontSize = 12.sp) },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = Color(0xFFEFF6FF),
@@ -46,10 +49,9 @@ fun AlloyHistoryChips(
 
 @Preview(showBackground = true)
 @Composable
-fun AlloyHistoryChipsPreview() {
-    AlloyHistoryChips(
-        history = listOf("St3sp", "09G2S", "AISI 304", "AISI 316L"),
-        selectedAlloy = "St3sp",
-        onAlloySelected = {}
+fun MarkMetalSelectorPreview() {
+    MarkMetalSelector(
+        data = listOf("St3sp", "09G2S", "AISI 304", "AISI 316L"),
+        onMarkMetalSelected = {}
     )
 }

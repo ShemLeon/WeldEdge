@@ -1,5 +1,8 @@
 package com.leoevg.weldedge.presentation.screen.main
 
+import com.leoevg.weldedge.domain.model.Alloy
+import com.leoevg.weldedge.domain.model.MetalGroup
+
 sealed interface MainScreenEvent {
     sealed interface OnFieldChanged : MainScreenEvent {
         data class MetalTypeChanged(val value: String) : OnFieldChanged
@@ -13,6 +16,9 @@ sealed interface MainScreenEvent {
         data class WeldingTypeChanged(val value: String) : OnFieldChanged
         data class EngineerNameChanged(val value: String) : OnFieldChanged
         data class StandardChanged(val value: String) : OnFieldChanged
+        // ордер может быть только 1 или 2
+        data class OnMetalGroupChanged(val alloy: String, val markMetal: String, val order: Int) : OnFieldChanged
+
     }
 
     object DismissAlloyDialog : MainScreenEvent
