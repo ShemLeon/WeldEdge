@@ -47,12 +47,16 @@ fun WeldingForm(
             FormField(label = stringResource(R.string.welded_metals_label), required = true) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     MetalAlloy(
-                        selectedAlloy = params.metalType,
+                        dataMetalType = TODO(),
+                        dataMetalSubType = TODO(),
+                        order = 1,
                         onEvent = onEvent
                     )
                     MetalAlloy(
-                        selectedAlloy = params.metalType2,
-                        onAlloySelected = { onEvent(MetalType2Changed(it)) }
+                        dataMetalType = TODO(),
+                        dataMetalSubType = TODO(),
+                        order = 2,
+                        onEvent = onEvent
                     )
                 }
             }
@@ -61,7 +65,6 @@ fun WeldingForm(
 
             // Thickness
             Thickness(
-                selectedType = params.thickness,
                 error = state.thicknessError,
                 onTypeSelected = { onEvent(ThicknessChanged(it)) },
                 data = params.thickness // TODO: Add thickness options

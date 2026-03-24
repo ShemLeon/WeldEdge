@@ -19,7 +19,6 @@ fun MetalAlloy(
     dataMetalSubType: List<String>,
     order: Int,
     onEvent: (MainScreenEvent) -> Unit,
-
     ) {
     val selectedMetalType by remember { mutableStateOf(dataMetalType.first()) }
     val selectedMarkMetal by remember { mutableStateOf(dataMetalSubType.first()) }

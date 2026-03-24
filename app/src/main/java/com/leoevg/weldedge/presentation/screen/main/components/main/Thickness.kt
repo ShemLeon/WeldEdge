@@ -24,12 +24,11 @@ import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Thickness(
-    selectedType: String,
     error: String? = null,
     data: List<String>,
     onTypeSelected: (String) -> Unit
 ) {
-
+    var selectedType by remember { mutableStateOf(data.first()) }
     val focusManager = LocalFocusManager.current
     var isFocused by remember { mutableStateOf(false) }
     var lastClickedButton by remember { mutableStateOf("") }
@@ -48,8 +47,9 @@ fun Thickness(
                         isSelected = selectedType == type,
                         onClick = {
                             focusManager.clearFocus() // Убираем курсор из поля при клике на кнопку
-                            lastClickedButton = type
+                            lastClickedButton = type // TODO
                             onTypeSelected(type)
+                            selectedType = type
                         }
                     )
                 }
@@ -62,6 +62,7 @@ fun Thickness(
                             if (filtered.isEmpty() || filtered.toDoubleOrNull() != null || filtered == "." || filtered.endsWith(".")) {
                                 lastClickedButton = ""
                                 onTypeSelected(filtered)
+                                selectedType = newValue
                             }
                         },
                         modifier = Modifier
