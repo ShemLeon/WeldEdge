@@ -47,14 +47,14 @@ fun WeldingForm(
             FormField(label = stringResource(R.string.welded_metals_label), required = true) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     MetalAlloy(
-                        dataMetalType = TODO(),
-                        dataMetalSubType = TODO(),
+                        dataMetalType = params.metalType[0].second,
+                        dataMetalSubType = params.markMetal[0].second,
                         order = 1,
                         onEvent = onEvent
                     )
                     MetalAlloy(
-                        dataMetalType = TODO(),
-                        dataMetalSubType = TODO(),
+                        dataMetalType = params.metalType[1].second,
+                        dataMetalSubType = params.markMetal[1].second,
                         order = 2,
                         onEvent = onEvent
                     )
@@ -67,23 +67,21 @@ fun WeldingForm(
             Thickness(
                 error = state.thicknessError,
                 onTypeSelected = { onEvent(ThicknessChanged(it)) },
-                data = params.thickness // TODO: Add thickness options
+                data = params.thickness
             )
 
             DashedDivider()
 
             // Joint Type
             JointTypeSelection(
-                selectedType = params.jointType,
                 onTypeSelected = { onEvent(JointTypeChanged(it)) },
-                data = listOf() // TODO: Add joint types
+                data = params.jointType
             )
 
             DashedDivider()
 
             // Type of Weld (formerly Responsibility)
             ResponsibilityTypeSelection(
-                selectedType = params.typeOfWeld,
                 onTypeSelected = {
                     // Блокируем выбор "BW" на программном уровне, если толщина мала
                     // TODO: вынести логику блокировки в viewModel. если толщина < 3мм - только FW

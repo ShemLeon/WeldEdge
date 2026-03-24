@@ -3,6 +3,10 @@ package com.leoevg.weldedge.presentation.screen.main.components.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,18 +20,20 @@ import java.lang.ProcessBuilder.Redirect.to
 
 @Composable
 fun ResponsibilityTypeSelection(
-    selectedType: String,
-    onTypeSelected: (String) -> Unit,
+    onTypeSelected: (EdgePreparationGroup) -> Unit,
     data: List<EdgePreparationGroup>
 ) {
+    val context = LocalContext.current
+    var selectedType by remember { mutableStateOf(data.first()) }
     val options = data.map {
-        it.id to LocalContext.current.getStringResourceById(it.nameRes)
+        it.id to context.getStringResourceById(it.nameRes)
     }
 
     LaunchedEffect(options) {
-        if (selectedType.isEmpty() && options.isNotEmpty()) {
-            onTypeSelected(options.first().first)
-        }
+    //    if (options.isNotEmpty()) {
+            selectedType = options.first()
+        onTypeSelected(options.first())
+   //     }
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -45,7 +51,7 @@ fun ResponsibilityTypeSelection(
             options.forEach { (value, label) ->
                 SelectableButton(
                     text = label,
-                    isSelected = selectedType == value,
+                    isSelected = context.getStringResourceById(selectedType.nameRes) == value,
                     onClick = { onTypeSelected(value) },
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center

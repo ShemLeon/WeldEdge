@@ -6,12 +6,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,10 +27,11 @@ import com.leoevg.weldedge.presentation.utils.getStringResourceById
 
 @Composable
 fun JointTypeSelection(
-    selectedType: String,
     onTypeSelected: (String) -> Unit,
     data: List<JointType>
 ) {
+    var selectedTypeId by remember { mutableStateOf(data.first().id) }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.joint_type_label),
@@ -45,8 +48,11 @@ fun JointTypeSelection(
             items(data) { item ->
                 JointTypeCard(
                     item = item,
-                    isSelected = selectedType == item.id,
-                    onClick = { onTypeSelected(item.id) }
+                    isSelected = selectedTypeId == item.id,
+                    onClick = {
+                        onTypeSelected(item.id)
+                        selectedTypeId = item.id
+                    }
                 )
             }
         }
