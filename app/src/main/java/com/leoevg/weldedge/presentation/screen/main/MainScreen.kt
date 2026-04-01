@@ -38,7 +38,7 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
             "EN" -> Locale("en", "US")
             else -> Locale.getDefault()
         }
-        val config = Configuration(context.resources.configuration)
+        val config = context.resources.configuration // todo - разобратся
         config.setLocale(locale)
         context.createConfigurationContext(config)
     }

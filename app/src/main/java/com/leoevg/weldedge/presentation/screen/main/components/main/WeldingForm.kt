@@ -103,7 +103,7 @@ fun WeldingForm(
 
             // Welding Type
             WeldingTypeSelection(
-                selectedType = params.weldingType,
+                data = params.weldingType,
                 onTypeSelected = { onEvent(WeldingTypeChanged(it)) }
             )
 

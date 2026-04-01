@@ -40,3 +40,5 @@ data class AlloysDatabase(
     fun getMetalGroupForGrade(gradeName: String): MetalGroup? =
         metals1.find { group -> group.mark_metal.any { it.equals(gradeName, ignoreCase = true) } }
 }
+
+// TODO: надо из алойсдатабейс сделать беавалаблпарамс.
