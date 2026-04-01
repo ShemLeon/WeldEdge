@@ -85,10 +85,10 @@ fun WeldingForm(
                 onTypeSelected = {
                     // Блокируем выбор "BW" на программном уровне, если толщина мала
                     // TODO: вынести логику блокировки в viewModel. если толщина < 3мм - только FW
-                    if (it == "BW" && !isBWAllowed) return@ResponsibilityTypeSelection
+                //    if (it == "BW" && !isBWAllowed) return@ResponsibilityTypeSelection
                     onEvent(TypeOfWeldChanged(it))
                 },
-                data = listOf() // TODO: Add types of weld
+                data = params.typeOfWeld
             )
 
             DashedDivider()
@@ -96,7 +96,7 @@ fun WeldingForm(
             // Edge Preparation
             EdgePreparationSelection(
                 onTypeSelected = { onEvent(EdgePreparationChanged(it)) },
-                data = listOf(),
+                data = params.edgePreparation,
             )
 
             DashedDivider()

@@ -5,8 +5,8 @@ data class BeAvailableWeldingParams(
     val markMetal: List<Pair<Int, List<String>>> = listOf(),
     val thickness: List<String> = listOf(),
     val jointType: List<JointType> = listOf(),
-    val typeOfWeld: List<String> = listOf(),
-    val edgePreparation: List<String> = listOf(),
+    val typeOfWeld: List<EdgePreparationGroup> = listOf(),  // responsibility (FW / BW)
+    val edgePreparation: List<EdgePreparationItem> = listOf(),
     val weldingType: List<String> = listOf(),
     val engineerName: List<String> = listOf(), // пока не актуально
     val standard: List<String> = listOf()

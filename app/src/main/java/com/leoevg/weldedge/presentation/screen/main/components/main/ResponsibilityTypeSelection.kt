@@ -20,7 +20,7 @@ import java.lang.ProcessBuilder.Redirect.to
 
 @Composable
 fun ResponsibilityTypeSelection(
-    onTypeSelected: (EdgePreparationGroup) -> Unit,
+    onTypeSelected: (String) -> Unit,
     data: List<EdgePreparationGroup>
 ) {
     val context = LocalContext.current
@@ -29,12 +29,12 @@ fun ResponsibilityTypeSelection(
         it.id to context.getStringResourceById(it.nameRes)
     }
 
-    LaunchedEffect(options) {
-    //    if (options.isNotEmpty()) {
-            selectedType = options.first()
-        onTypeSelected(options.first())
-   //     }
-    }
+//    LaunchedEffect(options) {
+//    //    if (options.isNotEmpty()) {
+//            selectedType = options.first()
+//        onTypeSelected(options.first())
+//   //     }
+//    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
@@ -48,11 +48,14 @@ fun ResponsibilityTypeSelection(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            options.forEach { (value, label) ->
+            options.forEach { (id, label) ->
                 SelectableButton(
                     text = label,
-                    isSelected = context.getStringResourceById(selectedType.nameRes) == value,
-                    onClick = { onTypeSelected(value) },
+                    isSelected = selectedType.id == id,
+                    onClick = {
+                        selectedType = data.first { it.id == id } // todo - поправить
+                        onTypeSelected(id)
+                    },
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )

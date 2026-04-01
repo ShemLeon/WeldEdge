@@ -27,7 +27,7 @@ fun EdgePreparationSelection(
     onTypeSelected: (String) -> Unit,
     data: List<EdgePreparationItem>
 ) {
-    val selectedTypeId = remember { mutableStateOf("") }
+    val selectedTypeId = remember { mutableStateOf(data.first().id) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(

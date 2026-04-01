@@ -24,7 +24,7 @@ fun WeldingTypeSelection(
     onTypeSelected: (String) -> Unit,
     data: List<WeldingTypeItem>
 ) {
-    val selectedTypeId = remember { mutableStateOf("") }
+    val selectedTypeId = remember { mutableStateOf(data.first().id) }
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.welding_type_label),
