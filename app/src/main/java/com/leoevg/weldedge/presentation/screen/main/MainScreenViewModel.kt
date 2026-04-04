@@ -41,18 +41,29 @@ class MainScreenViewModel @Inject constructor(
     private val createInitialStateUseCase: CreateInitialStateUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(createInitialState())
+    private val _state2 = MutableStateFlow(MainScreenState2())
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
+    val state2: StateFlow<MainScreenState2> = _state2.asStateFlow()
 
     init {
-        _state.update { state ->
-            val t = state.params.thickness.trim().toDoubleOrNull() ?: 0.0
-            val ep = EdgePreparation.fromId(state.params.edgePreparation)
-            if (ep == EdgePreparation.GROOVE_V_DOUBLE && t < 6.0) {
-                state.copy(params = state.params.copy(edgePreparation = ""))
-            } else {
-                state
-            }
+        viewModelScope.launch {
+            createInitialStateUseCase.invoke()
+                .onSuccess { value ->
+                    _state2.update {it.copy(weldingFormParams = value)}
+                }
+                .onFailure { TODO() }
         }
+
+
+//        _state.update { state ->
+//            val t = state.params.thickness.trim().toDoubleOrNull() ?: 0.0
+//            val ep = EdgePreparation.fromId(state.params.edgePreparation)
+//            if (ep == EdgePreparation.GROOVE_V_DOUBLE && t < 6.0) {
+//                state.copy(params = state.params.copy(edgePreparation = ""))
+//            } else {
+//                state
+//            }
+//        }
     }
 
     fun onEvent(event: MainScreenEvent) {
@@ -80,10 +91,11 @@ class MainScreenViewModel @Inject constructor(
             is ThicknessChanged -> onThicknessChanged(event.value)
             is TypeOfWeldChanged -> onTypeOfWeldChanged(event.value)
             is WeldingTypeChanged -> onWeldingTypeChanged(event.value)
+            is OnFieldChanged.OnMetalGroupChanged -> TODO()
         }
     }
 
-
+// ВЫПИЛИТЬ
     private fun createInitialState(): MainScreenState {
         val rawMetal = preferencesManager.getMetalType()
         val metalType = when (rawMetal) {

@@ -27,6 +27,7 @@ dateTime = "0.7.1"
 materialIconsExtended = "1.7.8"
 googleServices = "4.4.4"
 splashScreen = "1.0.1"
+material3 = "1.4.0"
 
 
 [libraries]
@@ -74,6 +75,7 @@ coil-compose = {module = "io.coil-kt:coil-compose", version.ref = "coil"}
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 kotlinx-datetime = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime"}
 androidx-material-icons-extended = {module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended"}
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 
 [plugins]

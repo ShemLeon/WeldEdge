@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,14 +18,13 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.MetalAlloy
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePreparationChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.JointTypeChanged
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalTypeChanged
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalType2Changed
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.ThicknessChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.TypeOfWeldChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.WeldingTypeChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.SubmitClicked
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+
 @Composable
 fun WeldingForm(
     state: MainScreenState.DataSelector,
@@ -47,14 +45,14 @@ fun WeldingForm(
             FormField(label = stringResource(R.string.welded_metals_label), required = true) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     MetalAlloy(
-                        dataMetalType = params.metalType[0].second,
-                        dataMetalSubType = params.markMetal[0].second,
+                        dataMetalType = params.metalType,
+                        dataMetalSubType = params.markMetal,
                         order = 1,
                         onEvent = onEvent
                     )
                     MetalAlloy(
-                        dataMetalType = params.metalType[1].second,
-                        dataMetalSubType = params.markMetal[1].second,
+                        dataMetalType = params.metalType,
+                        dataMetalSubType = params.markMetal,
                         order = 2,
                         onEvent = onEvent
                     )

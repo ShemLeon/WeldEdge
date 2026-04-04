@@ -1,8 +1,8 @@
 package com.leoevg.weldedge.domain.model
 
 data class BeAvailableWeldingParams(
-    val metalType: List<Pair<Int, List<MetalGroup>>> = listOf(),
-    val markMetal: List<Pair<Int, List<String>>> = listOf(),
+    val metalType: List<MetalGroup> = listOf(),
+    val markMetal: List<String> = listOf(),
     val thickness: List<String> = listOf(),
     val jointType: List<JointType> = listOf(),
     val typeOfWeld: List<EdgePreparationGroup> = listOf(),  // responsibility (FW / BW)
