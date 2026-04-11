@@ -29,9 +29,9 @@ fun MetalAlloy(
                 val selectedMarkMetal = selected.markMetal
                 val nextMarkMetal = when {
                     selectedMarkMetal in it.markMetal -> selectedMarkMetal
-                    else -> it.markMetal.firstOrNull().orEmpty()
+                    else -> requireNotNull(it.markMetal.firstOrNull().orEmpty())
                 }
-                onEvent(OnMetalGroupChanged(it.name, nextMarkMetal, order))
+                onEvent(OnMetalGroupChanged(it.name, requireNotNull(nextMarkMetal), order))
             }
         )
         MarkMetalSelector(

@@ -25,7 +25,7 @@ import com.leoevg.weldedge.presentation.utils.baseAssetPath
 @Composable
 fun EdgePreparationSelection(
     selected: EdgePreparationItem?,
-    onTypeSelected: (String) -> Unit,
+    onTypeSelected: (EdgePreparationItem) -> Unit,
     data: List<EdgePreparationItem>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -65,7 +65,7 @@ fun EdgePreparationSelection(
 @Composable
 private fun EachPreparationContent(
     item: EdgePreparationItem,
-    onTypeSelected: (String) -> Unit,
+    onTypeSelected: (EdgePreparationItem) -> Unit,
     isSelected: Boolean
 ) {
     Box(
@@ -81,7 +81,7 @@ private fun EachPreparationContent(
                 )
                 else Modifier
             )
-            .clickable { onTypeSelected(item.id) }
+            .clickable { onTypeSelected(item) }
             .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {

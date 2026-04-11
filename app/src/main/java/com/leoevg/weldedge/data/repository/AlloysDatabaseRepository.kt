@@ -1,7 +1,6 @@
 package com.leoevg.weldedge.data.repository
 
 import android.content.Context
-import com.leoevg.weldedge.domain.model.AlloyCategory
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.leoevg.weldedge.domain.model.AlloysDatabase
 import kotlinx.serialization.json.Json
@@ -26,12 +25,5 @@ class AlloysDatabaseRepository @Inject constructor(
             }
         }
         return _database!!
-    }
-
-    fun mapToAlloyCategory(groupId: String): AlloyCategory = when (groupId) {
-        "AL" -> AlloyCategory.ALUMINIUM
-        "SS" -> AlloyCategory.STAINLESS_STEEL
-        "CS" -> AlloyCategory.STEEL
-        else -> AlloyCategory.STEEL
     }
 }

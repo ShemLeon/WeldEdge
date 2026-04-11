@@ -28,6 +28,7 @@ data class WpsEntry(
     val alloyGroup: String? = null
 )
 
+// все это перенести в json
 object WpsTable {
 
     val entries = listOf(

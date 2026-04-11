@@ -23,7 +23,7 @@ data class AlloysDatabase(
 
     fun getAllGrades(): List<Pair<MetalGroup, String>> =
         metals1.flatMap { group ->
-            group.mark_metal.map { gradeName -> group to gradeName }
+            group.markMetal.map { gradeName -> group to gradeName }
         }
 
     fun findGradeByName(name: String): String? {
@@ -38,7 +38,7 @@ data class AlloysDatabase(
     }
 
     fun getMetalGroupForGrade(gradeName: String): MetalGroup? =
-        metals1.find { group -> group.mark_metal.any { it.equals(gradeName, ignoreCase = true) } }
+        metals1.find { group -> group.markMetal.any { it.equals(gradeName, ignoreCase = true) } }
 }
 
 // TODO: надо из алойсдатабейс сделать беавалаблпарамс.
