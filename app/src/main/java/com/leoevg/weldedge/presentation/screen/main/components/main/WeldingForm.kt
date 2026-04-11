@@ -27,7 +27,7 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.SubmitClicke
 
 @Composable
 fun WeldingForm(
-    state: MainScreenState.DataSelector,
+    state: MainScreenState,
     onEvent: (MainScreenEvent) -> Unit
 ) {
     val params = state.weldingFormParams
@@ -47,12 +47,14 @@ fun WeldingForm(
                     MetalAlloy(
                         dataMetalType = params.metalType,
                         dataMetalSubType = params.markMetal,
+                        selected = state.selected.metalAlloy1,
                         order = 1,
                         onEvent = onEvent
                     )
                     MetalAlloy(
                         dataMetalType = params.metalType,
                         dataMetalSubType = params.markMetal,
+                        selected = state.selected.metalAlloy2,
                         order = 2,
                         onEvent = onEvent
                     )
@@ -64,6 +66,7 @@ fun WeldingForm(
             // Thickness
             Thickness(
                 error = state.thicknessError,
+                selected = state.selected.thickness,
                 onTypeSelected = { onEvent(ThicknessChanged(it)) },
                 data = params.thickness
             )
@@ -72,6 +75,7 @@ fun WeldingForm(
 
             // Joint Type
             JointTypeSelection(
+                selected = state.selected.jointType,
                 onTypeSelected = { onEvent(JointTypeChanged(it)) },
                 data = params.jointType
             )
@@ -80,10 +84,8 @@ fun WeldingForm(
 
             // Type of Weld (formerly Responsibility)
             ResponsibilityTypeSelection(
+                selected = state.selected.typeOfWeld,
                 onTypeSelected = {
-                    // Блокируем выбор "BW" на программном уровне, если толщина мала
-                    // TODO: вынести логику блокировки в viewModel. если толщина < 3мм - только FW
-                //    if (it == "BW" && !isBWAllowed) return@ResponsibilityTypeSelection
                     onEvent(TypeOfWeldChanged(it))
                 },
                 data = params.typeOfWeld
@@ -93,6 +95,7 @@ fun WeldingForm(
 
             // Edge Preparation
             EdgePreparationSelection(
+                selected = state.selected.edgePreparation,
                 onTypeSelected = { onEvent(EdgePreparationChanged(it)) },
                 data = params.edgePreparation,
             )
@@ -101,6 +104,7 @@ fun WeldingForm(
 
             // Welding Type
             WeldingTypeSelection(
+                selected = state.selected.weldingType,
                 data = params.weldingType,
                 onTypeSelected = { onEvent(WeldingTypeChanged(it)) }
             )

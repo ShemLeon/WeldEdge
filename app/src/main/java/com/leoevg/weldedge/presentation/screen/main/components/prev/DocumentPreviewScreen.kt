@@ -33,7 +33,7 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 
 @Composable
 fun DocumentPreviewScreen(
-    state: MainScreenState.DataPreview,
+    state: MainScreenState,
     onEvent: (MainScreenEvent) -> Unit,
 ) {
     val jointTypeLocalized = JointType.fromId(state.params.jointType)?.let {

@@ -87,15 +87,14 @@ fun MainScreenContent(
         ) {
 
 
-            when (state) {
-                is MainScreenState.DataPreview -> DocumentPreviewScreen(state, onEvent)
-                is MainScreenState.DataSelector -> {
-                    Header(
-                        language = state.language,
-                        onLanguageChange = { onEvent(MainScreenEvent.LanguageChanged(it)) }
-                    )
-                    WeldingForm(state, onEvent)
-                }
+            if (state.showPreview) {
+                DocumentPreviewScreen(state, onEvent)
+            } else {
+                Header(
+                    language = state.language,
+                    onLanguageChange = { onEvent(MainScreenEvent.LanguageChanged(it)) }
+                )
+                WeldingForm(state, onEvent)
             }
 
         }

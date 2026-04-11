@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,11 +24,10 @@ import com.leoevg.weldedge.presentation.utils.baseAssetPath
 
 @Composable
 fun EdgePreparationSelection(
+    selected: EdgePreparationItem?,
     onTypeSelected: (String) -> Unit,
     data: List<EdgePreparationItem>
 ) {
-    val selectedTypeId = remember { mutableStateOf(data.first().id) }
-
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.edge_preparation_label),
@@ -54,11 +53,8 @@ fun EdgePreparationSelection(
                 items(data, key = { it.id }) { item ->
                     EachPreparationContent(
                         item = item,
-                        onTypeSelected = {
-                            selectedTypeId.value = it
-                            onTypeSelected.invoke(it)
-                        },
-                        isSelected = item.id == selectedTypeId.value
+                        onTypeSelected = onTypeSelected,
+                        isSelected = item.id == selected?.id
                     )
                 }
             }

@@ -14,9 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,11 +28,10 @@ import com.leoevg.weldedge.domain.model.MetalGroup
 @Composable
 fun AlloyCategorySelector(
     data: List<MetalGroup>,
+    selected: MetalGroup?,
     onCategorySelected: (MetalGroup) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedCategory by remember { mutableStateOf(data.first()) }
-
     LazyRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -43,7 +39,7 @@ fun AlloyCategorySelector(
     ) {
         itemsIndexed(data) { index, category,  ->
             val accentColor = Color(category.color.toColorInt())
-            val isSelected = selectedCategory == category
+            val isSelected = selected == category
 
             Surface(
                 onClick = { onCategorySelected(category) },
@@ -76,6 +72,7 @@ fun AlloyCategorySelector(
 @Composable
 fun AlloyCategorySelectorPreview() {
     AlloyCategorySelector(
+        selected = null,
         onCategorySelected = {},
         data = TODO()
     )

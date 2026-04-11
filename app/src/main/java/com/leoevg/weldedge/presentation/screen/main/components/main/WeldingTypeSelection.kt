@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,10 +21,10 @@ import com.leoevg.weldedge.domain.model.WeldingTypeItem
 
 @Composable
 fun WeldingTypeSelection(
+    selected: WeldingTypeItem?,
     onTypeSelected: (String) -> Unit,
     data: List<WeldingTypeItem>
 ) {
-    val selectedTypeId = remember { mutableStateOf(data.first().id) }
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
             label = stringResource(R.string.welding_type_label),
@@ -42,9 +42,8 @@ fun WeldingTypeSelection(
             items(data) { item ->
                 WeldingTypeImage(
                     item = item,
-                    isSelected = selectedTypeId.value == item.id,
+                    isSelected = selected?.id == item.id,
                     onClick = {
-                        selectedTypeId.value = item.id
                         onTypeSelected(item.id)
                     }
                 )

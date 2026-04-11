@@ -25,10 +25,10 @@ import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 @Composable
 fun Thickness(
     error: String? = null,
+    selected: String,
     data: List<String>,
     onTypeSelected: (String) -> Unit
 ) {
-    var selectedType by remember { mutableStateOf(data.first()) }
     val focusManager = LocalFocusManager.current
     var isFocused by remember { mutableStateOf(false) }
     var lastClickedButton by remember { mutableStateOf("") }
@@ -44,25 +44,23 @@ fun Thickness(
                 items(data) { type ->
                     SelectableButton(
                         text = type,
-                        isSelected = selectedType == type,
+                        isSelected = selected == type,
                         onClick = {
-                            focusManager.clearFocus() // Убираем курсор из поля при клике на кнопку
-                            lastClickedButton = type // TODO
+                            focusManager.clearFocus()
+                            lastClickedButton = type
                             onTypeSelected(type)
-                            selectedType = type
                         }
                     )
                 }
 
                 item {
                     OutlinedTextField(
-                        value = if (isFocused || selectedType != lastClickedButton) selectedType else "",
+                        value = if (isFocused || selected != lastClickedButton) selected else "",
                         onValueChange = { newValue ->
                             val filtered = newValue.replace(',', '.')
                             if (filtered.isEmpty() || filtered.toDoubleOrNull() != null || filtered == "." || filtered.endsWith(".")) {
                                 lastClickedButton = ""
                                 onTypeSelected(filtered)
-                                selectedType = newValue
                             }
                         },
                         modifier = Modifier
@@ -72,20 +70,20 @@ fun Thickness(
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
-                            imeAction = ImeAction.Done // Кнопка "Галочка/Готово" на клавиатуре
+                            imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                focusManager.clearFocus() // Прячем клавиатуру и УБИРАЕМ КУРСОР
+                                focusManager.clearFocus()
                             }
                         ),
                         shape = RoundedCornerShape(8.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFF2563EB),
-                            cursorColor = Color(0xFF2563EB), // Цвет палочки
-                            unfocusedBorderColor = if (selectedType.isNotEmpty() && selectedType != lastClickedButton) Color(0xFF2563EB) else Color(0xFFE2E8F0),
+                            cursorColor = Color(0xFF2563EB),
+                            unfocusedBorderColor = if (selected.isNotEmpty() && selected != lastClickedButton) Color(0xFF2563EB) else Color(0xFFE2E8F0),
                             focusedContainerColor = Color.White,
-                            unfocusedContainerColor = if (selectedType.isNotEmpty() && selectedType != lastClickedButton) Color(0xFFEFF6FF) else Color.White,
+                            unfocusedContainerColor = if (selected.isNotEmpty() && selected != lastClickedButton) Color(0xFFEFF6FF) else Color.White,
                             focusedPlaceholderColor = Color(0xFF94A3B8),
                             unfocusedPlaceholderColor = Color(0xFF94A3B8)
                         ),
