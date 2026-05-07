@@ -40,7 +40,7 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
         }
         val config = context.resources.configuration // todo - разобратся
         config.setLocale(locale)
-        context.createConfigurationContext(config)
+        context.cDAAdaadaaadq       araareateConfigurationContext(config)
     }
 
 
