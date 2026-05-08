@@ -1,8 +1,10 @@
 package com.leoevg.weldedge.presentation.screen.main
 
-import com.leoevg.weldedge.domain.model.Alloy
+
+import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
-import com.leoevg.weldedge.domain.model.MetalGroup
+import com.leoevg.weldedge.domain.model.JointType
+import com.leoevg.weldedge.domain.model.WeldingTypeItem
 
 sealed interface MainScreenEvent {
     sealed interface OnFieldChanged : MainScreenEvent {
@@ -11,10 +13,10 @@ sealed interface MainScreenEvent {
         data class MetalCategoryChanged(val category: String) : OnFieldChanged
         data class MetalAlloyConfirmed(val alloy: String) : OnFieldChanged
         data class ThicknessChanged(val value: String) : OnFieldChanged
-        data class JointTypeChanged(val value: String) : OnFieldChanged
-        data class TypeOfWeldChanged(val value: String) : OnFieldChanged
+        data class JointTypeChanged(val value: JointType) : OnFieldChanged
+        data class TypeOfWeldChanged(val value: EdgePreparationGroup) : OnFieldChanged
         data class EdgePreparationChanged(val value: EdgePreparationItem) : OnFieldChanged
-        data class WeldingTypeChanged(val value: String) : OnFieldChanged
+        data class WeldingTypeChanged(val value: WeldingTypeItem) : OnFieldChanged
         data class EngineerNameChanged(val value: String) : OnFieldChanged
         data class StandardChanged(val value: String) : OnFieldChanged
         // ордер может быть только 1 или 2

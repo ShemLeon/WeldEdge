@@ -15,12 +15,12 @@ import com.leoevg.weldedge.presentation.utils.getStringResourceById
 @Composable
 fun ResponsibilityTypeSelection(
     selected: EdgePreparationGroup?,
-    onTypeSelected: (String) -> Unit,
+    onTypeSelected: (EdgePreparationGroup) -> Unit,
     data: List<EdgePreparationGroup>
 ) {
     val context = LocalContext.current
     val options = data.map {
-        it.id to context.getStringResourceById(it.nameRes)
+        it to context.getStringResourceById(it.nameRes)
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -35,13 +35,11 @@ fun ResponsibilityTypeSelection(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            options.forEach { (id, label) ->
+            options.forEach { (item, label) ->
                 SelectableButton(
                     text = label,
-                    isSelected = selected?.id == id,
-                    onClick = {
-                        onTypeSelected(id)
-                    },
+                    isSelected = selected?.id == item.id,
+                    onClick = { onTypeSelected(item) },
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )

@@ -24,7 +24,7 @@ import com.leoevg.weldedge.presentation.utils.getStringResourceById
 @Composable
 fun JointTypeSelection(
     selected: JointType?,
-    onTypeSelected: (String) -> Unit,
+    onTypeSelected: (JointType) -> Unit,
     data: List<JointType>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -45,7 +45,7 @@ fun JointTypeSelection(
                     item = item,
                     isSelected = selected?.id == item.id,
                     onClick = {
-                        onTypeSelected(item.id)
+                        onTypeSelected(item)
                     }
                 )
             }

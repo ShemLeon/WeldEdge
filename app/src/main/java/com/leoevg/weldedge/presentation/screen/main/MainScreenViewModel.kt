@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.leoevg.weldedge.data.local.PreferencesManager
 import com.leoevg.weldedge.data.local.ResourceManager
 import com.leoevg.weldedge.domain.model.BeAvailableWeldingParams
+import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
+import com.leoevg.weldedge.domain.model.JointType
 import com.leoevg.weldedge.domain.model.WeldingParams
+import com.leoevg.weldedge.domain.model.WeldingTypeItem
 import com.leoevg.weldedge.domain.usecase.CreateInitialStateUseCase
 import com.leoevg.weldedge.domain.usecase.GenerateReportUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -76,7 +79,12 @@ class MainScreenViewModel @Inject constructor(
             is JointTypeChanged -> onJointTypeChanged(event.value)
             is MetalAlloyConfirmed -> onMetalAlloyConfirmed(event.alloy)
             is MetalCategoryChanged -> onMetalCategoryChanged(event.category)
-            is OnFieldChanged.OnMetalGroupChanged -> onMetalGroupChanged(event.alloy, event.markMetal, event.order)
+            is OnFieldChanged.OnMetalGroupChanged -> onMetalGroupChanged(
+                event.alloy,
+                event.markMetal,
+                event.order
+            )
+
             is MetalTypeChanged -> onMetalTypeChanged(event.value)
             is MetalType2Changed -> onMetalType2Changed(event.value)
             is StandardChanged -> onStandardChanged(event.value)
@@ -94,7 +102,7 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    private fun onEdgePreparationChanged(value: EdgePreparationItem ) {
+    private fun onEdgePreparationChanged(value: EdgePreparationItem) {
         val selected = state.value.selected.copy(edgePreparation = value)
         _state.update {
             it.copy(selected = selected)
@@ -197,6 +205,7 @@ class MainScreenViewModel @Inject constructor(
                 preferencesManager.saveMetalType(markMetal)
                 updateParams { it.copy(metalType = markMetal) }
             }
+
             2 -> {
                 preferencesManager.saveMetalType2(markMetal)
                 updateParams { it.copy(metalType2 = markMetal) }
@@ -254,31 +263,35 @@ class MainScreenViewModel @Inject constructor(
 //        }
 //    }
 
-    private fun onJointTypeChanged(value: String) {
-        preferencesManager.saveJointType(value)
-        updateParams {
+    private fun onJointTypeChanged(value: JointType) {
+        preferencesManager.saveJointType(value.id)
+        val selected = state.value.selected.copy(
+            jointType = value,
+            edgePreparation = null // Сбрасываем разделку при смене типа соединения
+        )
+        _state.update {
             it.copy(
-                jointType = value,
-                edgePreparation = ""
+                params = it.params.copy(jointType = value.id, edgePreparation = ""),
+                selected = selected
             )
         }
     }
 
-    private fun onTypeOfWeldChanged(value: String) {
+    private fun onTypeOfWeldChanged(value: EdgePreparationGroup) {
         // Map BW/FW back to stress/simple for storage if needed, or update PreferencesManager
-        val storedValue = when (value) {
-            "BW" -> "stress"
-            "FW" -> "simple"
-            else -> value
-        }
-        preferencesManager.saveTypeOfWeld(storedValue)
-        updateParams {
+        preferencesManager.saveTypeOfWeld(value.id)
+        val selected = state.value.selected.copy(
+            typeOfWeld = value,
+            edgePreparation = null
+        )
+        _state.update {
             it.copy(
-                typeOfWeld = value,
-                edgePreparation = ""
+                params = it.params.copy(typeOfWeld = value.id, edgePreparation = ""),
+                selected = selected
             )
         }
     }
+
 
 //    private fun onEdgePreparationChanged(value: String) {
 //        _state.update { state ->
@@ -291,9 +304,15 @@ class MainScreenViewModel @Inject constructor(
 //        }
 //    }
 
-    private fun onWeldingTypeChanged(value: String) {
-        preferencesManager.saveWeldingType(value)
-        updateParams { it.copy(weldingType = value) }
+    private fun onWeldingTypeChanged(value: WeldingTypeItem) {
+        preferencesManager.saveWeldingType(value.id)
+        val selected = state.value.selected.copy(weldingType = value)
+        _state.update {
+            it.copy(
+                params = it.params.copy(weldingType = value.id),
+                selected = selected
+            )
+        }
     }
 
     private fun onEngineerNameChanged(value: String) {
@@ -369,9 +388,10 @@ class MainScreenViewModel @Inject constructor(
         fallbackMetalName: String?,
         weldingFormParams: BeAvailableWeldingParams
     ): MainScreenState.MetalAlloySelection {
-        val metalType = weldingFormParams.metalType.firstOrNull { selectedMarkMetal in it.markMetal }
-            ?: weldingFormParams.metalType.firstOrNull { it.name == fallbackMetalName }
-            ?: weldingFormParams.metalType.firstOrNull()
+        val metalType =
+            weldingFormParams.metalType.firstOrNull { selectedMarkMetal in it.markMetal }
+                ?: weldingFormParams.metalType.firstOrNull { it.name == fallbackMetalName }
+                ?: weldingFormParams.metalType.firstOrNull()
         val markMetal = when {
             selectedMarkMetal.isNotBlank() -> selectedMarkMetal
             metalType != null -> metalType.markMetal.firstOrNull().orEmpty()
