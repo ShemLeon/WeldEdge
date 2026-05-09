@@ -2,6 +2,7 @@ package com.leoevg.weldedge.data.repository
 
 import android.R.attr.thickness
 import android.content.Context
+import com.leoevg.weldedge.data.local.PreferencesManager
 import com.leoevg.weldedge.domain.model.AlloyCategory
 import com.leoevg.weldedge.domain.model.AlloysDatabase
 import com.leoevg.weldedge.domain.model.BeAvailableWeldingParams
@@ -19,14 +20,15 @@ import java.io.InputStreamReader
 import javax.inject.Inject
 
 class DbManagerRepositoryImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
+    private val preferencesManager: PreferencesManager
 ) : DbManagerRepository {
     private val json = Json { ignoreUnknownKeys = true }
     private lateinit var _database: AlloysDatabase
 
     // поход в бд
     override suspend fun onCreateInitialState(): Result<BeAvailableWeldingParams> {
-        return Result.success(converter(_database))
+        return Result.success(converter(getDatabase()))
     }
 
     fun converter(alloysDatabase: AlloysDatabase): BeAvailableWeldingParams {
