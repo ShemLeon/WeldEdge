@@ -10,7 +10,28 @@ import kotlinx.serialization.Serializable
 data class MetalGroup(
     val id: String,
     val name: String,
-    @SerialName("mark_metal")
-    val markMetal: List<String> = emptyList(),
-    val color: String
+    val color: String,
+    val subcategories: List<MetalSubcategory> = emptyList()
+) {
+    // For backward compatibility while migrating UI
+    val markMetal: List<String>
+        get() = subcategories.flatMap { sub -> sub.marks.map { it.id } }
+}
+
+@Serializable
+data class MetalSubcategory(
+    val id: String,
+    val name: String,
+    val marks: List<MetalMark> = emptyList()
+)
+
+@Serializable
+data class MetalMark(
+    val id: String,
+    @SerialName("intl_classification")
+    val intlClassification: String,
+    @SerialName("ru_designation")
+    val ruDesignation: String,
+    @SerialName("chemical_content")
+    val chemicalContent: String
 )

@@ -11,14 +11,19 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.OnMetalGroupChanged
 
+// C:/Users/eliey/AndroidStudioProjects/WeldEdge/app/src/main/java/com/leoevg/weldedge/presentation/screen/main/components/main/metalAlloy/MetalAlloy.kt
+
 @Composable
 fun MetalAlloy(
     dataMetalType: List<MetalGroup>,
-    dataMetalSubType: List<String>,
+    dataMetalSubType: List<String>, // Этот параметр можно будет потом удалить
     selected: MainScreenState.MetalAlloySelection,
     order: Int,
     onEvent: (MainScreenEvent) -> Unit,
-    ) {
+) {
+    // Фильтруем марки: берем из выбранной группы, либо пустой список
+    val filteredMarks = selected.metalType?.markMetal ?: emptyList()
+
     Column(
         modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -27,15 +32,17 @@ fun MetalAlloy(
             selected = selected.metalType,
             onCategorySelected = {
                 val selectedMarkMetal = selected.markMetal
-                val nextMarkMetal = when {
-                    selectedMarkMetal in it.markMetal -> selectedMarkMetal
-                    else -> requireNotNull(it.markMetal.firstOrNull().orEmpty())
+                val nextMarkMetal = if (selectedMarkMetal != null && selectedMarkMetal in it.markMetal) {
+                    selectedMarkMetal
+                } else {
+                    it.markMetal.firstOrNull().orEmpty()
                 }
-                onEvent(OnMetalGroupChanged(it.name, requireNotNull(nextMarkMetal), order))
+                onEvent(OnMetalGroupChanged(it.name, nextMarkMetal, order))
             }
         )
+        // Теперь передаем отфильтрованные данные
         MarkMetalSelector(
-            data = dataMetalSubType,
+            data = filteredMarks,
             selected = selected.markMetal,
             onMarkMetalSelected = {
                 val selectedMetalType = selected.metalType ?: dataMetalType.firstOrNull()

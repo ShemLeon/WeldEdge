@@ -3,66 +3,196 @@
     {
       "name": "Aluminium",
       "id": "AL",
-      "mark_metal": [
-        "1100",
-        "2014",
-        "5052",
-        "5086",
-        "6061"
-      ],
-      "color": "0xFF66BB6A"
+      "color": "0xFF66BB6A",
+      "subcategories": [
+        {
+          "id": "AL_GENERAL",
+          "name": "General Aluminium",
+          "marks": [
+            {
+              "id": "1100",
+              "intl_classification": "1100",
+              "ru_designation": "А1",
+              "chemical_content": "Al 99.0% min"
+            },
+            {
+              "id": "2014",
+              "intl_classification": "2014",
+              "ru_designation": "АК8",
+              "chemical_content": "Al-Cu4SiMg"
+            },
+            {
+              "id": "5052",
+              "intl_classification": "5052",
+              "ru_designation": "АМг2.5",
+              "chemical_content": "Al-Mg2.5"
+            },
+            {
+              "id": "5086",
+              "intl_classification": "5086",
+              "ru_designation": "АМг4",
+              "chemical_content": "Al-Mg4"
+            },
+            {
+              "id": "6061",
+              "intl_classification": "6061",
+              "ru_designation": "АД33",
+              "chemical_content": "Al-Mg1SiCu"
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "Carbon Steel",
       "id": "CS",
-      "mark_metal": [
-        "S235JR",
-        "S235J0",
-        "S355JR",
-        "S355J0",
-        "AISI 4130",
-        "AISI 4340"
-      ],
-      "color" : "0xFFFFA726"
+      "color": "0xFFFFA726",
+      "subcategories": [
+        {
+          "id": "LOW_C",
+          "name": "Low Carbon Steel",
+          "marks": [
+            {
+              "id": "S235JR",
+              "intl_classification": "S235JR",
+              "ru_designation": "Ст3пс",
+              "chemical_content": "C 0.17-0.20%, Mn 1.40%"
+            },
+            {
+              "id": "S235J0",
+              "intl_classification": "S235J0",
+              "ru_designation": "Ст3сп",
+              "chemical_content": "C 0.17%, Mn 1.40%"
+            }
+          ]
+        },
+        {
+          "id": "MID_C",
+          "name": "Medium Carbon Steel",
+          "marks": [
+            {
+              "id": "S355JR",
+              "intl_classification": "S355JR",
+              "ru_designation": "17Г1С",
+              "chemical_content": "C 0.24%, Mn 1.60%, Si 0.55%"
+            },
+            {
+              "id": "S355J0",
+              "intl_classification": "S355J0",
+              "ru_designation": "09Г2С",
+              "chemical_content": "C 0.12%, Mn 1.30-1.70%, Si 0.50-0.80%"
+            }
+          ]
+        },
+        {
+          "id": "HIGH_C",
+          "name": "High Carbon Steel",
+          "marks": []
+        },
+        {
+          "id": "LOW_AL",
+          "name": "Low Alloy Steel",
+          "marks": [
+            {
+              "id": "AISI 4130",
+              "intl_classification": "AISI 4130",
+              "ru_designation": "30ХМА",
+              "chemical_content": "C 0.28-0.33%, Cr 0.8-1.1%, Mo 0.15-0.25%"
+            },
+            {
+              "id": "AISI 4340",
+              "intl_classification": "AISI 4340",
+              "ru_designation": "40ХН2МА",
+              "chemical_content": "C 0.38-0.43%, Ni 1.65-2.0%, Cr 0.7-0.9%"
+            }
+          ]
+        },
+        {
+          "id": "HIGH_AL",
+          "name": "High Alloy Steel",
+          "marks": []
+        }
+      ]
     },
     {
       "name": "Stainless Steel",
       "id": "SS",
-      "mark_metal": [
-        "AISI 304",
-        "AISI 304L",
-        "AISI 308L",
-        "AISI 316",
-        "AISI 316L",
-        "AISI 630 / 15-5 PH",
-        "AISI 630 / 17-4 PH"
-      ],
-      "color": "0xFF42A5F5"
+      "color": "0xFF42A5F5",
+      "subcategories": [
+        {
+          "id": "AUST",
+          "name": "Austenitic",
+          "marks": [
+            {
+              "id": "AISI 304",
+              "intl_classification": "AISI 304",
+              "ru_designation": "08Х18Н10",
+              "chemical_content": "C 0.08%, Cr 18-20%, Ni 8-10.5%"
+            },
+            {
+              "id": "AISI 304L",
+              "intl_classification": "AISI 304L",
+              "ru_designation": "03Х18Н11",
+              "chemical_content": "C 0.03%, Cr 18-20%, Ni 8-12%"
+            },
+            {
+              "id": "AISI 308L",
+              "intl_classification": "AISI 308L",
+              "ru_designation": "03Х19Н9",
+              "chemical_content": "C 0.03%, Cr 19-21%, Ni 9-11%"
+            },
+            {
+              "id": "AISI 316",
+              "intl_classification": "AISI 316",
+              "ru_designation": "08Х17Н13М2",
+              "chemical_content": "C 0.08%, Cr 16-18%, Ni 10-14%, Mo 2-3%"
+            },
+            {
+              "id": "AISI 316L",
+              "intl_classification": "AISI 316L",
+              "ru_designation": "03Х17Н14М3",
+              "chemical_content": "C 0.03%, Cr 16-18%, Ni 10-14%, Mo 2-3%"
+            }
+          ]
+        },
+        {
+          "id": "FERR",
+          "name": "Ferritic",
+          "marks": []
+        },
+        {
+          "id": "MART",
+          "name": "Martensitic",
+          "marks": []
+        },
+        {
+          "id": "DUP",
+          "name": "Duplex",
+          "marks": []
+        },
+        {
+          "id": "PH",
+          "name": "Precipitation Hardening",
+          "marks": [
+            {
+              "id": "AISI 630 / 15-5 PH",
+              "intl_classification": "AISI 630",
+              "ru_designation": "07Х15Н5Д2Т",
+              "chemical_content": "C 0.07%, Cr 14-15.5%, Ni 3.5-5.5%, Cu 2.5-4.5%"
+            },
+            {
+              "id": "AISI 630 / 17-4 PH",
+              "intl_classification": "AISI 630",
+              "ru_designation": "07Х17Н4Д4Б",
+              "chemical_content": "C 0.07%, Cr 15-17.5%, Ni 3-5%, Cu 3-5%"
+            }
+          ]
+        }
+      ]
     }
   ],
   "thickness": [
-    1.0,
-    1.5,
-    2.0,
-    2.5,
-    3.0,
-    3.5,
-    4.0,
-    4.5,
-    5.0,
-    6.0,
-    7.0,
-    8.0,
-    9.0,
-    10.0,
-    12.0,
-    15.0,
-    18.0,
-    20.0,
-    25.0,
-    30.0,
-    40.0,
-    50.0
+    1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0, 18.0, 20.0, 25.0, 30.0, 40.0, 50.0
   ],
   "joint_type": [
     {

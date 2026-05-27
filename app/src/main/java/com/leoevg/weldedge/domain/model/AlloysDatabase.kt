@@ -23,6 +23,16 @@ data class AlloysDatabase(
     fun getMetalGroupForGrade(gradeName: String): MetalGroup? =
         metals1.find { group -> group.markMetal.any { it.equals(gradeName, ignoreCase = true) } }
 
+    /**
+     * Finds detailed information about a specific metal grade.
+     */
+    fun findMarkById(markId: String): MetalMark? {
+        return metals1.asSequence()
+            .flatMap { it.subcategories }
+            .flatMap { it.marks }
+            .find { it.id.equals(markId, ignoreCase = true) }
+    }
+
     // Resolves legacy aliases (e.g. "316L" → "AISI 316L", "15-5 PH" → "AISI 630 / 15-5 PH").
     // Returns the canonical grade name from the database, or null if not found.
     fun findGradeByName(name: String): String? {

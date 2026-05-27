@@ -101,6 +101,7 @@ class MainScreenViewModel @Inject constructor(
                 event.markMetal,
                 event.order
             )
+
             is MetalTypeChanged -> onMetalTypeChanged(event.value)
             is MetalType2Changed -> onMetalType2Changed(event.value)
             is StandardChanged -> onStandardChanged(event.value)
@@ -171,13 +172,18 @@ class MainScreenViewModel @Inject constructor(
         updateParams { it.copy(metalType2 = value) }
     }
 
-    private fun onMetalGroupChanged(@Suppress("UNUSED_PARAMETER") alloy: String, markMetal: String, order: Int) {
+    private fun onMetalGroupChanged(
+        @Suppress("UNUSED_PARAMETER") alloy: String,
+        markMetal: String,
+        order: Int
+    ) {
         if (markMetal.isBlank()) return
         when (order) {
             1 -> {
                 preferencesManager.saveMetalType(markMetal)
                 updateParams { it.copy(metalType = markMetal) }
             }
+
             2 -> {
                 preferencesManager.saveMetalType2(markMetal)
                 updateParams { it.copy(metalType2 = markMetal) }
@@ -199,7 +205,8 @@ class MainScreenViewModel @Inject constructor(
         if (alloy.isNotBlank()) {
             preferencesManager.saveMetalAlloyHistory(_state.value.selectedMetalCategory, alloy)
             onMetalTypeChanged(alloy)
-            val history = preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
+            val history =
+                preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
             _state.update { it.copy(metalAlloyHistory = history) }
         }
     }
@@ -318,13 +325,17 @@ class MainScreenViewModel @Inject constructor(
         selectedMarkMetal: String,
         weldingFormParams: BeAvailableWeldingParams
     ): MainScreenState.MetalAlloySelection {
-        val metalType = weldingFormParams.metalType.firstOrNull { selectedMarkMetal in it.markMetal }
-            ?: weldingFormParams.metalType.firstOrNull()
+        // Ищем группу, которой принадлежит марка
+        val metalType = weldingFormParams.metalType.find { group ->
+            group.markMetal.any { it.equals(selectedMarkMetal, ignoreCase = true) }
+        } ?: weldingFormParams.metalType.firstOrNull()
+
         val markMetal = when {
             selectedMarkMetal.isNotBlank() -> selectedMarkMetal
             metalType != null -> metalType.markMetal.firstOrNull().orEmpty()
             else -> null
         }
+
         return MainScreenState.MetalAlloySelection(
             metalType = metalType,
             markMetal = markMetal
