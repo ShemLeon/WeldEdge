@@ -3,7 +3,7 @@ package com.leoevg.weldedge.presentation.screen.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.leoevg.weldedge.data.local.PreferencesManager
-import com.leoevg.weldedge.data.local.ResourceManager
+import com.leoevg.weldedge.data.repository.AlloysDatabaseRepository
 import com.leoevg.weldedge.domain.model.BeAvailableWeldingParams
 import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
@@ -41,8 +41,8 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChang
 class MainScreenViewModel @Inject constructor(
     private val generateReportUseCase: GenerateReportUseCase,
     private val preferencesManager: PreferencesManager,
-    private val resourceManager: ResourceManager,
-    private val createInitialStateUseCase: CreateInitialStateUseCase
+    private val createInitialStateUseCase: CreateInitialStateUseCase,
+    private val alloysDatabaseRepository: AlloysDatabaseRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(createInitialState().withResolvedSelected())
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
@@ -50,9 +50,28 @@ class MainScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             createInitialStateUseCase.invoke()
-                .onSuccess { value ->
+                .onSuccess { dbParams ->
+                    val database = alloysDatabaseRepository.getDatabase()
                     _state.update { current ->
-                        current.withResolvedSelected(weldingFormParams = value)
+                        val rawMetal = current.params.metalType
+                        val metalType = if (rawMetal.isBlank()) ""
+                        else database.findGradeByName(rawMetal) ?: rawMetal
+
+                        val rawMetal2 = current.params.metalType2
+                        val metalType2 = if (rawMetal2.isBlank()) ""
+                        else database.findGradeByName(rawMetal2) ?: rawMetal2
+
+                        if (metalType != rawMetal) preferencesManager.saveMetalType(metalType)
+                        if (metalType2 != rawMetal2) preferencesManager.saveMetalType2(metalType2)
+
+                        val migratedParams = current.params.copy(
+                            metalType = metalType,
+                            metalType2 = metalType2
+                        )
+                        current.withResolvedSelected(
+                            params = migratedParams,
+                            weldingFormParams = dbParams
+                        )
                     }
                 }
                 .onFailure { TODO() }
@@ -67,8 +86,6 @@ class MainScreenViewModel @Inject constructor(
             BackClicked -> onBackClicked()
             GeneratePdfClicked -> onGeneratePdfClicked()
             is OnFieldChanged -> onFieldChangedEvent(event)
-
-
         }
     }
 
@@ -84,7 +101,6 @@ class MainScreenViewModel @Inject constructor(
                 event.markMetal,
                 event.order
             )
-
             is MetalTypeChanged -> onMetalTypeChanged(event.value)
             is MetalType2Changed -> onMetalType2Changed(event.value)
             is StandardChanged -> onStandardChanged(event.value)
@@ -93,82 +109,40 @@ class MainScreenViewModel @Inject constructor(
             is WeldingTypeChanged -> onWeldingTypeChanged(event.value)
         }
     }
-    //
 
     private fun onThicknessChanged(newValue: String) {
         val selected = state.value.selected.copy(thickness = newValue)
-        _state.update {
-            it.copy(selected = selected)
-        }
+        _state.update { it.copy(selected = selected) }
     }
 
     private fun onEdgePreparationChanged(value: EdgePreparationItem) {
         val selected = state.value.selected.copy(edgePreparation = value)
-        _state.update {
-            it.copy(selected = selected)
-        }
+        _state.update { it.copy(selected = selected) }
     }
 
-    // ВЫПИЛИТЬ
     private fun createInitialState(): MainScreenState {
-        val rawMetal = preferencesManager.getMetalType()
-        val metalType = when (rawMetal) {
-            null -> "AISI 316L"
-            "AISI316L", "316L" -> "AISI 316L"
-            "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
-            "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
-            else -> rawMetal
-        }.also {
-            if (rawMetal == null || rawMetal in listOf(
-                    "AISI316L",
-                    "316L",
-                    "15-5 PH",
-                    "AISI 15-5 PH",
-                    "17-4 PH",
-                    "AISI 17-4 PH"
-                )
-            ) preferencesManager.saveMetalType(it)
-        }
-        val rawMetal2 = preferencesManager.getMetalType2()
-        val metalType2 = when (rawMetal2) {
-            null -> "AISI 316L"
-            "AISI316L", "316L" -> "AISI 316L"
-            "15-5 PH", "AISI 15-5 PH" -> "AISI 630 / 15-5 PH"
-            "17-4 PH", "AISI 17-4 PH" -> "AISI 630 / 17-4 PH"
-            else -> rawMetal2
-        }.also {
-            if (rawMetal2 == null || rawMetal2 in listOf(
-                    "AISI316L",
-                    "316L",
-                    "15-5 PH",
-                    "AISI 15-5 PH",
-                    "17-4 PH",
-                    "AISI 17-4 PH"
-                )
-            ) preferencesManager.saveMetalType2(it)
-        }
+        val metalType = preferencesManager.getMetalType() ?: ""
+        val metalType2 = preferencesManager.getMetalType2() ?: ""
         val jointType = preferencesManager.getJointType() ?: "butt".also {
             preferencesManager.saveJointType(it)
         }
-        // Map old stress/simple to BW/FW if necessary, or just use new defaults
-        val typeOfWeld = when (val rawResponsibility = preferencesManager.getTypeOfWeld()) {
-            "stress" -> "BW"
-            "simple" -> "FW"
-            else -> rawResponsibility ?: "BW"
-        }
+
+        // Migrate legacy typeOfWeld values to canonical "BW"/"FW"
+        val typeOfWeld = when (preferencesManager.getTypeOfWeld()) {
+            "stress", "bw_preparation" -> "BW"
+            "simple", "fw_preparation" -> "FW"
+            else -> preferencesManager.getTypeOfWeld() ?: "BW"
+        }.also { preferencesManager.saveTypeOfWeld(it) }
 
         val standard = preferencesManager.getStandard() ?: "AWS".also {
             preferencesManager.saveStandard(it)
         }
-        val rawWeldingType = preferencesManager.getWeldingType()
-        val weldingType = when (rawWeldingType) {
-            null, "TIG.svg" -> "type_1_TIG.svg"
-            else -> rawWeldingType
-        }.also {
-            if (rawWeldingType == null || rawWeldingType == "TIG.svg") preferencesManager.saveWeldingType(
-                it
-            )
-        }
+
+        // Migrate legacy weldingType id format (old: "TIG.svg", new: "type_1_TIG")
+        val weldingType = when (val raw = preferencesManager.getWeldingType()) {
+            null, "TIG.svg", "type_1_TIG.svg" -> "type_1_TIG"
+            else -> raw
+        }.also { preferencesManager.saveWeldingType(it) }
 
         return MainScreenState(
             params = WeldingParams(
@@ -182,11 +156,10 @@ class MainScreenViewModel @Inject constructor(
                 weldingType = weldingType
             ),
             language = preferencesManager.getLanguage(),
-            selectedMetalCategory = "CS",
-            metalAlloyHistory = preferencesManager.getMetalAlloyHistory("CS")
+            selectedMetalCategory = preferencesManager.getMetalCategory(),
+            metalAlloyHistory = preferencesManager.getMetalAlloyHistory(preferencesManager.getMetalCategory())
         )
     }
-
 
     private fun onMetalTypeChanged(value: String) {
         preferencesManager.saveMetalType(value)
@@ -198,14 +171,13 @@ class MainScreenViewModel @Inject constructor(
         updateParams { it.copy(metalType2 = value) }
     }
 
-    private fun onMetalGroupChanged(alloy: String, markMetal: String, order: Int) {
+    private fun onMetalGroupChanged(@Suppress("UNUSED_PARAMETER") alloy: String, markMetal: String, order: Int) {
         if (markMetal.isBlank()) return
         when (order) {
             1 -> {
                 preferencesManager.saveMetalType(markMetal)
                 updateParams { it.copy(metalType = markMetal) }
             }
-
             2 -> {
                 preferencesManager.saveMetalType2(markMetal)
                 updateParams { it.copy(metalType2 = markMetal) }
@@ -227,8 +199,7 @@ class MainScreenViewModel @Inject constructor(
         if (alloy.isNotBlank()) {
             preferencesManager.saveMetalAlloyHistory(_state.value.selectedMetalCategory, alloy)
             onMetalTypeChanged(alloy)
-            val history =
-                preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
+            val history = preferencesManager.getMetalAlloyHistory(_state.value.selectedMetalCategory)
             _state.update { it.copy(metalAlloyHistory = history) }
         }
     }
@@ -237,37 +208,11 @@ class MainScreenViewModel @Inject constructor(
         _state.update { it.copy(showAlloyDialog = false) }
     }
 
-//    private fun onThicknessChanged(value: String) {
-//        val thicknessVal = value.toDoubleOrNull() ?: 0.0
-//        val currentEdgePrep = EdgePreparation.fromId(_state.value.params.edgePreparation)
-//
-//        val shouldClearEdgePrep = when (currentEdgePrep) {
-//            EdgePreparation.GROOVE_V_DOUBLE -> thicknessVal < 6.0
-//            EdgePreparation.GROOVE_J_SINGLE, EdgePreparation.GROOVE_J_DOUBLE,
-//            EdgePreparation.GROOVE_U_SINGLE, EdgePreparation.GROOVE_U_DOUBLE,
-//            EdgePreparation.T_J_GROOVE_SINGLE, EdgePreparation.T_J_GROOVE_DOUBLE,
-//            EdgePreparation.CORNER_J_INSIDE, EdgePreparation.CORNER_J_OUTSIDE,
-//            EdgePreparation.CORNER_U -> thicknessVal < 13.0
-//
-//            else -> false
-//        }
-//
-//        _state.update {
-//            it.withResolvedSelected(
-//                params = it.params.copy(
-//                    thickness = value,
-//                    edgePreparation = if (shouldClearEdgePrep) "" else it.params.edgePreparation
-//                )
-//            )
-//                .copy(thicknessError = null)
-//        }
-//    }
-
     private fun onJointTypeChanged(value: JointType) {
         preferencesManager.saveJointType(value.id)
         val selected = state.value.selected.copy(
             jointType = value,
-            edgePreparation = null // Сбрасываем разделку при смене типа соединения
+            edgePreparation = null
         )
         _state.update {
             it.copy(
@@ -278,7 +223,6 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun onTypeOfWeldChanged(value: EdgePreparationGroup) {
-        // Map BW/FW back to stress/simple for storage if needed, or update PreferencesManager
         preferencesManager.saveTypeOfWeld(value.id)
         val selected = state.value.selected.copy(
             typeOfWeld = value,
@@ -291,18 +235,6 @@ class MainScreenViewModel @Inject constructor(
             )
         }
     }
-
-
-//    private fun onEdgePreparationChanged(value: String) {
-//        _state.update { state ->
-//            val t = state.params.thickness.trim().toDoubleOrNull() ?: 0.0
-//            val ep = EdgePreparation.fromId(value)
-//            if (ep == EdgePreparation.GROOVE_V_DOUBLE && t < 6.0) return@update state
-//            state.withResolvedSelected(
-//                params = state.params.copy(edgePreparation = value)
-//            )
-//        }
-//    }
 
     private fun onWeldingTypeChanged(value: WeldingTypeItem) {
         preferencesManager.saveWeldingType(value.id)
@@ -345,8 +277,7 @@ class MainScreenViewModel @Inject constructor(
 
     private fun onGeneratePdfClicked() {
         viewModelScope.launch {
-            generateReportUseCase(_state.value.params).onFailure {
-            }
+            generateReportUseCase(_state.value.params).onFailure { }
         }
     }
 
@@ -360,18 +291,18 @@ class MainScreenViewModel @Inject constructor(
         params: WeldingParams = this.params,
         weldingFormParams: BeAvailableWeldingParams = this.weldingFormParams
     ): MainScreenState {
+        val database = alloysDatabaseRepository.getDatabase()
         return copy(
             params = params,
             weldingFormParams = weldingFormParams,
+            wpsNumber = params.getWPSnumber(database),
             selected = MainScreenState.Selected(
                 metalAlloy1 = resolveMetalAlloySelection(
                     selectedMarkMetal = params.metalType,
-                    fallbackMetalName = null,
                     weldingFormParams = weldingFormParams
                 ),
                 metalAlloy2 = resolveMetalAlloySelection(
                     selectedMarkMetal = params.metalType2,
-                    fallbackMetalName = null,
                     weldingFormParams = weldingFormParams
                 ),
                 thickness = params.thickness,
@@ -385,13 +316,10 @@ class MainScreenViewModel @Inject constructor(
 
     private fun resolveMetalAlloySelection(
         selectedMarkMetal: String,
-        fallbackMetalName: String?,
         weldingFormParams: BeAvailableWeldingParams
     ): MainScreenState.MetalAlloySelection {
-        val metalType =
-            weldingFormParams.metalType.firstOrNull { selectedMarkMetal in it.markMetal }
-                ?: weldingFormParams.metalType.firstOrNull { it.name == fallbackMetalName }
-                ?: weldingFormParams.metalType.firstOrNull()
+        val metalType = weldingFormParams.metalType.firstOrNull { selectedMarkMetal in it.markMetal }
+            ?: weldingFormParams.metalType.firstOrNull()
         val markMetal = when {
             selectedMarkMetal.isNotBlank() -> selectedMarkMetal
             metalType != null -> metalType.markMetal.firstOrNull().orEmpty()

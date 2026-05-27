@@ -16,18 +16,20 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 class ReportRepositoryImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
+    private val alloysDatabaseRepository: AlloysDatabaseRepository
 ) : ReportRepository {
 
     override suspend fun generateAndOpenReport(params: WeldingParams): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            val database = alloysDatabaseRepository.getDatabase()
             val pageWidth = 792
             val pageHeight = 1120
             val pdfDocument = PdfDocument()
             val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
             val page = pdfDocument.startPage(pageInfo)
 
-            WpsReportDrawer(context).drawReport(page.canvas, pageWidth, pageHeight, params)
+            WpsReportDrawer(context).drawReport(page.canvas, pageWidth, pageHeight, params, database)
 
             pdfDocument.finishPage(page)
 

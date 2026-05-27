@@ -1,13 +1,12 @@
 package com.leoevg.weldedge.domain.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Элемент типа сварки из JSON (welding_type).
- */
 @Serializable
 data class WeldingTypeItem(
     val id: String,
-    val imagePath: String,
-    val name: String
+    @SerialName("image_path") val imagePath: String,
+    val name: String,
+    @SerialName("process_code") val processCode: String = ""
 )

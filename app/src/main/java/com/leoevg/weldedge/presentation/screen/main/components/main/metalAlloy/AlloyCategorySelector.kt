@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import com.leoevg.weldedge.domain.model.MetalGroup
 
 @Composable
@@ -37,8 +35,10 @@ fun AlloyCategorySelector(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
-        itemsIndexed(data) { index, category,  ->
-            val accentColor = Color(category.color.toColorInt())
+        items(data) { category ->
+            val accentColor = Color(android.graphics.Color.parseColor(
+                "#" + category.color.removePrefix("0x").removePrefix("0X")
+            ))
             val isSelected = selected == category
 
             Surface(
@@ -56,7 +56,7 @@ fun AlloyCategorySelector(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = category.markMetal[index],
+                        text = category.name,
                         textAlign = TextAlign.Center,
                         color = if (isSelected) Color(0xFF1B1B1F) else Color(0xFF334155),
                         fontSize = 14.sp,

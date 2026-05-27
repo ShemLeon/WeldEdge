@@ -17,7 +17,8 @@ data class MainScreenState(
     val language: String = "EN",
     val params: WeldingParams = WeldingParams(),
     val weldingFormParams: BeAvailableWeldingParams = BeAvailableWeldingParams(),
-    val selected: Selected = Selected()
+    val selected: Selected = Selected(),
+    val wpsNumber: String = ""
 ) {
     data class Selected(
         val metalAlloy1: MetalAlloySelection = MetalAlloySelection(),

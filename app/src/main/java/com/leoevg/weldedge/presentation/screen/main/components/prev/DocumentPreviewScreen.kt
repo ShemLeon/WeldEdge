@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.leoevg.weldedge.domain.model.JointType
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
@@ -36,12 +35,11 @@ fun DocumentPreviewScreen(
     state: MainScreenState,
     onEvent: (MainScreenEvent) -> Unit,
 ) {
-    val jointTypeLocalized = JointType.fromId(state.params.jointType)?.let {
-        stringResource(it.nameRes)
-    } ?: state.params.jointType
-    val typeOfWeldLocalized = TypeOfWelds.fromId(state.params.typeOfWeld)?.let {
-        stringResource(it.nameRes)
-    } ?: state.params.typeOfWeld
+    val jointTypeLocalized = state.selected.jointType?.nameEn ?: state.params.jointType
+    val typeOfWeldLocalized = state.selected.typeOfWeld?.nameEn ?: state.params.typeOfWeld
+    val weldingTypeDisplayName = state.selected.weldingType?.name ?: state.params.weldingType
+    val imagePath = state.selected.edgePreparation?.imagePath
+        ?.let { "file:///android_asset/$it" }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -60,11 +58,6 @@ fun DocumentPreviewScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-
-                // Edge preparation image
-                val imagePath = state.params.getEdgePreparationFullPath().let {
-                    if (it.isNotEmpty()) "file:///android_asset/$it" else null
-                }
 
                 if (imagePath != null) {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -96,9 +89,6 @@ fun DocumentPreviewScreen(
                 PreviewRow(stringResource(R.string.preview_joint_type), jointTypeLocalized)
                 PreviewRow(stringResource(R.string.preview_type_of_welds), typeOfWeldLocalized)
                 if (state.params.weldingType.isNotEmpty()) {
-                    val weldingTypeDisplayName =
-                        WeldingType.fromId(state.params.weldingType)?.displayName
-                            ?: state.params.weldingType
                     PreviewRow(
                         stringResource(R.string.preview_welding_type),
                         weldingTypeDisplayName
@@ -108,10 +98,9 @@ fun DocumentPreviewScreen(
                     PreviewRow(stringResource(R.string.preview_engineer), state.params.engineerName)
                 }
                 PreviewRow(stringResource(R.string.preview_standard), state.params.standard)
-                val wpsValue = state.params.getWPSnumber()
                 PreviewRow(
                     stringResource(R.string.preview_wps),
-                    if (wpsValue == "_________") "—" else wpsValue
+                    if (state.wpsNumber == "_________") "—" else state.wpsNumber
                 )
             }
         }

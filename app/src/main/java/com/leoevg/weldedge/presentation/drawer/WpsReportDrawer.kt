@@ -3,34 +3,37 @@ package com.leoevg.weldedge.presentation.drawer
 import android.content.Context
 import android.graphics.*
 import com.leoevg.weldedge.R
-import com.leoevg.weldedge.domain.model.JointType
+import com.leoevg.weldedge.domain.model.AlloysDatabase
 import com.leoevg.weldedge.domain.model.Table
 import com.leoevg.weldedge.domain.model.TableConfig
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.caverock.androidsvg.SVG
-import java.io.InputStream
 
 class WpsReportDrawer(private val context: Context) {
 
-    fun drawReport(canvas: Canvas, pageWidth: Int, pageHeight: Int, params: WeldingParams) {
+    fun drawReport(
+        canvas: Canvas,
+        pageWidth: Int,
+        pageHeight: Int,
+        params: WeldingParams,
+        database: AlloysDatabase
+    ) {
         val margin = 40f
         val tableWidth = pageWidth - 2 * margin
         var currentY = margin
 
-        // 1. Draw Custom Header (Super Compact)
-        currentY = drawReportHeader(canvas, margin, currentY, tableWidth, params)
-        currentY += 8f 
+        currentY = drawReportHeader(canvas, margin, currentY, tableWidth, params, database)
+        currentY += 8f
 
         val tableConfig = TableConfig(
             headerBackgroundColor = Color.WHITE,
-            textSize = 8.5f, 
+            textSize = 8.5f,
             headerTextSize = 8.5f,
-            cellPaddingVertical = 3.5f, 
+            cellPaddingVertical = 3.5f,
             headerBold = true
         )
         val drawer = TableDrawer(tableConfig)
 
-        // 2. BASE METAL & THICKNESS
         val spacing = 10f
         val leftWidth = tableWidth * 0.55f
         val rightWidth = tableWidth - leftWidth - spacing
@@ -70,13 +73,9 @@ class WpsReportDrawer(private val context: Context) {
         val yAfterThickness = drawer.drawTable(canvas, thickTable, margin + leftWidth + spacing, currentY, rightWidth)
 
         currentY = maxOf(yAfterBaseMetal, yAfterThickness) + 8f
-
-        // 3. FILLER METAL TABLE
-        currentY = drawFillerMetalWithComplexHeader(canvas, drawer, tableConfig, margin, currentY, tableWidth, params)
-        
+        currentY = drawFillerMetalWithComplexHeader(canvas, drawer, tableConfig, margin, currentY, tableWidth, params, database)
         currentY += 8f
 
-        // 4. Cons / Insert, Flux, Sup Filler Table
         val fillerWeights = listOf(1.2f, 1.5f, 2.0f, 0.7f, 0.7f, 2.0f, 1.2f, 1.2f)
         val consTable = Table(
             columns = 8,
@@ -92,18 +91,17 @@ class WpsReportDrawer(private val context: Context) {
         )
         currentY = drawer.drawTable(canvas, consTable, margin, currentY, tableWidth)
 
-        // 5. Joint Details Table
         val startYForDetails = currentY + 8f
         val jointDetailsTable = Table(
             columns = 2,
             rows = 6,
             headerTitle = "Joint Details",
             data = listOf(
-                listOf("Joint Type", params.getEnglishJointType()),
-                listOf("Groove Angle (Deg)", params.getGrooveAngle()),
+                listOf("Joint Type", params.getEnglishJointType(database)),
+                listOf("Groove Angle (Deg)", params.getGrooveAngle(database)),
                 listOf("Root Opening (mm)", params.getRootOpening()),
-                listOf("Root Face (mm)", params.getRootFace()),
-                 listOf("Back gouging", ""),
+                listOf("Root Face (mm)", params.getRootFace(database)),
+                listOf("Back gouging", ""),
                 listOf("  Method", "")
             ),
             columnWeights = listOf(1.5f, 1f),
@@ -112,7 +110,6 @@ class WpsReportDrawer(private val context: Context) {
         )
         val yAfterJointDetails = drawer.drawTable(canvas, jointDetailsTable, margin, startYForDetails, tableWidth * 0.35f)
 
-        // 6. Postweld Heat Treatment Table
         val startYForPwht = yAfterJointDetails + 8f
         val pwhtTable = Table(
             columns = 2,
@@ -128,17 +125,14 @@ class WpsReportDrawer(private val context: Context) {
             config = tableConfig
         )
         val yAfterPwht = drawer.drawTable(canvas, pwhtTable, margin, startYForPwht, tableWidth * 0.35f)
-        
-        // 7. Joint Details Sketch
-        drawJointDetailsSketch(canvas, margin + tableWidth * 0.4f, startYForDetails, tableWidth * 0.6f, params)
 
-        val yAfterSketch = startYForDetails + 150f 
+        drawJointDetailsSketch(canvas, margin + tableWidth * 0.4f, startYForDetails, tableWidth * 0.6f, params, database)
+
+        val yAfterSketch = startYForDetails + 150f
         currentY = maxOf(yAfterPwht, yAfterSketch) + 8f
 
-        // 8. Large Parameters Table (UPDATED TO 4 COLUMNS WITH HIERARCHY)
-        val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth, params)
+        val finalY = drawLargeParametersTable(canvas, drawer, tableConfig, margin, currentY, tableWidth, params, database)
 
-        // 9. Footer Text
         val footerPaint = Paint().apply {
             color = Color.GRAY
             textSize = 9f
@@ -149,9 +143,17 @@ class WpsReportDrawer(private val context: Context) {
         canvas.drawText("${engineerText}1 list from 1", margin, finalY + 20f, footerPaint)
     }
 
-    private fun drawLargeParametersTable(canvas: Canvas, drawer: TableDrawer, config: TableConfig, x: Float, y: Float, width: Float, params: WeldingParams): Float {
+    private fun drawLargeParametersTable(
+        canvas: Canvas,
+        drawer: TableDrawer,
+        config: TableConfig,
+        x: Float,
+        y: Float,
+        width: Float,
+        params: WeldingParams,
+        database: AlloysDatabase
+    ): Float {
         var curY = y
-        // Weights for 4 columns: Label, Value, Empty, Empty
         val colWeights = listOf(2.5f, 1.5f, 1f, 1f)
         val colAligns = listOf(Paint.Align.LEFT, Paint.Align.CENTER, Paint.Align.CENTER, Paint.Align.CENTER)
 
@@ -160,7 +162,7 @@ class WpsReportDrawer(private val context: Context) {
             rows = 17,
             data = listOf(
                 listOf("Weld Layers / Passes", "1-5", "", ""),
-                listOf("Process", params.getProcess(), "", ""),
+                listOf("Process", params.getProcess(database), "", ""),
                 listOf("  Type (Manual / Semiautomatic / Automatic)", "Manual", "", ""),
                 listOf("Preheat Temperature (C°), Range 56", "20", "", ""),
                 listOf("  Interpass Temperature (C°), Range 56", "150", "", ""),
@@ -227,12 +229,22 @@ class WpsReportDrawer(private val context: Context) {
         return drawer.drawTable(canvas, techniqueTable, x, curY, width)
     }
 
-    private fun drawJointDetailsSketch(canvas: Canvas, x: Float, y: Float, width: Float, params: WeldingParams) {
+    private fun drawJointDetailsSketch(
+        canvas: Canvas,
+        x: Float,
+        y: Float,
+        width: Float,
+        params: WeldingParams,
+        database: AlloysDatabase
+    ) {
         val rowHeight = 16f
         val totalHeight = 150f
 
         val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 0.8f }
-        val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+        val textPaint = Paint().apply {
+            color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true
+            isAntiAlias = true; textAlign = Paint.Align.CENTER
+        }
 
         canvas.drawRect(x, y, x + width, y + totalHeight, paint)
         canvas.drawLine(x, y + rowHeight, x + width, y + rowHeight, paint)
@@ -240,7 +252,7 @@ class WpsReportDrawer(private val context: Context) {
 
         try {
             if (params.edgePreparation.isNotEmpty()) {
-                val fullPath = params.getEdgePreparationFullPath()
+                val fullPath = params.getEdgePreparationFullPath(database)
                 if (fullPath.isEmpty()) return
 
                 val padding = 15f
@@ -249,7 +261,9 @@ class WpsReportDrawer(private val context: Context) {
                 val dest = RectF(x + padding, y + rowHeight + padding, x + width - padding, y + totalHeight - padding)
 
                 val bitmap = when {
-                    fullPath.endsWith(".webp", ignoreCase = true) || fullPath.endsWith(".png", ignoreCase = true) || fullPath.endsWith(".jpg", ignoreCase = true) -> {
+                    fullPath.endsWith(".webp", ignoreCase = true) ||
+                    fullPath.endsWith(".png", ignoreCase = true) ||
+                    fullPath.endsWith(".jpg", ignoreCase = true) -> {
                         context.assets.open(fullPath).use { BitmapFactory.decodeStream(it) }
                     }
                     fullPath.endsWith(".svg", ignoreCase = true) -> {
@@ -298,7 +312,8 @@ class WpsReportDrawer(private val context: Context) {
         x: Float,
         y: Float,
         width: Float,
-        params: WeldingParams
+        params: WeldingParams,
+        database: AlloysDatabase
     ): Float {
         val rowHeight = config.textSize + (2 * config.cellPaddingVertical)
         val weights = listOf(1.2f, 1.5f, 2.0f, 0.7f, 0.7f, 2.0f, 1.2f, 1.2f)
@@ -306,20 +321,20 @@ class WpsReportDrawer(private val context: Context) {
         val colWidths = weights.map { (it / totalWeight) * width }
 
         val paint = Paint().apply { color = Color.BLACK; style = Paint.Style.STROKE; strokeWidth = 0.8f }
-        val textPaint = Paint().apply { color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+        val textPaint = Paint().apply {
+            color = Color.BLACK; textSize = 8.5f; isFakeBoldText = true
+            isAntiAlias = true; textAlign = Paint.Align.CENTER
+        }
 
         var currentX = x
-        // Box for "Filler Metals" spanning Process and AWS Spec (first two columns)
         val fillerMetalsWidth = colWidths[0] + colWidths[1]
         canvas.drawRect(currentX, y, currentX + fillerMetalsWidth, y + rowHeight, paint)
         canvas.drawText("Filler Metals", currentX + fillerMetalsWidth / 2, y + rowHeight / 2 + 3f, textPaint)
         currentX += fillerMetalsWidth
 
-        // Empty part spanning middle columns - NO BORDER drawn here
         val middlePartWidth = colWidths[2] + colWidths[3] + colWidths[4] + colWidths[5]
         currentX += middlePartWidth
 
-        // Box for "Thickness Range" spanning last two columns
         val lastTwoWidth = colWidths[6] + colWidths[7]
         canvas.drawRect(currentX, y, currentX + lastTwoWidth, y + rowHeight, paint)
         canvas.drawText("Thickness Range", currentX + lastTwoWidth / 2, y + rowHeight / 2 + 3f, textPaint)
@@ -328,7 +343,7 @@ class WpsReportDrawer(private val context: Context) {
             columns = 8,
             rows = 1,
             headerRow = listOf("Process", "AWS Spec", "AWS Classification", "F-No", "A-No", "Trade Name", "As Weld", "With PWHT"),
-            data = listOf(listOf(params.getProcess(), params.getRecommendedWire(), params.getAwsClassification(), "6", "", "", "${params.thickness}", "")),
+            data = listOf(listOf(params.getProcess(database), params.getRecommendedWire(), params.getAwsClassification(), "6", "", "", "${params.thickness}", "")),
             columnWeights = weights,
             columnAligns = List(8) { if (it == 0) Paint.Align.LEFT else Paint.Align.CENTER },
             config = config.copy(headerBold = false)
@@ -336,8 +351,15 @@ class WpsReportDrawer(private val context: Context) {
         return drawer.drawTable(canvas, fillerMetalTable, x, y + rowHeight, width)
     }
 
-    private fun drawReportHeader(canvas: Canvas, x: Float, y: Float, width: Float, params: WeldingParams): Float {
-        val rowHeight = 16f 
+    private fun drawReportHeader(
+        canvas: Canvas,
+        x: Float,
+        y: Float,
+        width: Float,
+        params: WeldingParams,
+        database: AlloysDatabase
+    ): Float {
+        val rowHeight = 16f
         val logoWidth = 110f
         val dataWidth = width - logoWidth
         val colWidth = dataWidth / 4
@@ -358,7 +380,12 @@ class WpsReportDrawer(private val context: Context) {
         } catch (e: Exception) {}
 
         canvas.drawLine(x + logoWidth, y + rowHeight, x + width, y + rowHeight, paint)
-        canvas.drawText("Welding Procedure Specification WPS ${params.getWPSnumber()}", x + logoWidth + dataWidth / 2, y + rowHeight - 4f, boldPaint)
+        canvas.drawText(
+            "Welding Procedure Specification WPS ${params.getWPSnumber(database)}",
+            x + logoWidth + dataWidth / 2,
+            y + rowHeight - 4f,
+            boldPaint
+        )
 
         canvas.drawLine(x + logoWidth, y + rowHeight * 2, x + width, y + rowHeight * 2, paint)
         val date = java.text.SimpleDateFormat("dd/MM/yy", java.util.Locale.getDefault()).format(java.util.Date())
@@ -376,5 +403,4 @@ class WpsReportDrawer(private val context: Context) {
         }
         return y + rowHeight * 3
     }
-
 }

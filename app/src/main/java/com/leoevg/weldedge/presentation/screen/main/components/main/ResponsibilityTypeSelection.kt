@@ -3,14 +3,12 @@ package com.leoevg.weldedge.presentation.screen.main.components.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.presentation.screen.main.SelectableButton
-import com.leoevg.weldedge.presentation.utils.getStringResourceById
 
 @Composable
 fun ResponsibilityTypeSelection(
@@ -18,10 +16,7 @@ fun ResponsibilityTypeSelection(
     onTypeSelected: (EdgePreparationGroup) -> Unit,
     data: List<EdgePreparationGroup>
 ) {
-    val context = LocalContext.current
-    val options = data.map {
-        it to context.getStringResourceById(it.nameRes)
-    }
+    val options = data.map { it to it.nameEn }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(

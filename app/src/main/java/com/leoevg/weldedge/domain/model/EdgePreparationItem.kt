@@ -1,13 +1,11 @@
 package com.leoevg.weldedge.domain.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Элемент разделки кромок из JSON (bw_preparation / fw_preparation).
- */
 @Serializable
 data class EdgePreparationItem(
     val id: String,
-    val imagePath: String,
+    @SerialName("image_path") val imagePath: String,
     val name: String
 )

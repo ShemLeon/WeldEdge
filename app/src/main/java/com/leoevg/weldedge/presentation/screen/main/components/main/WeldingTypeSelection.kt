@@ -22,7 +22,7 @@ import com.leoevg.weldedge.domain.model.WeldingTypeItem
 @Composable
 fun WeldingTypeSelection(
     selected: WeldingTypeItem?,
-    onTypeSelected: (String) -> Unit,
+    onTypeSelected: (WeldingTypeItem) -> Unit,
     data: List<WeldingTypeItem>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -44,7 +44,7 @@ fun WeldingTypeSelection(
                     item = item,
                     isSelected = selected?.id == item.id,
                     onClick = {
-                        onTypeSelected(item.id)
+                        onTypeSelected(item)
                     }
                 )
             }
@@ -72,7 +72,7 @@ fun WeldingTypeImage(
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
-            model = item.imagePath,
+            model = "file:///android_asset/${item.imagePath}",
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()

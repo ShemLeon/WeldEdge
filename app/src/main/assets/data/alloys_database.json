@@ -68,28 +68,33 @@
     {
       "id": "butt",
       "name_res": "R.string.joint_butt",
-      "icon_res": "R.drawable.joint_butt"
+      "icon_res": "R.drawable.joint_butt",
+      "name_en": "Butt"
     },
     {
       "id": "t_joint",
       "name_res": "R.string.joint_t",
-      "icon_res": "R.drawable.joint_t"
+      "icon_res": "R.drawable.joint_t",
+      "name_en": "T-joint"
     },
     {
       "id": "corner",
       "name_res": "R.string.joint_corner",
-      "icon_res": "R.drawable.joint_corner"
+      "icon_res": "R.drawable.joint_corner",
+      "name_en": "Corner"
     },
     {
       "id": "lap",
       "name_res": "R.string.joint_lap",
-      "icon_res": "R.drawable.joint_lap"
+      "icon_res": "R.drawable.joint_lap",
+      "name_en": "Lap"
     }
   ],
   "edge_preparation": [
     {
-      "id": "bw_preparation",
+      "id": "BW",
       "name_res": "R.string.type_of_welds_bw",
+      "name_en": "BW",
       "array": [
         {
           "id": "groove_v_single.webp",
@@ -204,8 +209,9 @@
       ]
     },
     {
-      "id": "fw_preparation",
+      "id": "FW",
       "name_res": "R.string.type_of_welds_fw",
+      "name_en": "FW",
       "array": [
         {
           "id": "groove_1_square_single.webp",
@@ -289,22 +295,26 @@
     {
       "id": "type_1_TIG",
       "image_path": "type_of_welding/type_1_TIG.svg",
-      "name": "TIG"
+      "name": "TIG",
+      "process_code": "GTAW"
     },
     {
       "id": "type_2_MAG-MIG",
       "image_path": "type_of_welding/type_2_MAG-MIG.svg",
-      "name": "MIG / MAG"
+      "name": "MIG / MAG",
+      "process_code": "GMAW"
     },
     {
       "id": "type_3_MMA",
       "image_path": "type_of_welding/type_3_MMA.svg",
-      "name": "MMA / Stick"
+      "name": "MMA / Stick",
+      "process_code": "SMAW"
     },
     {
       "id": "type_4_FCAW",
       "image_path": "type_of_welding/type_4_FCAW.svg",
-      "name": "FCAW"
+      "name": "FCAW",
+      "process_code": "FCAW"
     }
   ]
 }

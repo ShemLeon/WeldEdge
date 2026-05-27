@@ -19,7 +19,6 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.leoevg.weldedge.R
 import com.leoevg.weldedge.domain.model.JointType
 import com.leoevg.weldedge.presentation.utils.getDrawableResourceById
-import com.leoevg.weldedge.presentation.utils.getStringResourceById
 
 @Composable
 fun JointTypeSelection(
@@ -59,7 +58,7 @@ fun JointTypeCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val name = LocalContext.current.getStringResourceById(item.nameRes)
+    val name = item.nameEn
     val icon = LocalContext.current.getDrawableResourceById(item.iconRes)
     OutlinedCard(
         onClick = onClick,
