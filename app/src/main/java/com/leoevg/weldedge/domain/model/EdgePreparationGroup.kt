@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EdgePreparationGroup(
     val id: String,
-    @SerialName("name_res") val nameRes: String = "",
     @SerialName("name_en") val nameEn: String = "",
-    val array: List<EdgePreparationItem> = emptyList()
+    @SerialName("icon_res") val iconRes: String = "",
+    val subcategories: List<EdgePreparationSubcategory> = emptyList()
 )

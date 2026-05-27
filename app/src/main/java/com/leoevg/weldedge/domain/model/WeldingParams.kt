@@ -4,7 +4,6 @@ data class BeAvailableWeldingParams(
     val metalType: List<MetalGroup> = listOf(),
     val markMetal: List<String> = listOf(),
     val thickness: List<String> = listOf(),
-    val jointType: List<JointType> = listOf(),
     val typeOfWeld: List<EdgePreparationGroup> = listOf(),
     val edgePreparation: List<EdgePreparationItem> = listOf(),
     val weldingType: List<WeldingTypeItem> = listOf(),
@@ -33,7 +32,7 @@ data class WeldingParams(
         database.weldingType.find { it.id == weldingType }?.processCode ?: "_________"
 
     fun getEnglishJointType(database: AlloysDatabase): String =
-        database.jointType.find { it.id == jointType }?.nameEn
+        database.edgePreparation.find { it.id == jointType }?.nameEn
             ?: jointType.replaceFirstChar { it.uppercase() }
 
     fun getEnglishTypeOfWeld(): String = typeOfWeld
@@ -45,7 +44,9 @@ data class WeldingParams(
     fun getEnglishStandard(): String = if (standard == "ГОСТ") "GOST" else standard
 
     fun getEdgePreparationFullPath(database: AlloysDatabase): String =
-        database.edgePreparation.flatMap { it.array }
+        database.edgePreparation
+            .flatMap { it.subcategories }
+            .flatMap { it.items }
             .find { it.id == edgePreparation }?.imagePath ?: ""
 
     // AWS classification and wire recommendations are not yet in the database.

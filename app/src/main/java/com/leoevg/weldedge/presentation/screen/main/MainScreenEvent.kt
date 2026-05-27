@@ -3,6 +3,7 @@ package com.leoevg.weldedge.presentation.screen.main
 
 import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
+import com.leoevg.weldedge.domain.model.EdgePreparationSubcategory
 import com.leoevg.weldedge.domain.model.JointType
 import com.leoevg.weldedge.domain.model.WeldingTypeItem
 
@@ -15,6 +16,7 @@ sealed interface MainScreenEvent {
         data class ThicknessChanged(val value: String) : OnFieldChanged
         data class JointTypeChanged(val value: JointType) : OnFieldChanged
         data class TypeOfWeldChanged(val value: EdgePreparationGroup) : OnFieldChanged
+        data class EdgePrepSubcategoryChanged(val value: EdgePreparationSubcategory) : OnFieldChanged
         data class EdgePreparationChanged(val value: EdgePreparationItem) : OnFieldChanged
         data class WeldingTypeChanged(val value: WeldingTypeItem) : OnFieldChanged
         data class EngineerNameChanged(val value: String) : OnFieldChanged

@@ -17,7 +17,7 @@ import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent
 import com.leoevg.weldedge.presentation.screen.main.MainScreenState
 import com.leoevg.weldedge.presentation.screen.main.components.main.metalAlloy.MetalAlloy
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePreparationChanged
-import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.JointTypeChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePrepSubcategoryChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.ThicknessChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.TypeOfWeldChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.WeldingTypeChanged
@@ -73,31 +73,15 @@ fun WeldingForm(
 
             DashedDivider()
 
-            // Joint Type
-            JointTypeSelection(
-                selected = state.selected.jointType,
-                onTypeSelected = { onEvent(JointTypeChanged(it)) },
-                data = params.jointType
-            )
-
-            DashedDivider()
-
-            // Type of Weld (formerly Responsibility)
-            ResponsibilityTypeSelection(
-                selected = state.selected.typeOfWeld,
-                onTypeSelected = {
-                    onEvent(TypeOfWeldChanged(it))
-                },
-                data = params.typeOfWeld
-            )
-
-            DashedDivider()
-
-            // Edge Preparation
+            // Edge Preparation (3-level: joint type → subcategory → item)
             EdgePreparationSelection(
-                selected = state.selected.edgePreparation,
-                onTypeSelected = { onEvent(EdgePreparationChanged(it)) },
-                data = params.edgePreparation,
+                selectedGroup = state.selected.typeOfWeld,
+                selectedSubcategory = state.selected.edgePrepSubcategory,
+                selectedItem = state.selected.edgePreparation,
+                onGroupSelected = { onEvent(TypeOfWeldChanged(it)) },
+                onSubcategorySelected = { onEvent(EdgePrepSubcategoryChanged(it)) },
+                onItemSelected = { onEvent(EdgePreparationChanged(it)) },
+                groups = params.typeOfWeld
             )
 
             DashedDivider()

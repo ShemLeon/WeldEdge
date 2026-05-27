@@ -7,6 +7,7 @@ import com.leoevg.weldedge.data.repository.AlloysDatabaseRepository
 import com.leoevg.weldedge.domain.model.BeAvailableWeldingParams
 import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
+import com.leoevg.weldedge.domain.model.EdgePreparationSubcategory
 import com.leoevg.weldedge.domain.model.JointType
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.domain.model.WeldingTypeItem
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePreparationChanged
+import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EdgePrepSubcategoryChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.EngineerNameChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.JointTypeChanged
 import com.leoevg.weldedge.presentation.screen.main.MainScreenEvent.OnFieldChanged.MetalAlloyConfirmed
@@ -92,6 +94,7 @@ class MainScreenViewModel @Inject constructor(
     private fun onFieldChangedEvent(event: OnFieldChanged) {
         when (event) {
             is EdgePreparationChanged -> onEdgePreparationChanged(event.value)
+            is EdgePrepSubcategoryChanged -> onEdgePrepSubcategoryChanged(event.value)
             is EngineerNameChanged -> onEngineerNameChanged(event.value)
             is JointTypeChanged -> onJointTypeChanged(event.value)
             is MetalAlloyConfirmed -> onMetalAlloyConfirmed(event.alloy)
@@ -215,29 +218,40 @@ class MainScreenViewModel @Inject constructor(
         _state.update { it.copy(showAlloyDialog = false) }
     }
 
-    private fun onJointTypeChanged(value: JointType) {
+    private fun onJointTypeChanged(@Suppress("UNUSED_PARAMETER") value: JointType) {
+        // joint type is now set via onTypeOfWeldChanged (edge_preparation group selection)
+    }
+
+    private fun onTypeOfWeldChanged(value: EdgePreparationGroup) {
         preferencesManager.saveJointType(value.id)
+        preferencesManager.saveTypeOfWeld("")
         val selected = state.value.selected.copy(
-            jointType = value,
+            typeOfWeld = value,
+            edgePrepSubcategory = null,
             edgePreparation = null
         )
         _state.update {
             it.copy(
-                params = it.params.copy(jointType = value.id, edgePreparation = ""),
+                params = it.params.copy(
+                    jointType = value.id,
+                    typeOfWeld = "",
+                    edgePreparation = ""
+                ),
                 selected = selected
             )
         }
     }
 
-    private fun onTypeOfWeldChanged(value: EdgePreparationGroup) {
-        preferencesManager.saveTypeOfWeld(value.id)
+    private fun onEdgePrepSubcategoryChanged(value: EdgePreparationSubcategory) {
+        val bwFw = if (value.id == "stress") "BW" else "FW"
+        preferencesManager.saveTypeOfWeld(bwFw)
         val selected = state.value.selected.copy(
-            typeOfWeld = value,
+            edgePrepSubcategory = value,
             edgePreparation = null
         )
         _state.update {
             it.copy(
-                params = it.params.copy(typeOfWeld = value.id, edgePreparation = ""),
+                params = it.params.copy(typeOfWeld = bwFw, edgePreparation = ""),
                 selected = selected
             )
         }
@@ -299,6 +313,12 @@ class MainScreenViewModel @Inject constructor(
         weldingFormParams: BeAvailableWeldingParams = this.weldingFormParams
     ): MainScreenState {
         val database = alloysDatabaseRepository.getDatabase()
+        val edgePrepGroup = weldingFormParams.typeOfWeld.firstOrNull { it.id == params.jointType }
+        val edgePrepSubcategory = when (params.typeOfWeld) {
+            "BW" -> edgePrepGroup?.subcategories?.find { it.id == "stress" }
+            "FW" -> edgePrepGroup?.subcategories?.find { it.id == "simple" }
+            else -> null
+        }
         return copy(
             params = params,
             weldingFormParams = weldingFormParams,
@@ -313,8 +333,8 @@ class MainScreenViewModel @Inject constructor(
                     weldingFormParams = weldingFormParams
                 ),
                 thickness = params.thickness,
-                jointType = weldingFormParams.jointType.firstOrNull { it.id == params.jointType },
-                typeOfWeld = weldingFormParams.typeOfWeld.firstOrNull { it.id == params.typeOfWeld },
+                typeOfWeld = edgePrepGroup,
+                edgePrepSubcategory = edgePrepSubcategory,
                 edgePreparation = weldingFormParams.edgePreparation.firstOrNull { it.id == params.edgePreparation },
                 weldingType = weldingFormParams.weldingType.firstOrNull { it.id == params.weldingType }
             )

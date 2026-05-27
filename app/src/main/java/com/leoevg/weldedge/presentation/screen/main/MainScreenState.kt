@@ -3,7 +3,7 @@ package com.leoevg.weldedge.presentation.screen.main
 import com.leoevg.weldedge.domain.model.BeAvailableWeldingParams
 import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
-import com.leoevg.weldedge.domain.model.JointType
+import com.leoevg.weldedge.domain.model.EdgePreparationSubcategory
 import com.leoevg.weldedge.domain.model.MetalGroup
 import com.leoevg.weldedge.domain.model.WeldingParams
 import com.leoevg.weldedge.domain.model.WeldingTypeItem
@@ -24,8 +24,8 @@ data class MainScreenState(
         val metalAlloy1: MetalAlloySelection = MetalAlloySelection(),
         val metalAlloy2: MetalAlloySelection = MetalAlloySelection(),
         val thickness: String = "",
-        val jointType: JointType? = null,
         val typeOfWeld: EdgePreparationGroup? = null,
+        val edgePrepSubcategory: EdgePreparationSubcategory? = null,
         val edgePreparation: EdgePreparationItem? = null,
         val weldingType: WeldingTypeItem? = null
     )

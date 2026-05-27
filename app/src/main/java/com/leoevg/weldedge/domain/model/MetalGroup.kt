@@ -15,7 +15,7 @@ data class MetalGroup(
 ) {
     // For backward compatibility while migrating UI
     val markMetal: List<String>
-        get() = subcategories.flatMap { sub -> sub.marks.map { it.id } }
+        get() = subcategories.flatMap { sub -> sub.marks.map { it.id } }.sorted()
 }
 
 @Serializable

@@ -13,20 +13,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.leoevg.weldedge.R
+import com.leoevg.weldedge.domain.model.EdgePreparationGroup
 import com.leoevg.weldedge.domain.model.EdgePreparationItem
+import com.leoevg.weldedge.domain.model.EdgePreparationSubcategory
+import com.leoevg.weldedge.presentation.screen.main.SelectableButton
 import com.leoevg.weldedge.presentation.utils.baseAssetPath
-
+import com.leoevg.weldedge.presentation.utils.getDrawableResourceById
 
 @Composable
 fun EdgePreparationSelection(
-    selected: EdgePreparationItem?,
-    onTypeSelected: (EdgePreparationItem) -> Unit,
-    data: List<EdgePreparationItem>
+    selectedGroup: EdgePreparationGroup?,
+    selectedSubcategory: EdgePreparationSubcategory?,
+    selectedItem: EdgePreparationItem?,
+    onGroupSelected: (EdgePreparationGroup) -> Unit,
+    onSubcategorySelected: (EdgePreparationSubcategory) -> Unit,
+    onItemSelected: (EdgePreparationItem) -> Unit,
+    groups: List<EdgePreparationGroup>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionHeader(
@@ -36,26 +47,66 @@ fun EdgePreparationSelection(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (data.isEmpty()) {
-            Text(
-                text = stringResource(R.string.edge_preparation_none),
-                modifier = Modifier.padding(16.dp),
-                color = Color.Gray,
-                fontSize = 14.sp
-            )
-        } else {
-            LazyRow(
+        // Level 1: joint type groups
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp)
+        ) {
+            items(groups) { group ->
+                EdgePrepGroupCard(
+                    group = group,
+                    isSelected = selectedGroup?.id == group.id,
+                    onClick = { onGroupSelected(group) }
+                )
+            }
+        }
+
+        // Level 2: subcategories (shown when a group is selected)
+        if (selectedGroup != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(data, key = { it.id }) { item ->
-                    EachPreparationContent(
-                        item = item,
-                        onTypeSelected = onTypeSelected,
-                        isSelected = item.id == selected?.id
+                selectedGroup.subcategories.forEach { sub ->
+                    SelectableButton(
+                        text = sub.nameEn,
+                        isSelected = selectedSubcategory?.id == sub.id,
+                        onClick = { onSubcategorySelected(sub) },
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
                     )
+                }
+            }
+        }
+
+        // Level 3: items (shown when a subcategory is selected)
+        if (selectedSubcategory != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (selectedSubcategory.items.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.edge_preparation_none),
+                    modifier = Modifier.padding(16.dp),
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            } else {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    items(selectedSubcategory.items, key = { it.id }) { item ->
+                        EdgePrepItemCard(
+                            item = item,
+                            isSelected = item.id == selectedItem?.id,
+                            onSelected = onItemSelected
+                        )
+                    }
                 }
             }
         }
@@ -63,10 +114,56 @@ fun EdgePreparationSelection(
 }
 
 @Composable
-private fun EachPreparationContent(
+private fun EdgePrepGroupCard(
+    group: EdgePreparationGroup,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val icon = LocalContext.current.getDrawableResourceById(group.iconRes)
+    OutlinedCard(
+        onClick = onClick,
+        modifier = Modifier.size(width = 140.dp, height = 120.dp),
+        border = CardDefaults.outlinedCardBorder(isSelected).copy(
+            width = if (isSelected) 2.dp else 1.dp
+        ),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = if (isSelected) Color(0xFFEFF6FF) else Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            androidx.compose.foundation.Image(
+                painter = rememberDrawablePainter(drawable = icon),
+                contentDescription = group.nameEn,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+            )
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = if (isSelected) Color(0xFFDBEAFE) else Color(0xFFF8FAFC)
+            ) {
+                Text(
+                    text = group.nameEn,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = if (isSelected) Color(0xFF1E40AF) else Color(0xFF475569),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EdgePrepItemCard(
     item: EdgePreparationItem,
-    onTypeSelected: (EdgePreparationItem) -> Unit,
-    isSelected: Boolean
+    isSelected: Boolean,
+    onSelected: (EdgePreparationItem) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -74,14 +171,10 @@ private fun EachPreparationContent(
             .clip(RoundedCornerShape(8.dp))
             .background(if (isSelected) Color(0xFFEFF6FF) else Color.Transparent)
             .then(
-                if (isSelected) Modifier.border(
-                    2.dp,
-                    Color(0xFF3B82F6),
-                    RoundedCornerShape(8.dp)
-                )
+                if (isSelected) Modifier.border(2.dp, Color(0xFF3B82F6), RoundedCornerShape(8.dp))
                 else Modifier
             )
-            .clickable { onTypeSelected(item) }
+            .clickable { onSelected(item) }
             .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
