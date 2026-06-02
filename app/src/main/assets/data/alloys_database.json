@@ -197,12 +197,12 @@
   "edge_preparation": [
     {
       "id": "butt",
-      "name_en": "Butt",
+      "name_en": "Butt (BW)",
       "icon_res": "R.drawable.joint_butt",
       "subcategories": [
         {
           "id": "stress",
-          "name_en": "Stress (BW)",
+          "name_en": "Stress",
           "items": [
             {
               "id": "groove_v_single.webp",
@@ -248,7 +248,7 @@
         },
         {
           "id": "simple",
-          "name_en": "Simple (FW)",
+          "name_en": "Simple",
           "items": [
             {
               "id": "groove_1_square_single.webp",
@@ -276,12 +276,12 @@
     },
     {
       "id": "t_joint",
-      "name_en": "T-joint",
+      "name_en": "T-joint (FW)",
       "icon_res": "R.drawable.joint_t",
       "subcategories": [
         {
           "id": "stress",
-          "name_en": "Stress (BW)",
+          "name_en": "Stress",
           "items": [
             {
               "id": "t_joint_bevel.webp",
@@ -322,7 +322,7 @@
         },
         {
           "id": "simple",
-          "name_en": "Simple (FW)",
+          "name_en": "Simple",
           "items": [
             {
               "id": "t_joint_fillet.webp",
@@ -345,7 +345,7 @@
       "subcategories": [
         {
           "id": "stress",
-          "name_en": "Stress (BW)",
+          "name_en": "Stress",
           "items": [
             {
               "id": "lap_joint_bevel.webp",
@@ -356,7 +356,7 @@
         },
         {
           "id": "simple",
-          "name_en": "Simple (FW)",
+          "name_en": "Simple",
           "items": [
             {
               "id": "lap_joint_fillet.webp",
@@ -384,7 +384,7 @@
       "subcategories": [
         {
           "id": "stress",
-          "name_en": "Stress (BW)",
+          "name_en": "Stress",
           "items": [
             {
               "id": "corner_v_groove.webp",
@@ -430,7 +430,7 @@
         },
         {
           "id": "simple",
-          "name_en": "Simple (FW)",
+          "name_en": "Simple",
           "items": [
             {
               "id": "corner_flush.webp",
