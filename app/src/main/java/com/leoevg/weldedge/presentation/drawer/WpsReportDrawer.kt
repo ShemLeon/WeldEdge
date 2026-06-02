@@ -176,7 +176,7 @@ class WpsReportDrawer(private val context: Context) {
                 listOf("  Mas Pass Thickness (mm)", "", "", ""),
                 listOf("Position", "F for BW / F, H for FW", "", ""),
                 listOf("  Vertical Progression (Up / Dune)", "-", "", ""),
-                listOf("Shielding Gas compos", "Ar 99.999%", "", ""),
+                listOf("Shielding Gas compos", params.getShieldingGas(database), "", ""),
                 listOf("  Flow Rate (L / Min), Range: 80 - 150%", "14-15", "", "")
             ),
             columnWeights = colWeights,

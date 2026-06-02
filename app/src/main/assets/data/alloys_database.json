@@ -462,25 +462,29 @@
       "id": "type_1_TIG",
       "image_path": "type_of_welding/type_1_TIG.svg",
       "name": "TIG",
-      "process_code": "GTAW"
+      "process_code": "GTAW",
+      "shielding_gas": "Ar 99.999%"
     },
     {
       "id": "type_2_MAG-MIG",
       "image_path": "type_of_welding/type_2_MAG-MIG.svg",
       "name": "MIG / MAG",
-      "process_code": "GMAW"
+      "process_code": "GMAW",
+      "shielding_gas": "CO2"
     },
     {
       "id": "type_3_MMA",
       "image_path": "type_of_welding/type_3_MMA.svg",
       "name": "MMA / Stick",
-      "process_code": "SMAW"
+      "process_code": "SMAW",
+      "shielding_gas": "-"
     },
     {
       "id": "type_4_FCAW",
       "image_path": "type_of_welding/type_4_FCAW.svg",
       "name": "FCAW",
-      "process_code": "FCAW"
+      "process_code": "FCAW",
+      "shielding_gas": "-"
     }
   ]
 }

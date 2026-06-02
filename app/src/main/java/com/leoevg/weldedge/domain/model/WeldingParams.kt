@@ -31,6 +31,9 @@ data class WeldingParams(
     fun getProcess(database: AlloysDatabase): String =
         database.weldingType.find { it.id == weldingType }?.processCode ?: "_________"
 
+    fun getShieldingGas(database: AlloysDatabase): String =
+        database.weldingType.find { it.id == weldingType }?.shieldingGas ?: "-"
+
     fun getEnglishJointType(database: AlloysDatabase): String =
         database.edgePreparation.find { it.id == jointType }?.nameEn
             ?: jointType.replaceFirstChar { it.uppercase() }
