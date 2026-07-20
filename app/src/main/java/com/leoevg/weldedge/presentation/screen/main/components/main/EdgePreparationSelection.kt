@@ -62,8 +62,17 @@ fun EdgePreparationSelection(
             }
         }
 
-        // Level 2: subcategories (shown when a group is selected)
+        // Level 2: type of weld penetration (shown when a group is selected)
         if (selectedGroup != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            DashedDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SectionHeader(
+                label = stringResource(R.string.type_of_welds_label),
+                isRequired = true
+            )
+
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
@@ -71,8 +80,13 @@ fun EdgePreparationSelection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 selectedGroup.subcategories.forEach { sub ->
+                    val label = when (sub.id) {
+                        "stress" -> stringResource(R.string.type_of_welds_bw)
+                        "simple" -> stringResource(R.string.type_of_welds_fw)
+                        else -> sub.nameEn
+                    }
                     SelectableButton(
-                        text = sub.nameEn,
+                        text = label,
                         isSelected = selectedSubcategory?.id == sub.id,
                         onClick = { onSubcategorySelected(sub) },
                         modifier = Modifier.weight(1f),

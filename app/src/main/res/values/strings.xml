@@ -16,8 +16,8 @@
     <string name="responsibility_stress">With groove</string>
     <string name="responsibility_simple">Without groove</string>
     <string name="type_of_welds_label">Type of Weld</string>
-    <string name="type_of_welds_bw">BW</string>
-    <string name="type_of_welds_fw">FW</string>
+    <string name="type_of_welds_bw">Full</string>
+    <string name="type_of_welds_fw">Partial</string>
     <string name="submit_button">Create Document</string>
     <string name="alloy_input_label">Or enter name</string>
     <string name="alloy_input_placeholder">Example: AISI 316L</string>
