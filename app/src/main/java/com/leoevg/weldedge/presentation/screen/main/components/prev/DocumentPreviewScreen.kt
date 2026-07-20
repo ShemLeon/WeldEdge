@@ -36,7 +36,11 @@ fun DocumentPreviewScreen(
     onEvent: (MainScreenEvent) -> Unit,
 ) {
     val jointTypeLocalized = state.selected.typeOfWeld?.nameEn ?: state.params.jointType
-    val typeOfWeldLocalized = state.selected.edgePrepSubcategory?.nameEn ?: state.params.typeOfWeld
+    val typeOfWeldLocalized = when (state.selected.edgePrepSubcategory?.id) {
+        "stress" -> stringResource(R.string.type_of_welds_bw)
+        "simple" -> stringResource(R.string.type_of_welds_fw)
+        else -> state.selected.edgePrepSubcategory?.nameEn ?: state.params.typeOfWeld
+    }
     val weldingTypeDisplayName = state.selected.weldingType?.name ?: state.params.weldingType
     val imagePath = state.selected.edgePreparation?.imagePath
         ?.let { "file:///android_asset/$it" }

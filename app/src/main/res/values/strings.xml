@@ -15,9 +15,6 @@
     <string name="responsibility_label">Joint Responsibility</string>
     <string name="responsibility_stress">With groove</string>
     <string name="responsibility_simple">Without groove</string>
-    <string name="type_of_welds_label">Type of Weld</string>
-    <string name="type_of_welds_bw">Full</string>
-    <string name="type_of_welds_fw">Partial</string>
     <string name="submit_button">Create Document</string>
     <string name="alloy_input_label">Or enter name</string>
     <string name="alloy_input_placeholder">Example: AISI 316L</string>
@@ -29,7 +26,7 @@
     <string name="preview_metal_type">Metal type</string>
     <string name="preview_thickness">Thickness</string>
     <string name="preview_joint_type">Joint type</string>
-    <string name="preview_type_of_welds">Type of Weld</string>
+    <string name="preview_type_of_welds">Penetration</string>
     <string name="preview_responsibility">Responsibility</string>
     <string name="preview_welding_type">Welding Type</string>
     <string name="preview_engineer">Engineer</string>
@@ -44,4 +41,7 @@
     <string name="alloy_label">Alloy</string>
     <string name="welded_metals_label">Welded metals</string>
     <string name="preview_metal_type_2">Welded to</string>
+    <string name="type_of_welds_label">Penetration</string>
+    <string name="type_of_welds_bw">Full</string>
+    <string name="type_of_welds_fw">Partial</string>
 </resources>
